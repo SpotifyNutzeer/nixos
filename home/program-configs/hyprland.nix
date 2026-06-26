@@ -204,6 +204,7 @@
         # bekommt der Hauptmonitor kein 4K@240 (DSC-/Head-Allokation). Fix: DP-2 kurz
         # rausnehmen (Haupt springt auf 240), dann via reload mit voller HDR-Config zurueck.
         "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
+        "quickshell"
       ];
       # ── Round 2 (bewusst noch nicht): exec-once-Autostarts (uwsm, quickshell,
       #    awww, tidal, discord, steam, seadrive, …) + zugehörige Pakete + HDR-Feinschliff.
@@ -211,5 +212,5 @@
   };
 
   # Companion-Tool, das die Session JETZT braucht (Launcher). Wächst in Round 2.
-  home.packages = with pkgs; [ rofi quickshell jq ];
+  home.packages = with pkgs; [ rofi quickshell jq cava];
 }
