@@ -6,7 +6,7 @@
     htop
     tmux
   ];
-  
+  programs.fish.enable = true;
   programs.nano.enable = false;
   programs.git = {
     enable = true;

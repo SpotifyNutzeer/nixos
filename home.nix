@@ -3,6 +3,7 @@
   imports = 
     [
       ./program-configs/starship.nix
+      ./program-configs/fish.nix
     ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
