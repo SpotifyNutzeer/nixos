@@ -24,7 +24,7 @@
   in {
     nixosConfigurations = {
       vm      = mkHost "vm";
-      # desktop = mkHost "desktop";
+      desktop = mkHost "desktop";
     };
   };
 }

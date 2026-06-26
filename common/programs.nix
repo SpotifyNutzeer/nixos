@@ -5,6 +5,9 @@
     vim
     htop
     tmux
+    kitty
+    firefox
+    claude-code
   ];
   programs.fish.enable = true;
   programs.nano.enable = false;
