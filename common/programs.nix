@@ -10,6 +10,7 @@
     firefox
     claude-code
     tidal-hifi
+    pavucontrol
   ];
   programs.fish.enable = true;
   programs.nano.enable = false;

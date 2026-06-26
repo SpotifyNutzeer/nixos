@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ./boot.nix
     ./nvidia.nix
+    ./greetd.nix
   ];
 
   networking.hostName = "paul-desktop";

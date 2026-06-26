@@ -22,7 +22,7 @@
 
       monitorv2 = [
         {
-          output = "HDMI-A-1"; mode = "3840x2160@239.99"; position = "0x1440";
+          output = "HDMI-A-1"; mode = "3840x2160@240.00"; position = "0x1440";
           scale = "1.0"; bitdepth = 10; cm = "hdredid";
           sdr_min_luminance = 0.005; sdr_max_luminance = 250;
           min_luminance = 0; max_luminance = 1000; sdr_eotf = "gamma22"; vrr = 2;
@@ -199,7 +199,12 @@
       ];
 
       xwayland = { enabled = true; force_zero_scaling = true; };
-
+      exec-once = [
+        # NVIDIA-3-Display-Kaltstart-Bug: kommen alle Monitore gleichzeitig hoch,
+        # bekommt der Hauptmonitor kein 4K@240 (DSC-/Head-Allokation). Fix: DP-2 kurz
+        # rausnehmen (Haupt springt auf 240), dann via reload mit voller HDR-Config zurueck.
+        "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
+      ];
       # ── Round 2 (bewusst noch nicht): exec-once-Autostarts (uwsm, quickshell,
       #    awww, tidal, discord, steam, seadrive, …) + zugehörige Pakete + HDR-Feinschliff.
     };
