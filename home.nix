@@ -4,6 +4,7 @@
     [
       ./program-configs/starship.nix
       ./program-configs/fish.nix
+      ./program-configs/vim.nix
     ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
