@@ -1,8 +1,135 @@
 { pkgs, ... }:
 {
+  imports = 
+    [
+      ./program-configs/starship.nix
+    ]  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
   home.stateVersion = "26.05";
   
-  programs.starship.enable = true;
+  #programs.starship = {
+  #  enable = true;
+  #  settings = {
+  #    add_newline = false;
+  #    palette = "catppuccin_mocha";
+  #    format =
+  #      "$directory" +
+  #      "[](fg:teal bg:green)" +
+  #      "$git_branch$git_status" +
+  #      "[](fg:green bg:mauve)" +
+  #      "$c$cpp$dart$deno$elixir$elm$golang$haskell$java$julia$lua$nim$nodejs$python$ruby$rust$swift$conda$pixi$package$docker_context" +
+  #      "[](fg:mauve bg:peach)" +
+  #      "$cmd_duration" +
+  #      "[](fg:peach bg:surface1)" +
+  #      "$time" +
+  #      "[](fg:surface1)" +
+  #      "$character";      
+#
+#      character = {
+#        success_symbol = "[ ❯](mauve)";
+#        error_symbol = "[ ❯](red)";
+#        vimcmd_symbol = "[ ❮](green)";
+#      };
+#
+#      directory = {
+#        style = "fg:base bg:teal";
+#        format = "[ $path ]($style)";
+#        truncation_length = 3;
+#        truncation_symbol = "…/";
+#        read_only = " ";
+#        home_symbol = " ~";
+#      };
+#
+#      git_branch = {
+#        style = "fg:base bg:green";
+#        format = "[ $symbol$branch ]($style)";
+#        symbol = " ";
+#      };
+#
+#      git_status = {
+#        style = "fg:base bg:green";
+#        format = "[$all_status$ahead_behind ]($style)";
+#        conflicted = "⚠ ";
+#        ahead = "⇡\${count} ";
+#        behind = "⇣\${count} ";
+#        diverged = "⇕⇡\${ahead_count}⇣\${behind_count} ";
+#        up_to_date = "";
+#        untracked = "? ";
+#        stashed = "≡ ";
+#        modified = "● ";
+#        staged = "+ ";
+#        renamed = "» ";
+#        deleted = "✘ ";
+#      };
+#
+#      cmd_duration = {
+#        min_time = 2000;
+#        style = "fg:base bg:peach";
+#        format = "[  $duration ]($style)";
+#      };
+#  
+#      time = {
+#        disabled = false;
+#        time_format = "%H:%M";
+#        style = "fg:text bg:surface1";
+#        format = "[  $time ]($style)";
+#      };
+#
+#      c = {
+#        style = "fg:base bg:muave";
+#        format = "[ $symbol($version) ]($style)";
+#        symbol = " ";
+#      };
+#
+#      cpp = {
+#        style = "fg:base bg:muave";
+#        format = "[ $symbol($version) ]($style)";
+#        symbol = " ";
+#      };
+#      
+#      golang = {
+#        style = "fg:base bg:muave";
+#        format = "[ $symbol($version) ]($style)";
+#        symbol = " ";
+#      };
+#      
+#      java = {
+#        style = "fg:base bg:muave";
+#        format = "[ $symbol($version) ]($style)";
+#        symbol = " ";
+#      };
+#     
+#      nodejs = {
+#        style = "fg:base bg:muave";
+#        format = "[ $symbol($version) ]($style)";
+#        symbol = " ";
+#      };
+#      
+#      python = {
+#        style = "fg:base bg:muave";
+#        format = "[ $symbol($version) ]($style)";
+#        symbol = " ";
+#      };
+#      
+#      docker_context = {
+#        style = "fg:base bg:muave";
+#        format = "[ $symbol($version) ]($style)";
+#        symbol = " ";
+#      };
+#      
+#  
+#      palettes.catppuccin_mocha = {
+#        rosewater = "#f5e0dc"; flamingo = "#f2cdcd"; pink = "#f5c2e7";
+#        mauve = "#cba6f7"; red = "#f38ba8"; maroon = "#eba0ac";
+#        peach = "#fab387"; yellow = "#f9e2af"; green = "#a6e3a1";
+#        teal = "#94e2d5"; sky = "#89dceb"; sapphire = "#74c7ec";
+#        blue = "#89b4fa"; lavender = "#b4befe"; text = "#cdd6f4";
+#        subtext1 = "#bac2de"; subtext0 = "#a6adc8"; overlay2 = "#9399b2";
+#        overlay1 = "#7f849c"; overlay0 = "#6c7086"; surface2 = "#585b70";
+#        surface1 = "#45475a"; surface0 = "#313244"; base = "#1e1e2e";
+#        mantle = "#181825"; crust = "#11111b";
+#      };
+#    };
+#  }; 
 }
