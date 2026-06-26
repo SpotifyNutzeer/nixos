@@ -7,6 +7,7 @@
     ./programs.nix
     ./desktop.nix
     ./nix.nix
+    ./fonts.nix
   ];
 
   networking.networkmanager.enable = true;
