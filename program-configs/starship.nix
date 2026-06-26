@@ -1,5 +1,6 @@
 { ... }: 
 let
+  sep = builtins.fromJSON ''"\ue0b0"'';
   lang = symbol: {
     style = "fg:base bg:mauve";
     format = "[ $symbol($version) ]($style)";
@@ -15,15 +16,15 @@ in
 
       format =
         "$directory" +
-        "[](fg:teal bg:green)" +
+        "[${sep}](fg:teal bg:green)" +
         "$git_branch$git_status" +
-        "[](fg:green bg:mauve)" +
-        "$c$cpp$golang$java$nodejs$python$docker_context" +
-        "[](fg:mauve bg:peach)" +
+        "[${sep}](fg:green bg:mauve)" +
+        "$c$cpp$dart$deno$elixir$elm$golang$haskell$java$julia$lua$nim$nodejs$python$ruby$rust$swift$conda$pixi$package$docker_context" +
+        "[${sep}](fg:mauve bg:peach)" +
         "$cmd_duration" +
-        "[](fg:peach bg:surface1)" +
+        "[${sep}](fg:peach bg:surface1)" +
         "$time" +
-        "[](fg:surface1)" +
+        "[${sep}](fg:surface1)" +
         "$character";
 
       character = {
