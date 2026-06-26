@@ -5,9 +5,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dotfiles = {
+      url = "github:SpotifyNutzeer/dotfiles";
+      flake = false;
+    }
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, dotfiles, ... }:
   let
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -17,6 +21,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home.manager.extraSpecialArgs = { inherit dotfiles; };
           home-manager.users.paul = import ./home/home.nix;
         }
       ];

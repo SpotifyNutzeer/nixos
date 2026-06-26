@@ -6,6 +6,7 @@
       ./program-configs/fish.nix
       ./program-configs/vim.nix
       ./program-configs/hyprland.nix
+      ./program-configs/quickshell.nix
     ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
