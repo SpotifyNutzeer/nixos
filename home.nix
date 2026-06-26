@@ -3,7 +3,7 @@
   imports = 
     [
       ./program-configs/starship.nix
-    ]  
+    ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
   home.stateVersion = "26.05";

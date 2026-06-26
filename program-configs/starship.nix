@@ -1,4 +1,11 @@
-( ... ): 
+{ ... }: 
+let
+  lang = symbol: {
+    style = "fg:base bg:mauve";
+    format = "[ $symbol($version) ]($style)";
+    inherit symbol;
+  };
+in
 {
   programs.starship = {
     enable = true;
@@ -69,45 +76,16 @@
         format = "[  $time ]($style)";
       };
 
-      c = {
-        style = "fg:base bg:muave";
-        format = "[ $symbol($version) ]($style)";
-        symbol = " ";
-      };
-
-      cpp = {
-        style = "fg:base bg:muave";
-        format = "[ $symbol($version) ]($style)";
-        symbol = " ";
-      };
-
-      golang = {
-        style = "fg:base bg:muave";
-        format = "[ $symbol($version) ]($style)";
-        symbol = " ";
-      };
-
-      java = {
-        style = "fg:base bg:muave";
-        format = "[ $symbol($version) ]($style)";
-        symbol = " ";
-      };
-
-      nodejs = {
-        style = "fg:base bg:muave";
-        format = "[ $symbol($version) ]($style)";
-        symbol = " ";
-      };
-
-      python = {
-        style = "fg:base bg:muave";
-        format = "[ $symbol($version) ]($style)";
-        symbol = " ";
-      };
-
+      c      = lang " ";
+      cpp    = lang " ";
+      golang = lang " ";
+      java   = lang " ";
+      nodejs = lang " ";
+      python = lang " ";
+      
       docker_context = {
-        style = "fg:base bg:muave";
-        format = "[ $symbol($version) ]($style)";
+        style = "fg:base bg:mauve";
+        format = "[ $symbol$context ]($style)";
         symbol = " ";
       };
 
