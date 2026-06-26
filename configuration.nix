@@ -13,6 +13,7 @@
       ./boot.nix
       ./users.nix
       ./environment.nix
+      ./desktop.nix
       ./dev-tools.nix
     ];
 
