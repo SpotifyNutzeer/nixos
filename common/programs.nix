@@ -6,8 +6,10 @@
     htop
     tmux
     kitty
+    alacritty
     firefox
     claude-code
+    tidal-hifi
   ];
   programs.fish.enable = true;
   programs.nano.enable = false;

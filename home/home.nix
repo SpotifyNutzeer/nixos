@@ -5,6 +5,7 @@
       ./program-configs/starship.nix
       ./program-configs/fish.nix
       ./program-configs/vim.nix
+      ./program-configs/hyprland.nix
     ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
