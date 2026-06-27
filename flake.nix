@@ -11,9 +11,13 @@
       url = "github:SpotifyNutzeer/dotfiles";
       flake = false;
     };
+    rodecaster-tidal-bridge = {
+      url = "github:SpotifyNutzeer/rodecaster-tidal-bridge";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, dotfiles, tidaluna, nixcord, ... }:
+  outputs = { self, nixpkgs, home-manager, dotfiles, rodecaster-tidal-bridge, tidaluna, nixcord, ... }:
   let
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -24,7 +28,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit dotfiles nixcord; };
+          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord; };
           home-manager.users.paul = import ./home/home.nix;
           nixpkgs.overlays = [ tidaluna.overlays.default ];
         }

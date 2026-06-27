@@ -168,12 +168,29 @@
         "type": "github"
       }
     },
+    "rodecaster-tidal-bridge": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779631875,
+        "narHash": "sha256-Y4RkqU2+/QMRdCzdAcg655gbxTv0wtX4+vQJwfOTgTc=",
+        "owner": "SpotifyNutzeer",
+        "repo": "rodecaster-tidal-bridge",
+        "rev": "265d58549c0c3bf76d6a420191733319346ce5c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SpotifyNutzeer",
+        "repo": "rodecaster-tidal-bridge",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "dotfiles": "dotfiles",
         "home-manager": "home-manager",
         "nixcord": "nixcord",
         "nixpkgs": "nixpkgs_2",
+        "rodecaster-tidal-bridge": "rodecaster-tidal-bridge",
         "tidaluna": "tidaluna"
       }
     },
