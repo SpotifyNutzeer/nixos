@@ -60,7 +60,7 @@
         active_opacity = 1.0;
         inactive_opacity = 1.0;
         shadow = { enabled = true; range = 4; render_power = 3; color = "rgba(11111bee)"; };
-        blur = { enabled = true; size = 6; passes = 2; vibrancy = 0.1696; };
+        blur = { enabled = true; size = 6; passes = 2; vibrancy = 0.1696; new_optimizations = false; };
       };
 
       layerrule = [ "blur on, ignore_alpha 0.05, match:namespace quickshell" ];
@@ -105,9 +105,8 @@
       dwindle = { preserve_split = true; };
       master = { new_status = "master"; };
       misc = { force_default_wallpaper = -1; disable_hyprland_logo = false; };
-      debug = { vfr = false; };
       render = {
-        use_shader_blur_blend = 1;
+        # use_shader_blur_blend = 1;
         direct_scanout = false;
         cm_sdr_eotf = "gamma22";
         cm_auto_hdr = 0;
@@ -206,9 +205,9 @@
         # rausnehmen (Haupt springt auf 240), dann via reload mit voller HDR-Config zurueck.
         "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
         "quickshell"
+        "discord"
+        "sleep 5 && tidal-hifi"
       ];
-      # ── Round 2 (bewusst noch nicht): exec-once-Autostarts (uwsm, quickshell,
-      #    awww, tidal, discord, steam, seadrive, …) + zugehörige Pakete + HDR-Feinschliff.
     };
   };
 

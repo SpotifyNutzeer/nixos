@@ -22,7 +22,7 @@
   let
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit tidaluna; };
+      specialArgs = { inherit tidaluna catppuccin; };
       modules = [
         ./hosts/${host}
         home-manager.nixosModules.home-manager

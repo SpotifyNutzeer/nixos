@@ -9,7 +9,7 @@
     accent = "teal";
 
     cursors.enable = true;
-
+  
     hyprland.enable = false;
   };
 
