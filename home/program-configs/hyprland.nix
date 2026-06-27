@@ -15,7 +15,7 @@
 
       # ── Variablen ──
       "$mainMod"     = "SUPER";
-      "$terminal"    = "kitty";          # war alacritty -> du nutzt jetzt kitty
+      "$terminal"    = "alacritty";
       "$fileManager" = "thunar";
       "$menu"        = "rofi -show drun";
       "$screenshot"  = "grimblast -f -n copy area";

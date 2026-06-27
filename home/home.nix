@@ -9,6 +9,8 @@
       ./program-configs/quickshell.nix
       ./program-configs/vencord.nix
       ./program-configs/brave.nix
+      ./program-configs/theming.nix
+      ./program-configs/alacritty.nix
     ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
