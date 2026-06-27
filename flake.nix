@@ -1,6 +1,10 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    gsr-ui-nix = {
+      url = "github:rPlakama/gsr-ui-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     tidaluna.url = "github:Inrixia/TidaLuna";
     nixcord.url = "github:FlameFlag/nixcord";
     catppuccin.url = "github:catppuccin/nix";
@@ -22,7 +26,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, ... }:
+  outputs = { self, nixpkgs, home-manager, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
   let
     # Das Tidal-Plugin importiert `websockets`, das StreamController in nixpkgs
     # NICHT mitbringt (nur websocket-client). Da das Plugin-Backend direkt im
@@ -35,9 +39,10 @@
     };
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit tidaluna catppuccin streamcontroller-tidal; };
+      specialArgs = { inherit tidaluna catppuccin streamcontroller-tidal gsr-ui-nix; };
       modules = [
         ./hosts/${host}
+        gsr-ui-nix.nixosModules.default
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;

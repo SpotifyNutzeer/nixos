@@ -1,4 +1,4 @@
-{ pkgs, inputs, tidaluna, ... }:
+{ pkgs, inputs, tidaluna, gsr-ui-nix, ... }:
 let
   # tidal-hifi (TidaLuna) gewrappt: pinnt Electrons safeStorage auf gnome-libsecret.
   # Sonst waehlt 'auto' unter Hyprland inkonsistent ein Backend, der
@@ -40,7 +40,16 @@ in
 
   programs.fish.enable                = true;
   programs.nano.enable                = false;
-  programs.gpu-screen-recorder.enable = true;
+  # gpu-screen-recorder + ShadowPlay-artige Overlay-UI aus der gsr-ui-nix Flake.
+  # Recorder-Paket aus der Flake (5.13.8, gleiche Version wie nixpkgs), damit
+  # System und UI dieselbe Recorder-Binary nutzen. ui.enable legt zusaetzlich
+  # den security.wrapper fuer gsr-global-hotkeys (cap_setuid+ep) und den
+  # gpu-screen-recorder-ui systemd-User-Service an.
+  programs.gpu-screen-recorder = {
+    package   = gsr-ui-nix.packages.${pkgs.stdenv.hostPlatform.system}.gpu-screen-recorder;
+    enable    = true;
+    ui.enable = true;
+  };
   programs.git = {
     enable = true;
     config.user = {
