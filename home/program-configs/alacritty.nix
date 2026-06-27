@@ -4,8 +4,6 @@
     enable = true;
     settings.window = {
       opacity = 0.8;
-      padding = { x = 10; y = 10; };
-      dynamic_padding = true;
       decorations = "Full";
     };
     settings.font.size = 11.0;
