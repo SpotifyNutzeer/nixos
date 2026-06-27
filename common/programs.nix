@@ -7,13 +7,13 @@
     tmux
     kitty
     alacritty
-    firefox
     claude-code
     tidaluna.packages.${stdenv.hostPlatform.system}.default 
     pavucontrol
     grimblast
     fastfetch
   ];
+
   programs.fish.enable = true;
   programs.nano.enable = false;
   programs.git = {

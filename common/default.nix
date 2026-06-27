@@ -8,6 +8,7 @@
     ./desktop.nix
     ./nix.nix
     ./fonts.nix
+    ./brave-policies.nix
   ];
 
   networking.networkmanager.enable = true;

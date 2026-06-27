@@ -8,6 +8,7 @@
       ./program-configs/hyprland.nix
       ./program-configs/quickshell.nix
       ./program-configs/vencord.nix
+      ./program-configs/brave.nix
     ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
