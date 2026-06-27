@@ -41,7 +41,12 @@ in
   programs.nano.enable = false;
   programs.git = {
     enable = true;
-    config.user.name = "Paul Reitmayer";
-    config.user.email = "paul.reitmayer@pm.me";
+    config.user = {
+      name = "Paul Reitmayer";
+      email = "paul.reitmayer@pm.me";
+      signingKey = "~/.ssh/id_ed25519.pub";
+    };
+    config.gpg.format = "ssh";
+    config.commit.gpgsign = "true";
   };
 }
