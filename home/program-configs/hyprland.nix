@@ -212,6 +212,7 @@
         "awww-daemon"
         "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
         "streamcontroller -b"
+        "steam -silent"
       ];
     };
   };
