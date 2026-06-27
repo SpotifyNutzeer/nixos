@@ -1,0 +1,201 @@
+# This is the CoolerControl configuration file.
+# Comments and most formatting is preserved.
+# Most of this file you can edit by hand, but it is recommended to stop the daemon when doing so.
+# -------------------------------
+
+
+# Unique ID Device List
+# -------------------------------
+# This is a simple UID and device name key-value pair, that is automatically generated at startup
+#  to help humans distinguish which UID belongs to which device in this config file.
+#  Only the device name is given here, complete Device information can be requested from the API.
+#  UIDs are generated sha256 hashes based on specific criteria to help determine device uniqueness.
+# ANY CHANGES WILL BE OVERWRITTEN.
+# Example:
+# 21091c4fb341ceab6236e8c9e905ccc263a4ac08134b036ed415925ba4c1645d = "Nvidia GPU"
+[devices]
+19e098e312e1b1b39163a343ea22b6ea17f18ec1a803ffe0ce44f5bacd6076ee = "Custom Sensors"
+1bfad4c4c0431d4073a8284524d45ae6d625c446c670023e482a25bc7009ca6d = "nvme1"
+6e63db4b039ac6b7c0b1074314431f601a3145f6536e19279eb7fe3d15f15562 = "nvme0"
+6139440dba425fdb03da2726dce3f1e50b38cb62a9d617a1bcd6840099aa852a = "r8169_0_e00:00"
+132f01071a1e1dae0c553abd04be9c33bf7e4fdc93d0c387bac484038d7bbd74 = "NVIDIA GeForce RTX 4090"
+c1c4f573af5adb37f4b2b21c38e7ab00131dec4e073a10af87799b5e930fee88 = "AMD Ryzen 9 9950X3D 16-Core Processor"
+261622c90195c82fcf3b2efaa0b9e8834a8f5328867e8511183b1071bd0613a1 = "it87952"
+18584ea61a73c5cab648b94c8c8298e4a8a53079654778ce26ae9cc048d056a1 = "spd5118"
+fa49f4645cba12961942172e0455e53675b4adbc2ed077a740863e40266e9803 = "it8696"
+0f36ecfcc78f9bb69ee6d934400e7e72395cc625a4483dca2b6baed0e9368f7f = "spd5118"
+
+
+# Legacy690 Option for devices
+# -------------------------------
+# There are 2 Asetek 690LC liquid coolers that have the same device ID.
+#  To tell them apart we need user input to know which cooler we're actually dealing with.
+#  This is an assignment of liquidctl AseTek690LC device UIDs to true/false:
+#   true = Legacy690 Cooler aka NZXT Kraken X40, X60, X31, X41, X51 and X61
+#   false = Modern690 Cooler aka EVGA CLC 120 (CLC12), 240, 280 and 360
+# Example:
+# 21091c4fb341ceab6236e8c9e905ccc263a4ac08134b036ed415925ba4c1645d = true
+[legacy690]
+
+
+# Device Settings
+# -------------------------------
+# This is where CoolerControl will save device settings for the cooresponding device.
+# Settings can be set here also specifically by hand. (restart required for applying)
+# These settings are applied on startup and each is overwritten once a new setting
+# has been applied.
+# Example:
+# [device-settings.4b9cd1bc5fb2921253e6b7dd5b1b011086ea529d915a86b3560c236084452807]
+# pump = { speed_fixed = 30 }
+# logo = { lighting = { mode = "fixed", colors = [[0, 255, 255]] } }
+# ring = { lighting = { mode = "spectrum-wave", backward = true, colors = [] } }
+[device-settings]
+
+[device-settings.261622c90195c82fcf3b2efaa0b9e8834a8f5328867e8511183b1071bd0613a1]
+fan3 = { profile_uid = "0" }
+fan1 = { profile_uid = "0" }
+
+[device-settings.fa49f4645cba12961942172e0455e53675b4adbc2ed077a740863e40266e9803]
+fan1 = { profile_uid = "ae6d7544-3ce1-4c14-977f-5a41a728cda9" }
+fan2 = { profile_uid = "ae6d7544-3ce1-4c14-977f-5a41a728cda9" }
+fan3 = { profile_uid = "8f791553-0adb-4b6a-af70-0f759e31137e" }
+fan4 = { profile_uid = "8f791553-0adb-4b6a-af70-0f759e31137e" }
+fan5 = { speed_fixed = 100 }
+
+
+# A list of profiles to be used with each device's settings
+# -------------------------------
+[[profiles]]
+uid = "0"
+name = "Default Profile"
+p_type = "Default"
+function = "0"
+
+[[profiles]]
+uid = "0840dd7f-04cb-4c72-9303-4d78f0e92a55"
+name = "My Profile"
+p_type = "Default"
+speed_profile = []
+function_uid = "02ba5ea0-89cc-4085-808f-c3b1cc97963b"
+
+[[profiles]]
+uid = "5660e558-db93-42bd-a09b-6809fd03c370"
+name = "GPU"
+p_type = "Graph"
+speed_profile = [[0.0, 30], [25.0, 30], [35.0, 50], [40.0, 60], [45.0, 65], [75.0, 70], [100.0, 100]]
+temp_source = { temp_name = "GPU Temp", device_uid = "132f01071a1e1dae0c553abd04be9c33bf7e4fdc93d0c387bac484038d7bbd74" }
+temp_min = 0.0
+temp_max = 100.0
+function_uid = "02ba5ea0-89cc-4085-808f-c3b1cc97963b"
+offset_profile = []
+
+[[profiles]]
+uid = "4b21a8bf-ca1e-4145-9800-68bda5199b04"
+name = "CPU"
+p_type = "Graph"
+speed_profile = [[0.0, 30], [50.0, 30], [60.0, 40], [70.0, 50], [75.0, 50], [80.0, 60], [95.0, 80], [100.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "c1c4f573af5adb37f4b2b21c38e7ab00131dec4e073a10af87799b5e930fee88" }
+temp_min = 0.0
+temp_max = 100.0
+function_uid = "02ba5ea0-89cc-4085-808f-c3b1cc97963b"
+offset_profile = []
+
+[[profiles]]
+uid = "8f791553-0adb-4b6a-af70-0f759e31137e"
+name = "GPU+CPU"
+p_type = "Mix"
+speed_profile = []
+function_uid = "0"
+member_profile_uids = ["5660e558-db93-42bd-a09b-6809fd03c370", "4b21a8bf-ca1e-4145-9800-68bda5199b04"]
+mix_function_type = "Max"
+offset_profile = []
+
+[[profiles]]
+uid = "ae6d7544-3ce1-4c14-977f-5a41a728cda9"
+name = "Pumps"
+p_type = "Fixed"
+speed_profile = []
+function_uid = "0"
+offset_profile = []
+speed_fixed = 100
+
+# A list of functions to be applied to the various profiles
+# -------------------------------
+[[functions]]
+uid = "0"
+name = "Default Function"
+f_type = "Identity"
+
+[[functions]]
+uid = "02ba5ea0-89cc-4085-808f-c3b1cc97963b"
+name = "My Function"
+f_type = "ExponentialMovingAvg"
+duty_minimum = 1
+duty_maximum = 2
+step_size_min_decreasing = 0
+step_size_max_decreasing = 0
+sample_window = 5
+threshold_hopping = true
+
+
+# Cooler Control Settings
+# -------------------------------
+# This is where CoolerControl specifc general and specifc device settings are set. These device
+# settings differ from the above Device Settings, in that they are applied to CoolerControl,
+# and not on the devices themselves. For ex. settings such as disabling/enabling a particular device.
+[settings]
+
+# whether to apply the saved device settings on daemon startup
+apply_on_boot = true
+
+# Whether to enable the integration with liquidctl.
+# Disabling this will prevent any communication with liquidctl,
+# and all HWMon supported devices will be shown.
+liquidctl_integration = true
+
+# There are some devices that are supported both by liquidctl and hwmon drivers. Normally the
+# preference is to use liquidctl as it supports more features such as RGB control. There are
+# some cases where the hwmon driver is preferred though. Note: Care should be taken to blacklist
+# one of the devices to avoid needlessly loading the device IO and avoid concurrency issues.
+# Use at your own risk.
+hide_duplicate_devices = true
+
+# Will skip initialization calls for liquidctl devices. ONLY USE if you are doing initialiation manually.
+no_init = false
+
+# Startup Delay (seconds) is an integer value between 0 and 10
+startup_delay = 2
+
+# For ThinkPads, wheather to use the 'full-speed' option when settings the fan to 100%
+# This option drives the fan as fast as it can go, which might exceed hardware limits,
+# so use this level with caution.
+thinkpad_full_speed = false
+
+# API Address and Port:
+# The daemon by default uses port 11987 and the standard loopback IPv4 and IPv6 addresses.
+# You can set an IPv4, IPv6 or both addresses to listen on. An empty string will disable the address.
+# It is highly recommended to use the default settings unless you have a specific reason to change them
+# and understand the implications. The API is not secure and should not be exposed to a public network.
+# For more information see the project wiki.
+# Example:
+# port = 11987
+# ipv4_address = "127.0.0.1"
+# ipv6_address = "::1"
+
+# Whether to compress the response payload from the API. This will reduce the size of the response
+# but will increase CPU usage a tiny bit. This is useful if you are running the API over a network.
+# 'compress' is deprecated, use compress_payload instead.
+compress_payload = true
+
+# The polling rate for sensor data collection. The default is 1.0 second. Limited to values
+# between 0.5 and 5.0 seconds in half-second increments.
+# Note: Caution should be used when using values less than 1.0.
+# poll_rate = 1.0
+
+# Whether to check if drivetemp supported drives are in a suspended state/spun down, and if so,
+# return 0C as their reporting temperature.
+drivetemp_suspend = false
+
+# CoolerControl Device settings Example:
+# [settings.4b9cd1bc5fb2921253e6b7dd5b1b011086ea529d915a86b3560c236084452807]
+# disabled = true

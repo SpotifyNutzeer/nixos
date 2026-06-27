@@ -8,7 +8,7 @@
     open = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.latest;
-    powerManagement.enable = false;
+    powerManagement.enable = true;   # NVreg_PreserveVideoMemoryAllocations=1 (Suspend/Resume)
   };
 }
 

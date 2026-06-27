@@ -1,0 +1,4 @@
+{ ... }:
+{
+  services.lact.enable = true;
+}
