@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, tidaluna, ... }:
 {
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
@@ -9,8 +9,11 @@
     alacritty
     firefox
     claude-code
-    tidal-hifi
+    tidaluna.packages.${stdenv.hostPlatform.system}.default 
     pavucontrol
+    grimblast
+    fastfetch
+    vencord
   ];
   programs.fish.enable = true;
   programs.nano.enable = false;

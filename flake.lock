@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "dotfiles": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782508588,
+        "narHash": "sha256-Ywlpy0MUy4345QnOFmWpYs51f1HN6TRPyH01P+dExlA=",
+        "owner": "SpotifyNutzeer",
+        "repo": "dotfiles",
+        "rev": "4de681fc12448151db3ecb665ddea5b630f559b9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SpotifyNutzeer",
+        "repo": "dotfiles",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -36,10 +52,46 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1778580735,
+        "narHash": "sha256-t+8AVV8ExvOmslz2sLIgw/hJBKlyl65rJvxjvvjHgpE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "48d91f2c0ce7b9e589f967d4f685153dd765dcdd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
+        "dotfiles": "dotfiles",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "tidaluna": "tidaluna"
+      }
+    },
+    "tidaluna": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1780362194,
+        "narHash": "sha256-gdphu9CTy0jmnrFYyfk5QxzH6I3LVOCGfSrIrzklaC8=",
+        "owner": "Inrixia",
+        "repo": "TidaLuna",
+        "rev": "0e69460b08308df508c07a6f4bf2615b3987f2bc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Inrixia",
+        "repo": "TidaLuna",
+        "type": "github"
       }
     }
   },

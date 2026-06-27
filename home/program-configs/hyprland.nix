@@ -212,5 +212,5 @@
   };
 
   # Companion-Tool, das die Session JETZT braucht (Launcher). Wächst in Round 2.
-  home.packages = with pkgs; [ rofi quickshell jq cava];
+  home.packages = with pkgs; [ rofi quickshell jq cava ];
 }
