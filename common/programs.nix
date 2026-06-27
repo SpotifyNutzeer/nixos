@@ -1,4 +1,4 @@
-{ pkgs, tidaluna, ... }:
+{ pkgs, inputs, tidaluna, ... }:
 {
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
@@ -13,7 +13,6 @@
     pavucontrol
     grimblast
     fastfetch
-    vencord
   ];
   programs.fish.enable = true;
   programs.nano.enable = false;

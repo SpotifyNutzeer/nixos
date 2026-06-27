@@ -7,6 +7,7 @@
       ./program-configs/vim.nix
       ./program-configs/hyprland.nix
       ./program-configs/quickshell.nix
+      ./program-configs/vencord.nix
     ];  
   home.username = "paul";
   home.homeDirectory = "/home/paul";
