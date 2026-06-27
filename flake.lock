@@ -223,7 +223,24 @@
         "nixcord": "nixcord",
         "nixpkgs": "nixpkgs_3",
         "rodecaster-tidal-bridge": "rodecaster-tidal-bridge",
+        "streamcontroller-tidal": "streamcontroller-tidal",
         "tidaluna": "tidaluna"
+      }
+    },
+    "streamcontroller-tidal": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782591294,
+        "narHash": "sha256-96QAy5bbDcxTzJdWiBmkyee2DqGuBDzw/aW/pghW9MA=",
+        "owner": "SpotifyNutzeer",
+        "repo": "streamcontroller-tidal",
+        "rev": "dca28e158fee3ec933e7f2cb8a173a3859ce8717",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SpotifyNutzeer",
+        "repo": "streamcontroller-tidal",
+        "type": "github"
       }
     },
     "tidaluna": {
