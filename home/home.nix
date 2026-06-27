@@ -11,7 +11,8 @@
       ./program-configs/brave.nix
       ./program-configs/theming.nix
       ./program-configs/alacritty.nix
-    ];  
+      ./program-configs/rofi.nix
+    ];
   home.username = "paul";
   home.homeDirectory = "/home/paul";
   home.stateVersion = "26.05";

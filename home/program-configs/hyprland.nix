@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, dotfiles, ... }:
 {
   wayland.windowManager.hyprland = {
     enable = true;
@@ -207,10 +207,13 @@
         "quickshell"
         "discord"
         "sleep 5 && tidal-hifi"
+        # Wallpaper: awww-Daemon starten, dann Bild setzen (kurz warten, bis der Socket da ist)
+        "awww-daemon"
+        "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
       ];
     };
   };
 
   # Companion-Tool, das die Session JETZT braucht (Launcher). Wächst in Round 2.
-  home.packages = with pkgs; [ rofi quickshell jq cava ];
+  home.packages = with pkgs; [ rofi quickshell jq cava awww ];
 }
