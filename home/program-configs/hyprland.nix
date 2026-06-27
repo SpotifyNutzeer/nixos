@@ -40,7 +40,8 @@
         "XCURSOR_SIZE,24"
         "XCURSOR_THEME,catppuccin-mocha-teal-cursors"
         "HYPRCURSOR_SIZE,24"
-        "QT_QPA_PLATFORMTHEME,hyprqt6engine"
+        "QT_QPA_PLATFORMTHEME,qt6ct"
+        "QT_STYLE_OVERRIDE,kvantum"
       ];
 
       general = {
