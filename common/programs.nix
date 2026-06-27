@@ -35,10 +35,12 @@ in
         zulu25
       ];
     })
+    telegram-desktop
   ];
 
-  programs.fish.enable = true;
-  programs.nano.enable = false;
+  programs.fish.enable                = true;
+  programs.nano.enable                = false;
+  programs.gpu-screen-recorder.enable = true;
   programs.git = {
     enable = true;
     config.user = {
