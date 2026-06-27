@@ -7,6 +7,14 @@
     autoEnable = true;
     flavor = "mocha";
     accent = "teal";
+
+    cursors.enable = true;
+
     hyprland.enable = false;
+  };
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    size = 24;
   };
 }
