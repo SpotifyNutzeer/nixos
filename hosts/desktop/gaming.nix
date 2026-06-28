@@ -33,6 +33,7 @@ in
         PROTON_ENABLE_HDR = "1";
         DXVK_HDR = "1";
         PROTON_DLSS_UPGRADE = "1";               # DLSS-DLLs auto-upgraden
+        PROTON_DLSS_INDICATOR = "1";
         PROTON_ENABLE_NVAPI = "1";
         PROTON_ENABLE_NGX_UPDATER = "1";
         PROTON_NVIDIA_LIBS = "1";                # PhysX/CUDA im Prefix
