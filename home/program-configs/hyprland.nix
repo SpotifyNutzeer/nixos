@@ -208,7 +208,6 @@
         "quickshell"
         "discord"
         "sleep 5; tidal-hifi"
-        # Wallpaper: awww-Daemon starten, dann Bild setzen (kurz warten, bis der Socket da ist)
         "awww-daemon"
         "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
         "streamcontroller -b"
