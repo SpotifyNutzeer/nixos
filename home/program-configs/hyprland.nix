@@ -207,7 +207,7 @@
         "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
         "quickshell"
         "discord"
-        "sleep 5 && tidal-hifi"
+        "sleep 5; tidal-hifi"
         # Wallpaper: awww-Daemon starten, dann Bild setzen (kurz warten, bis der Socket da ist)
         "awww-daemon"
         "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
