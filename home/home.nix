@@ -12,6 +12,7 @@
       ./program-configs/theming.nix
       ./program-configs/alacritty.nix
       ./program-configs/rofi.nix
+      ./program-configs/hyfetch.nix
     ];
   home.username = "paul";
   home.homeDirectory = "/home/paul";

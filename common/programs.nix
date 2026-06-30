@@ -27,6 +27,7 @@ in
     pavucontrol
     grimblast
     fastfetch
+    hyfetch
     (prismlauncher.override {
       jdks = [
         zulu8
