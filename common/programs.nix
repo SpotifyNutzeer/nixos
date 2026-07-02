@@ -30,6 +30,7 @@ in
     hyfetch
     usbutils
     mpv
+    cowsay
     (prismlauncher.override {
       jdks = [
         zulu8
