@@ -92,11 +92,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782676128,
-        "narHash": "sha256-McskMMUxm55nBw9Gua8pylztxjvTeA6ZnUBviieewPE=",
+        "lastModified": 1782932329,
+        "narHash": "sha256-DTBfatTUSpuZEbfAKo++FWYQFDwPbvp5f3tLcLAZ0cY=",
         "owner": "rPlakama",
         "repo": "gsr-ui-nix",
-        "rev": "05c22d1ea6376423de9ae00b3d83eeba1a3bc339",
+        "rev": "63101343699fba08e1670df71e6ea83e5c16d6c2",
         "type": "github"
       },
       "original": {
@@ -112,11 +112,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782839684,
-        "narHash": "sha256-vzs4SBgPsK4aNzlJR2PpFwtARazXMOxZonQnDz0YHxk=",
+        "lastModified": 1783005591,
+        "narHash": "sha256-NcLHV5uBAeggDUE2wPbKszjfyaSLsoqaYt7izOphkZw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2a37d71bbe69e1522ddabf03a4cea0374958bdbe",
+        "rev": "f469c79b955609d6a8fdd9e689be76a93b1621d7",
         "type": "github"
       },
       "original": {
@@ -133,11 +133,11 @@
         "nixpkgs-nixcord": "nixpkgs-nixcord"
       },
       "locked": {
-        "lastModified": 1782838476,
-        "narHash": "sha256-SLsFaWwN/5qJNgq4F87yK64KU+jXRUHqSUHRau38AWw=",
+        "lastModified": 1782989434,
+        "narHash": "sha256-jZl7iUaYxMiaECMisifcrxM5zW6NTQgxrTWS6RHOOxk=",
         "owner": "FlameFlag",
         "repo": "nixcord",
-        "rev": "e055aaffc81400b8b59495ed8ddb4cd6401d3850",
+        "rev": "fc88a8644fe0798de630f375626a1b12460e5934",
         "type": "github"
       },
       "original": {
