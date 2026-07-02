@@ -29,6 +29,7 @@ in
     fastfetch
     hyfetch
     usbutils
+    mpv
     (prismlauncher.override {
       jdks = [
         zulu8

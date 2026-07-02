@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  # Language-Server für Nix (Completion, Hover, Go-to-Definition)
+  home.packages = [ pkgs.nixd ];
+
   programs.vim = {
     enable = true;
 
@@ -8,6 +11,11 @@
       vim-airline
       vim-airline-themes
       vim-nix
+      vim-lsp
+      asyncomplete-vim
+      asyncomplete-lsp-vim
+      asyncomplete-file-vim
+      asyncomplete-buffer-vim
     ];
 
     extraConfig = ''
@@ -93,6 +101,57 @@
 
       " ── Nix-Dateien: 2-Space-Indent (Community-Konvention) ──
       autocmd FileType nix setlocal shiftwidth=2 softtabstop=2 tabstop=2
+
+      " ── Autocomplete (asyncomplete + vim-lsp) ───────────────
+      set completeopt=menuone,noinsert,noselect
+      let g:asyncomplete_auto_popup = 1
+
+      " Tab/Shift-Tab durchs Popup, Enter übernimmt
+      inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+      inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+      inoremap <expr> <CR>    pumvisible() ? asyncomplete#close_popup() : "\<CR>"
+
+      " Dateipfade in allen Dateitypen vervollständigen
+      au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+            \ 'name': 'file',
+            \ 'allowlist': ['*'],
+            \ 'priority': 10,
+            \ 'completor': function('asyncomplete#sources#file#completor'),
+            \ }))
+
+      " Wörter aus offenen Buffern
+      au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+            \ 'name': 'buffer',
+            \ 'allowlist': ['*'],
+            \ 'completor': function('asyncomplete#sources#buffer#completor'),
+            \ }))
+
+      " ── LSP: nixd für Nix ───────────────────────────────────
+      if executable('nixd')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'nixd',
+              \ 'cmd': {server_info->['nixd']},
+              \ 'allowlist': ['nix'],
+              \ })
+      endif
+
+      let g:lsp_diagnostics_echo_cursor = 1
+      let g:lsp_diagnostics_virtual_text_enabled = 0
+
+      function! s:on_lsp_buffer_enabled() abort
+        setlocal omnifunc=lsp#complete
+        nmap <buffer> gd <plug>(lsp-definition)
+        nmap <buffer> gr <plug>(lsp-references)
+        nmap <buffer> K  <plug>(lsp-hover)
+        nmap <buffer> <leader>rn <plug>(lsp-rename)
+        nmap <buffer> ]d <plug>(lsp-next-diagnostic)
+        nmap <buffer> [d <plug>(lsp-previous-diagnostic)
+      endfunction
+
+      augroup lsp_install
+        autocmd!
+        autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+      augroup END
     '';
   };
 }
