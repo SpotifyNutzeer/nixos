@@ -31,6 +31,9 @@ in
     usbutils
     mpv
     cowsay
+    fluxcd
+    kubectl
+    teleport
     (prismlauncher.override {
       jdks = [
         zulu8

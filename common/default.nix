@@ -9,6 +9,7 @@
     ./nix.nix
     ./fonts.nix
     ./brave-policies.nix
+    ./sudo.nix
   ];
 
   networking.networkmanager.enable = true;
