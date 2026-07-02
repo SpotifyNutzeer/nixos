@@ -28,6 +28,7 @@ in
     grimblast
     fastfetch
     hyfetch
+    usbutils
     (prismlauncher.override {
       jdks = [
         zulu8
