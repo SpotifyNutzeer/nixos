@@ -43,6 +43,7 @@ in
       ];
     })
     telegram-desktop
+    seadrive-gui
   ];
 
   programs.fish.enable                = true;

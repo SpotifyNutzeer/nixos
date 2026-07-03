@@ -15,6 +15,7 @@
       ./program-configs/hyfetch.nix
       ./program-configs/kitty.nix
       ./program-configs/tmux.nix
+      ./program-configs/xdg-mime.nix
     ];
   home.username = "paul";
   home.homeDirectory = "/home/paul";
