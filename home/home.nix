@@ -14,6 +14,7 @@
       ./program-configs/rofi.nix
       ./program-configs/hyfetch.nix
       ./program-configs/kitty.nix
+      ./program-configs/tmux.nix
     ];
   home.username = "paul";
   home.homeDirectory = "/home/paul";
