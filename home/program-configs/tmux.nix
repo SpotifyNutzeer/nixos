@@ -1,4 +1,16 @@
 { ... }:
+let
+  # Nerd-Font-Glyphen als Escapes (gleiches Muster wie starship.nix), damit
+  # die unsichtbaren Private-Use-Zeichen bei Editor-/Copy-Roundtrips nicht
+  # verloren gehen. Codepoints > U+FFFF brauchen JSON-Surrogate-Paare.
+  sepLeft     = builtins.fromJSON ''"\ue0b2"'';        # Powerline-Pfeil links
+  sepRight    = builtins.fromJSON ''"\ue0b0"'';        # Powerline-Pfeil rechts
+  iconApp     = builtins.fromJSON ''"\uf1ae"'';        # Application
+  iconDir     = builtins.fromJSON ''"\uf07b"'';        # Ordner
+  iconHost    = builtins.fromJSON ''"\udb81\udc8b"''; # Host (U+F048B, Surrogate-Paar)
+  iconSession = builtins.fromJSON ''"\ue795"'';        # Session/Terminal
+  iconClock   = builtins.fromJSON ''"\udb80\udcf0"''; # Datum/Uhrzeit (U+F00F0, Surrogate-Paar)
+in
 {
   programs.tmux = {
     enable = true;
@@ -71,16 +83,16 @@
     set -g @catppuccin_window_current_text  "  #W "
 
     # Powerline-Pfeil-Separatoren zwischen den Status-Modulen
-    set -g @catppuccin_status_left_separator  ""
-    set -g @catppuccin_status_right_separator ""
+    set -g @catppuccin_status_left_separator  "${sepLeft}"
+    set -g @catppuccin_status_right_separator "${sepRight}"
     set -g @catppuccin_status_connect_separator "yes"
     set -g @catppuccin_status_fill "all"
 
     # Mehr Padding für Icons in den Modul-Boxen
-    set -g @catppuccin_application_icon  "  "
-    set -g @catppuccin_directory_icon    "  "
-    set -g @catppuccin_host_icon         " 󰒋 "
-    set -g @catppuccin_session_icon      "  "
-    set -g @catppuccin_date_time_icon    " 󰃰 "
+    set -g @catppuccin_application_icon  " ${iconApp} "
+    set -g @catppuccin_directory_icon    " ${iconDir} "
+    set -g @catppuccin_host_icon         " ${iconHost} "
+    set -g @catppuccin_session_icon      " ${iconSession} "
+    set -g @catppuccin_date_time_icon    " ${iconClock} "
   '';
 }
