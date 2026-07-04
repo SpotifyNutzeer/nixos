@@ -5,5 +5,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
-
+  
+  boot.kernelParams = [ "usbcore.autosuspend=-1" ];
 }

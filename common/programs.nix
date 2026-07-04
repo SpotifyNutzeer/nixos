@@ -44,6 +44,7 @@ in
     })
     telegram-desktop
     seadrive-gui
+    davinci-resolve-studio
   ];
 
   programs.fish.enable                = true;

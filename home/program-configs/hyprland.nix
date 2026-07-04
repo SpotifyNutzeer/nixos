@@ -204,7 +204,7 @@
         # NVIDIA-3-Display-Kaltstart-Bug: kommen alle Monitore gleichzeitig hoch,
         # bekommt der Hauptmonitor kein 4K@240 (DSC-/Head-Allokation). Fix: DP-2 kurz
         # rausnehmen (Haupt springt auf 240), dann via reload mit voller HDR-Config zurueck.
-        "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
+        # "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
         "quickshell"
         "discord"
         "sleep 5; tidal-hifi"
@@ -214,6 +214,7 @@
         "steam -silent"
         "gsr-ui"
         "Telegram -startintray"
+        "seadrive-gui"
       ];
     };
   };
