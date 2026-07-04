@@ -30,6 +30,19 @@
         # tmux-Kommandos ohne Rueckfrage erlauben (send-keys, split-window, …).
         allow = [ "Bash(tmux:*)" ];
       };
+
+      # Plugins deklarativ aktivieren. Format: "<plugin>@<marketplace>" = true.
+      # Die Marketplace "claude-plugins-official" (anthropics/claude-plugins-official)
+      # registriert Claude Code beim ersten Start selbst; wir setzen hier nur das
+      # Enable-Flag — kein interaktives /plugin install noetig (das wuerde in die
+      # read-only settings.json schreiben wollen und fehlschlagen). code-review und
+      # frontend-design liegen als first-party Plugins direkt im Marketplace-Repo;
+      # superpowers (github.com/obra/superpowers) zieht Claude beim Aktivieren nach.
+      enabledPlugins = {
+        "superpowers@claude-plugins-official"     = true;
+        "frontend-design@claude-plugins-official" = true;
+        "code-review@claude-plugins-official"     = true;
+      };
     };
   };
 }
