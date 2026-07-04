@@ -78,7 +78,10 @@ in
     # Extra Padding für Module
     set -g @catppuccin_application_text  "  #{pane_current_command} "
     set -g @catppuccin_host_text         "  #H "
-    set -g @catppuccin_session_text      "  #S "
+    # Alle Sessions des tmux-Servers auflisten (nicht nur die aktuelle): der
+    # native #{S:...}-Loop iteriert ueber alle Sessions. Die aktive/attachte
+    # Session teal + fett, die uebrigen gedimmt.
+    set -g @catppuccin_session_text      "  #{S:#{?session_attached,#[fg=#{E:@thm_teal}]#[bold]#{session_name}#[nobold],#[fg=#{E:@thm_overlay_1}]#{session_name}}#[fg=#{E:@thm_fg}] }"
     set -g @catppuccin_window_default_text  "  #W "
     set -g @catppuccin_window_current_text  "  #W "
 
