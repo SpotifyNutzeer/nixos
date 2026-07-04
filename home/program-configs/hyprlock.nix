@@ -38,7 +38,7 @@
         dots_center = true;
         fade_on_empty = false;
 
-        outer_color = "rgb(94e2d5)";   # teal (Akzent)
+        outer_color = "rgb(89dceb) rgb(94e2d5) 45deg";   # sky->teal, wie die Fensterrahmen
         inner_color = "rgb(1e1e2e)";   # base
         font_color  = "rgb(cdd6f4)";   # text
         check_color = "rgb(89b4fa)";   # blue waehrend Pruefung
@@ -59,7 +59,7 @@
           text = ''cmd[update:1000] date +"%H:%M"'';
           font_family = "JetBrainsMono Nerd Font";
           font_size = 112;
-          color = "rgb(cdd6f4)";
+          color = "rgb(94e2d5)";   # teal (Akzent)
           position = "0, 190";
           halign = "center";
           valign = "center";

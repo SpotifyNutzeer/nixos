@@ -9,7 +9,7 @@
     ./power.nix
   ];
 
-  home-manager.users.paul.imports = [ ./hyprland-monitors.nix ];
+  home-manager.users.paul.imports = [ ./hyprland-monitors.nix ./idle.nix ];
 
   networking.hostName = "paul-laptop";
   system.stateVersion = "26.05";
