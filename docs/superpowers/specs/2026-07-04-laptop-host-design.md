@@ -113,7 +113,8 @@ Laptop `sudo` (nixos-anywhere lädt darüber den kexec-Installer).
 
 ```sh
 # LUKS-Passphrase lokal in Datei ablegen (wird auf den Installer kopiert)
-echo -n "PASSPHRASE" > /tmp/disk.key
+# Passphrase abfragen statt ins Shell-History/Prozessliste zu schreiben:
+umask 077; read -s -p "LUKS-Passphrase: " pass; printf '%s' "$pass" > /tmp/disk.key; unset pass
 
 nix run github:nix-community/nixos-anywhere -- \
   --flake .#laptop \
@@ -155,3 +156,11 @@ Nach der Installation die generierte `hardware-configuration.nix` committen.
 - Aufräumen der Desktop-`exec-once`-Liste für den Laptop.
 - Migration von Daten aus dem Fedora-`/home`.
 - Ungenutztes `hosts/desktop/greetd.nix` (bleibt liegen).
+
+## Nachtrag (Review-Befund, 2026-07-04)
+
+Das Refactoring der Hyprland-Monitore ändert auch die generierte
+`hyprland.conf` der **VM** (die entfernten monitorv2-/workspace-Einträge waren
+dort wirkungslos, weil die VM nur `Virtual-1` hat — Verhalten unverändert,
+Artefakt nicht). Die Verifikation hat nur den Desktop-Hash verglichen; die
+Aussage „VM unverändert" gilt funktional, nicht artefakt-genau.

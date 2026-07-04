@@ -464,7 +464,8 @@ git commit -m "feat: add laptop host profile (disko/LUKS, hibernate, per-host hy
 Die Installation selbst führt Paul manuell aus (löscht Fedora + `/home`!):
 
 ```bash
-echo -n "PASSPHRASE" > /tmp/disk.key
+# Passphrase abfragen statt ins Shell-History/Prozessliste zu schreiben:
+umask 077; read -s -p "LUKS-Passphrase: " pass; printf '%s' "$pass" > /tmp/disk.key; unset pass
 nix run github:nix-community/nixos-anywhere -- \
   --flake .#laptop \
   --target-host paul@10.0.1.46 \

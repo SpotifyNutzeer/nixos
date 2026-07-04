@@ -6,6 +6,10 @@
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
+  # amdgpu schon im Initrd laden (early KMS): LUKS-Prompt in nativer
+  # Aufloesung statt simpledrm/efifb.
+  boot.initrd.kernelModules = [ "amdgpu" ];
+
   # systemd-initrd wendet console.keyMap ("de", common/locale.nix) schon
   # VOR der LUKS-Passphrase-Abfrage an — scripted initrd kann das nicht.
   boot.initrd.systemd.enable = true;
