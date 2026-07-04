@@ -196,7 +196,7 @@
         { name = "tidal-position"; "match:class" = "^tidal-hifi$"; workspace = "2"; }
         { name = "steam-bigpicture"; "match:class" = "^steam$"; "match:title" = "^Steam Big Picture Mode$"; monitor = "HDMI-A-1"; fullscreen = 1; }
         { name = "bitwarden-extension"; "match:class" = "^brave-nngceckbapebfimnlniiiahkandclblb-Default$"; float = true; }
-        { name = "seadrive-prefetch-float"; "match:class" = "^seadrive-prefetch$"; float = "yes"; size = "720 200"; center = 1; }
+        { name = "thunar-file-operation-float"; "match:class" = "^thuanr$"; "match:title" = "^File Operation Progress$"; float = "yes"; size = "600 300"; center = 1; }
       ];
 
       xwayland = { enabled = true; force_zero_scaling = true; };
