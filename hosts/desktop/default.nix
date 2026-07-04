@@ -5,7 +5,7 @@
     ./hardware-configuration.nix
     ./boot.nix
     ./nvidia.nix
-    ./sddm.nix
+    ../../common/sddm.nix
     ./sensors.nix
     ./audio.nix
     ./gaming.nix
