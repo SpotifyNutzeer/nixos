@@ -62,6 +62,7 @@
     nixosConfigurations = {
       vm      = mkHost "vm";
       desktop = mkHost "desktop";
+      laptop  = mkHost "laptop";
     };
   };
 }
