@@ -40,12 +40,14 @@ in
       # @catppuccin_session_text markiert; bei range=user liefert
       # mouse_status_range den Session-Namen, bei Fenstern die Konstante
       # "window" (dann Default-Verhalten select-window).
+      # switch-client -t expandiert Formate NICHT -> ueber run-shell gehen,
+      # das #{mouse_status_range} vor der Ausfuehrung aufloest.
       bind -n MouseDown1Status {
         if -F "#{==:#{mouse_status_range},window}" {
           select-window -t=
         } {
           if -F "#{mouse_status_range}" {
-            switch-client -t "#{mouse_status_range}"
+            run-shell "tmux switch-client -t '#{mouse_status_range}'"
           }
         }
       }
