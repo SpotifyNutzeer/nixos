@@ -22,7 +22,6 @@ in
     tmux
     kitty
     alacritty
-    claude-code
     tidal-hifi
     pavucontrol
     grimblast
