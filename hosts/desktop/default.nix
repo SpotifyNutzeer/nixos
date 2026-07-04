@@ -6,7 +6,6 @@
     ./boot.nix
     ./nvidia.nix
     ../../common/sddm.nix
-    ./sensors.nix
     ./audio.nix
     ./gaming.nix
     ./coolercontrol.nix

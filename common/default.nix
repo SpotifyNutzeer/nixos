@@ -8,6 +8,7 @@
     ./desktop.nix
     ./nix.nix
     ./fonts.nix
+    ./sensors.nix
     ./brave-policies.nix
     ./sudo.nix
   ];

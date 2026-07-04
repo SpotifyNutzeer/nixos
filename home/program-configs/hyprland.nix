@@ -96,7 +96,7 @@
         accel_profile = "flat";
         follow_mouse = 1;
         sensitivity = -0.1;
-        touchpad = { natural_scroll = false; };
+        touchpad = { natural_scroll = true; };
       };
 
       gesture = [ "3, horizontal, workspace" ];
