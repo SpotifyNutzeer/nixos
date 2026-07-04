@@ -20,6 +20,7 @@
       ./fosi-keepalive.nix
       ./rodecaster-tidal-bridge.nix
       ./mangohud.nix
+      ./hyprland-monitors.nix
     ];
   networking.hostName = "paul-desktop";
   system.stateVersion = "26.05";
