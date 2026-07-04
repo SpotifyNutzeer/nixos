@@ -12,6 +12,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     dotfiles = {
       url = "github:SpotifyNutzeer/dotfiles";
       flake = false;
@@ -26,7 +30,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
   let
     # Das Tidal-Plugin importiert `websockets`, das StreamController in nixpkgs
     # NICHT mitbringt (nur websocket-client). Da das Plugin-Backend direkt im
@@ -42,6 +46,7 @@
       specialArgs = { inherit tidaluna catppuccin streamcontroller-tidal gsr-ui-nix; };
       modules = [
         ./hosts/${host}
+        disko.nixosModules.disko
         gsr-ui-nix.nixosModules.default
         home-manager.nixosModules.home-manager
         {
