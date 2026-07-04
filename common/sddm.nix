@@ -19,6 +19,14 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
 
+  # gnome-keyring aktiviert per Default auch gcr-ssh-agent. Der hat unter Hyprland
+  # aber keinen funktionierenden Passphrase-Prompt (kein gnome-shell/gcr-prompter),
+  # dadurch hängt jede SSH-Signatur (git clone/push blockiert bei "Cloning into...").
+  # Secret-Service (org.freedesktop.secrets) für tidal bleibt aktiv – nur der
+  # SSH-Teil wird abgeschaltet. Den SSH-Agent übernimmt home-manager
+  # (services.ssh-agent) in home/program-configs/ssh.nix.
+  services.gnome.gcr-ssh-agent.enable = false;
+
   catppuccin = {
     enable = true;
     autoEnable = true;

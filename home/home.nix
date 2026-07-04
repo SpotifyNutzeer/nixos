@@ -16,6 +16,7 @@
       ./program-configs/kitty.nix
       ./program-configs/tmux.nix
       ./program-configs/xdg-mime.nix
+      ./program-configs/ssh.nix
     ];
   home.username = "paul";
   home.homeDirectory = "/home/paul";
