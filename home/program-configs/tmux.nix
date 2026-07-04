@@ -35,6 +35,21 @@ in
       set -ga terminal-overrides ",xterm-kitty:Tc"
       bind r source-file ~/.config/tmux/tmux.conf \; display "Config reloaded"
 
+      # Klick auf einen Session-Namen in der Statusbar -> zu dieser Session
+      # wechseln. Die Namen sind via #[range=user|<session>] in
+      # @catppuccin_session_text markiert; bei range=user liefert
+      # mouse_status_range den Session-Namen, bei Fenstern die Konstante
+      # "window" (dann Default-Verhalten select-window).
+      bind -n MouseDown1Status {
+        if -F "#{==:#{mouse_status_range},window}" {
+          select-window -t=
+        } {
+          if -F "#{mouse_status_range}" {
+            switch-client -t "#{mouse_status_range}"
+          }
+        }
+      }
+
       # ── Status-Bar nach dem Plugin zusammensetzen ──────────────────
       # Bunte Modul-Farben (Mocha) — mit -F für Format-Expansion
       set -gF @catppuccin_session_color "#{E:@thm_teal}"
@@ -81,7 +96,7 @@ in
     # Alle Sessions des tmux-Servers auflisten (nicht nur die aktuelle): der
     # native #{S:...}-Loop iteriert ueber alle Sessions. Die aktive/attachte
     # Session teal + fett, die uebrigen gedimmt.
-    set -g @catppuccin_session_text      "  #{S:#{?session_attached,#[fg=#{E:@thm_teal}]#[bold]#{session_name}#[nobold],#[fg=#{E:@thm_overlay_1}]#{session_name}}#[fg=#{E:@thm_fg}] }"
+    set -g @catppuccin_session_text      "  #{S:#[range=user|#{session_name}]#{?session_attached,#[fg=#{E:@thm_teal}]#[bold]#{session_name}#[nobold],#[fg=#{E:@thm_overlay_1}]#{session_name}}#[fg=#{E:@thm_fg}]#[norange] }"
     set -g @catppuccin_window_default_text  "  #W "
     set -g @catppuccin_window_current_text  "  #W "
 
