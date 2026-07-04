@@ -23,6 +23,15 @@
 
       env = {
         CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
+
+        # Auto-Updater aus. Auf NixOS liegt die claude-Binary immutable im
+        # Nix-Store; der Updater versucht sie zu ersetzen, scheitert und
+        # blockiert den Start. Es gibt keinen settings.json-Config-Key dafuer
+        # (autoUpdates in ~/.claude.json ist nur App-State) — die Env-Variable
+        # ist der zuverlaessige Kill-Switch und wird vor dem Updater-Check
+        # angewendet. Updates kommen ausschliesslich ueber nixos-rebuild.
+        # DISABLE_UPDATES = "1" wuerde zusaetzlich manuelles `claude update` sperren.
+        DISABLE_AUTOUPDATER = "1";
       };
 
       permissions = {
