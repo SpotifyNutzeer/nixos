@@ -10,6 +10,9 @@
 
     cursors.enable = true;
     hyprland.enable = false;
+    # hyprlock wird manuell in home/program-configs/hyprlock.nix gethemet;
+    # das catppuccin-Modul wuerde eigene, ueberlappende Bloecke reinsourcen.
+    hyprlock.enable = false;
 
     # Catppuccin-eingefärbte Papirus-Icons. Setzt gtk.iconTheme automatisch auf
     # "Papirus-Dark" + catppuccin-papirus-folders (mocha/teal). Via autoEnable

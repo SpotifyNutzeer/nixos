@@ -9,6 +9,7 @@
     ./nix.nix
     ./fonts.nix
     ./sensors.nix
+    ./hyprlock.nix
     ./brave-policies.nix
     ./sudo.nix
   ];

@@ -113,6 +113,7 @@
         "$mainMod, P, pseudo,"
         "$mainMod, J, layoutmsg, togglesplit"
         "$mainMod SHIFT, S, exec, $screenshot"
+        "$mainMod, L, exec, hyprlock"
         "$mainMod SHIFT, T, exec, ~/.config/quickshell/scripts/theme-switch.sh menu"
         "$mainMod ALT, R, exec, killall -SIGUSR1 gpu-screen-recorder"
         "$mainMod, left, movefocus, l"

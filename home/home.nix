@@ -7,6 +7,7 @@
       ./program-configs/vim.nix
       ./program-configs/hyprland.nix
       ./program-configs/quickshell.nix
+      ./program-configs/hyprlock.nix
       ./program-configs/claude-code.nix
       ./program-configs/vencord.nix
       ./program-configs/brave.nix
