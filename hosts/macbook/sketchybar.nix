@@ -21,11 +21,11 @@ let
   sapphire = "0xff74c7ec";
   pink = "0xfff5c2e7";
   red = "0xfff38ba8";
-  islandBorder = "0x8c89dceb"; # sky @ 0.55 alpha, wie Theme.borderColor(0.55)
+  islandBorder = "0xff89dceb"; # volle Deckkraft -> praesenter auf dunklem Grund
   font = "JetBrainsMono Nerd Font";
 
-  # Island-Stil (bracket-Hintergrund): base + sky-Border (dicker: 3) + radius 12.
-  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=3 background.corner_radius=12 background.height=34";
+  # Island-Stil (bracket-Hintergrund): base + heller sky-Border + radius 12.
+  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=2 background.corner_radius=12 background.height=30";
 
   # ── Scripts (''${VAR}=Bash, ${nix}=Nix-Interpolation) ──
   clockScript = pkgs.writeShellScript "sb-clock" ''
@@ -109,23 +109,23 @@ in
       #!/usr/bin/env bash
 
       sketchybar --bar \
-        height=40 position=top color=0x00000000 \
-        padding_left=12 padding_right=12 y_offset=6 sticky=on blur_radius=0
+        height=38 position=top color=0x00000000 \
+        padding_left=12 padding_right=12 y_offset=5 sticky=on blur_radius=0
 
       sketchybar --default \
-        icon.font="${font}:Bold:14.0" icon.color=${text} \
-        label.font="${font}:Bold:13.0" label.color=${text} \
-        padding_left=4 padding_right=4 \
-        label.padding_left=4 label.padding_right=6 \
-        icon.padding_left=8 icon.padding_right=4 \
+        icon.font="${font}:Bold:12.0" icon.color=${text} \
+        label.font="${font}:Bold:11.0" label.color=${text} \
+        padding_left=2 padding_right=2 \
+        label.padding_left=2 label.padding_right=3 \
+        icon.padding_left=5 icon.padding_right=2 \
         background.color=0x00000000
 
       # ── LINKS: Metrics-Island (macmon-gespeist, mit Separatoren) ──
       # Separator-Item-Stil: duenne "│"-Linie in surface1.
       add_sep() {
         sketchybar --add item "$1" left \
-          --set "$1" label="│" label.color=${surface1} label.font="${font}:Regular:16.0" \
-            icon.drawing=off background.drawing=off padding_left=6 padding_right=6
+          --set "$1" label="│" label.color=${surface1} label.font="${font}:Regular:13.0" \
+            icon.drawing=off background.drawing=off padding_left=3 padding_right=3
       }
 
       sketchybar --add item total_power left \
