@@ -16,6 +16,11 @@
   # Determinate ohnehin global aktiv, daher entfaellt hier nix.settings.
   nix.enable = false;
 
+  # fish ist Login-Shell -> nix-darwin muss die System-Integration einrichten
+  # (/etc/fish + fish in /etc/shells + System-PATH), sonst hat die fish-Login-Shell
+  # weder nix- noch sonstige System-Pfade. (common/ mit demselben Flag ist NixOS-only.)
+  programs.fish.enable = true;
+
   # home-shared.nix (programs.vim) zieht unfreie vim-Plugins (asyncomplete-buffer-vim).
   # Auf NixOS setzt common/programs.nix dies system-weit; darwin braucht das
   # Aequivalent, sonst schlaegt die Home-Manager-Evaluierung (useGlobalPkgs) fehl.
