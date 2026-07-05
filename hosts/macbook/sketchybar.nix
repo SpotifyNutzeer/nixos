@@ -26,7 +26,7 @@ let
 
   # Island-Stil (bracket-Hintergrund): base + heller sky-Border, Hoehe/Radius
   # exakt wie quickshell (height 40, radius 12).
-  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=2 background.corner_radius=12 background.height=28";
+  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=2 background.corner_radius=12 background.height=30";
 
   # ── Scripts (''${VAR}=Bash, ${nix}=Nix-Interpolation) ──
   clockScript = pkgs.writeShellScript "sb-clock" ''
@@ -114,8 +114,8 @@ in
       #!/usr/bin/env bash
 
       sketchybar --bar \
-        height=34 position=top color=0x00000000 \
-        padding_left=12 padding_right=12 y_offset=0 sticky=on blur_radius=0
+        height=38 position=top color=0x00000000 \
+        padding_left=12 padding_right=12 y_offset=6 sticky=on blur_radius=0
 
       sketchybar --default \
         icon.font="${font}:Bold:12.0" icon.color=${text} \
