@@ -3,9 +3,7 @@
 ## Window-Manager: yabai + skhd (BSP = dwindle)
 
 WM ist **yabai** (echtes Binary-Space-Partitioning, entspricht Hyprlands dwindle) mit
-**skhd** als Hotkey-Daemon und **JankyBorders** für den Fensterrahmen. AeroSpace liegt
-noch als Backup unter `home/program-configs/darwin/aerospace.nix`, ist aber NICHT
-importiert (zwei WMs kollidieren) — wird gelöscht, sobald yabai stabil läuft.
+**skhd** als Hotkey-Daemon und **JankyBorders** für den Fensterrahmen.
 
 ## Erst-Setup (Reihenfolge wichtig!)
 
@@ -59,4 +57,4 @@ Homebrew-Leftover entfernen: `brew uninstall borders` und
 Generell gilt: WM-Stack (yabai/skhd/borders) NUR über nix, nie zusätzlich via Homebrew.
 
 ## Noch offen
-AeroSpace-Backup (`home/program-configs/darwin/aerospace.nix`) löschen, sobald yabai dauerhaft stabil.
+NixOS-Full-Build auf einem Linux-Rechner/CI gegenprüfen (auf dem Mac blockiert catppuccins IFD).
