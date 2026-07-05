@@ -2,6 +2,7 @@
 {
   imports = [
     ./home-shared.nix
+    ./program-configs/darwin/ssh.nix
   ];
 
   home.username = "paulweber";
