@@ -10,11 +10,15 @@
         bold_italic_font = "auto";
         font_size        = 11;
 
-        background_opacity = 0.90;
+        background_opacity = 0.80;
         # Auf macOS rendert kitty den Blur selbst (native API), unabhaengig vom
         # Compositor. Der Wert ist dort zugleich der Blur-Radius; bis ~64 unkritisch.
         # Unter Hyprland uebernimmt den Blur der Compositor — dieselbe Zeile schadet nicht.
         background_blur    = 32;
+
+        # Keine Fenster-Dekoration (Titlebar/Ampel-Buttons) — passt zum Tiling-WM.
+        # Auf Hyprland ohnehin ohne clientseitige Titlebar, daher unschaedlich.
+        hide_window_decorations = "yes";
 
         cursor_trail = 3;
         cursor_trail_decay = "0.1 0.4";

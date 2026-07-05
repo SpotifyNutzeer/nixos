@@ -6,6 +6,11 @@
     launchd.enable = true;
 
     settings = {
+      # Aktuelle AeroSpace-Default-Config-Version (0.21+). Ohne diese Zeile warnt
+      # AeroSpace, config-version=1 sei veraltet. Aendert nur persistent-workspaces
+      # (Fallback = leeres Array); Workspaces werden weiter on-demand erzeugt.
+      config-version = 2;
+
       # Kein eigenes Login-Item — macht launchd (s.o.).
       start-at-login = false;
 
