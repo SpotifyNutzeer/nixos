@@ -101,8 +101,13 @@ in
   # ── JankyBorders: aktiver Fensterrahmen (ersetzt Hyprlands Gradient-Border) ──
   services.jankyborders = {
     enable = true;
-    width = 2.0;                       # Hyprland border_size = 2
-    style = "round";                   # Hyprland rounding = 10
+    # HiDPI: ohne das rendert der Rahmen auf dem Retina-Display in 1x -> wirkt
+    # sehr duenn und bricht an den gerundeten Ecken. Mit hidpi=true rendert er
+    # nativ (scharf, Ecken sauber).
+    hidpi = true;
+    width = 5.0;                       # sichtbarer als Hyprlands 2px (Retina)
+    style = "round";                   # gerundete Ecken analog Hyprland rounding
+    order = "above";                   # Rahmen ueber dem Fenster -> Ecken sichtbar
     # Hyprland: col.active_border = $sky $teal 45deg ($sky=89dceb, $teal=94e2d5)
     active_color = "gradient(top_left=0xff89dceb,bottom_right=0xff94e2d5)";
     # Hyprland: col.inactive_border = rgba(45475aaa)
