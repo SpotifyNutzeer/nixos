@@ -15,7 +15,7 @@
 
       # ── Variablen ──
       "$mainMod"     = "SUPER";
-      "$terminal"    = "kitty tmux";
+      "$terminal"    = "kitty";
       "$fileManager" = "thunar";
       "$menu"        = "rofi -show drun";
       "$screenshot"  = "grimblast -f -n copy area";
