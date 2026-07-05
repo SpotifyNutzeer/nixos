@@ -12,6 +12,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,7 +34,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
   let
     # Das Tidal-Plugin importiert `websockets`, das StreamController in nixpkgs
     # NICHT mitbringt (nur websocket-client). Da das Plugin-Backend direkt im
@@ -58,11 +62,28 @@
         }
       ];
     };
+    mkDarwin = host: nix-darwin.lib.darwinSystem {
+      specialArgs = { inherit catppuccin; };
+      modules = [
+        ./hosts/${host}
+        home-manager.darwinModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit catppuccin; };
+          home-manager.users.paulweber = import ./home/home-darwin.nix;
+        }
+      ];
+    };
   in {
     nixosConfigurations = {
       vm      = mkHost "vm";
       desktop = mkHost "desktop";
       laptop  = mkHost "laptop";
+    };
+
+    darwinConfigurations = {
+      macbook = mkDarwin "macbook";
     };
   };
 }
