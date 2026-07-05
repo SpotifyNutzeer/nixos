@@ -24,7 +24,7 @@
   # dadurch hängt jede SSH-Signatur (git clone/push blockiert bei "Cloning into...").
   # Secret-Service (org.freedesktop.secrets) für tidal bleibt aktiv – nur der
   # SSH-Teil wird abgeschaltet. Den SSH-Agent übernimmt home-manager
-  # (services.ssh-agent) in home/program-configs/ssh.nix.
+  # (services.ssh-agent) in home/program-configs/linux/ssh.nix.
   services.gnome.gcr-ssh-agent.enable = false;
 
   catppuccin = {
