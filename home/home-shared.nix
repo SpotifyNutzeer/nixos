@@ -9,6 +9,7 @@
     ./program-configs/shared/tmux.nix
     ./program-configs/shared/hyfetch.nix
     ./program-configs/shared/claude-code.nix
+    ./program-configs/shared/claude-memory-sync.nix
     ./program-configs/shared/theming.nix
     ./program-configs/shared/ssh.nix
   ];
