@@ -7,36 +7,41 @@ let
   repoUrl = "git@github.com:SpotifyNutzeer/claude-memory.git";
   store   = "${config.home.homeDirectory}/claude-memory";
 
-  # ── Projekt-Mapping ──────────────────────────────────────────────────────
-  # repo-Ordner  ->  lokaler Arbeitsverzeichnis-Pfad des Projekts. Aus dem Pfad
-  # leitet Claude Code den Projekt-Key ab (jeder "/" wird zu "-"). Der Key
-  # divergiert pro Maschine (macOS: /Users/paulweber, NixOS: /home/paul) —
-  # deshalb wird er HIER pro Build aus homeDirectory berechnet, statt hart
-  # kodiert. So zeigt auf jedem Geraet der richtige maschinenspezifische
-  # memory-Ordner auf denselben geteilten Store-Ordner.
-  projects = {
-    "fluxcd"            = "${config.home.homeDirectory}/fleet/fluxcd";
-    "nixos"             = "${config.home.homeDirectory}/fleet/nixos";
-    "bernice-portfolio" = "${config.home.homeDirectory}/fleet/bernice-portfolio";
-  };
+  # ── Projekte ─────────────────────────────────────────────────────────────
+  # Logische Projekte == Store-Ordnernamen.
+  projectNames = [ "fluxcd" "nixos" "bernice-portfolio" ];
 
-  # "/Users/paulweber/fleet/fluxcd" -> "-Users-paulweber-fleet-fluxcd"
-  mkKey = path: lib.replaceStrings [ "/" ] [ "-" ] path;
+  # Kandidaten-Elternverzeichnisse. Die Repos liegen je nach Rechner woanders
+  # (macOS: ~/fleet, NixOS: ~/git). Aus dem Projekt-Arbeitsverzeichnis leitet
+  # Claude Code den Projekt-Key ab (jeder "/" wird zu "-") — und der divergiert
+  # damit pro Rechner. Statt den Key hart zu kodieren, sucht das Activation-
+  # Script pro Projekt den ERSTEN existierenden Pfad und berechnet den Key
+  # daraus. So passt sich das Modul jedem Rechner selbst an, und es werden nur
+  # Symlinks fuer tatsaechlich ausgecheckte Projekte angelegt.
+  projectBases = [
+    "${config.home.homeDirectory}/fleet"
+    "${config.home.homeDirectory}/git"
+  ];
 
-  projectsRoot = "${config.home.homeDirectory}/.claude/projects";
+  basesSh = lib.concatStringsSep " " (map lib.escapeShellArg projectBases);
 
-  # Shell-Zeilen, die pro Projekt den memory-Ordner durch einen Symlink auf
-  # den Store ersetzen. Vorhandene echte Ordner werden (falls noch nicht
-  # migriert) einmalig gesichert, damit nichts verloren geht.
-  linkLines = lib.concatStringsSep "\n" (lib.mapAttrsToList (name: path:
-    let key = mkKey path; in ''
-      mem="${projectsRoot}/${key}/memory"
-      run mkdir -p "${projectsRoot}/${key}"
+  # Pro Projekt: alle Basis-Verzeichnisse durchgehen; existiert eines, Key aus
+  # dem echten Pfad ableiten (/home/paul/git/nixos -> -home-paul-git-nixos) und
+  # den memory-Ordner durch einen Symlink auf den Store ersetzen. Ein echter
+  # vorhandener Ordner wird vorher gesichert, damit nichts verloren geht.
+  linkLines = lib.concatStringsSep "\n" (map (name: ''
+    for base in ${basesSh}; do
+      proj="$base/${name}"
+      [ -d "$proj" ] || continue
+      key="$(echo "$proj" | ${pkgs.gnused}/bin/sed 's:/:-:g')"
+      mem="${config.home.homeDirectory}/.claude/projects/$key/memory"
+      run mkdir -p "${config.home.homeDirectory}/.claude/projects/$key"
       if [ -e "$mem" ] && [ ! -L "$mem" ]; then
         run mv "$mem" "$mem.pre-sync-backup-$(${pkgs.coreutils}/bin/date +%s)"
       fi
       run ln -sfn "${store}/${name}" "$mem"
-    '') projects);
+    done
+  '') projectNames);
 
 in
 {
@@ -70,13 +75,11 @@ in
       }];
     }];
 
-    # Beim Sessionende lokale Aenderungen zurueckspielen.
+    # Beim Sessionende lokale Aenderungen zurueckspielen (nur bei Aenderung,
+    # race-sicher via pull --rebase vor push, || true gegen Session-Blockade).
     Stop = [{
       hooks = [{
         type = "command";
-        # TODO(human): race-sichere Commit+Push-Logik als eine Shell-Zeile.
-        # Verfuegbar: git-Binary unter ${pkgs.git}/bin/git, Store-Pfad ${store}.
-        # Anforderungen siehe "Learn by Doing"-Request.
         command = "${pkgs.git}/bin/git -C ${store} add -A && ${pkgs.git}/bin/git -C ${store} diff --cached --quiet || (${pkgs.git}/bin/git -C ${store} commit -qm 'sync: memory update' && ${pkgs.git}/bin/git -C ${store} pull --rebase --autostash && ${pkgs.git}/bin/git -C ${store} push) || true";
       }];
     }];
