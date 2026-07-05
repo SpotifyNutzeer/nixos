@@ -32,14 +32,13 @@ wiederholen.
 ## Manuelle / nicht-deklarative Punkte
 - SIP-Partial-Disable (recoveryOS, Sicherheitsgrenze — nicht automatisierbar).
 - Accessibility-Berechtigung für yabai + skhd (einmalig).
-- **Launcher = Sol** (via homebrew cask installiert). Einmalig in Sols Settings:
-  globalen Hotkey auf **Alt+Shift+Return** setzen (Sol hält den Hotkey selbst;
-  skhd bindet ihn bewusst NICHT). Accessibility-Berechtigung für Sol erteilen.
-  (Sols Config ist GUI-basiert, daher nicht deklarierbar.)
+- Launcher: **Raycast** (Hotkey `alt+shift-return` via skhd → `open raycast://`).
+  Nicht deklarierbar (Raycast-Config ist GUI/Cloud). Sol/Ueli wurden erwogen:
+  Ueli ist deprecated (Gatekeeper), Sol wäre die Alternative — vorerst bei Raycast.
 
 ## Keybinds (Modifier = Alt ⌥)
 - `alt-return` kitty · `alt+shift-q` close · `alt-f` fullscreen · `alt-v` float
-- `alt-j` split-Richtung togglen (dwindle) · `alt-e` Finder · `alt+shift-return` Sol (Launcher, via Sol-Hotkey)
+- `alt-j` split-Richtung togglen (dwindle) · `alt-e` Finder · `alt+shift-return` Raycast
 - `alt-←/→/↑/↓` Fokus · `alt-1..0` Space 1..10 · `alt+shift-1..0` Fenster → Space
 - Maus: `alt`+Linksdrag = move, `alt`+Rechtsdrag = resize
 

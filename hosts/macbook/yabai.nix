@@ -64,9 +64,9 @@ in
       alt - v               : ${yabai} -m window --toggle float
       alt - j               : ${yabai} -m window --toggle split
       alt - e               : open -a Finder
-      # Launcher (Sol) haelt seinen globalen Hotkey selbst -> hier NICHT auf
-      # alt+shift-return binden (sonst faengt skhd es vor Sol ab). Hotkey in
-      # Sols Settings auf Alt+Shift+Return setzen (siehe README).
+
+      # Launcher: Raycast per URL-Scheme (= Hyprland $menu)
+      alt + shift - return  : open raycast://
 
       # ── Fokus bewegen ───────────────────────────────────────
       alt - left            : ${yabai} -m window --focus west
