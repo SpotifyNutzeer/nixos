@@ -1,6 +1,6 @@
 { ... }:
 {
-  imports = [ ./yabai.nix ];
+  imports = [ ./yabai.nix ./homebrew.nix ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 
