@@ -28,16 +28,6 @@ let
   island = "background.color=${base} background.border_color=${islandBorder} background.border_width=3 background.corner_radius=12 background.height=34";
 
   # ── Scripts (''${VAR}=Bash, ${nix}=Nix-Interpolation) ──
-  spaceScript = pkgs.writeShellScript "sb-space" ''
-    sid="''${NAME#space.}"
-    focused="$(${yabai} -m query --spaces --space 2>/dev/null | ${jq} -r '.index' 2>/dev/null)"
-    if [ "$sid" = "$focused" ]; then
-      sketchybar --set "$NAME" icon.color=${sky}
-    else
-      sketchybar --set "$NAME" icon.color=${overlay}
-    fi
-  '';
-
   clockScript = pkgs.writeShellScript "sb-clock" ''
     sketchybar --set "$NAME" label="$(date '+%a %d.%m  %H:%M')"
   '';
@@ -87,7 +77,8 @@ let
   hwProvider = pkgs.writeShellScript "sb-hw-provider" ''
     ${macmon} pipe -i 2000 | while read -r line; do
       vals="$(printf '%s' "$line" | ${jq} -r '
-        [ (((.ecpu_usage[1] + .pcpu_usage[1]) / 2 * 100) | floor),
+        [ (.sys_power | round),
+          (((.ecpu_usage[1] + .pcpu_usage[1]) / 2 * 100) | floor),
           ((.cpu_power * 10 | round) / 10),
           (.temp.cpu_temp_avg | floor),
           ((.gpu_usage[1] * 100) | floor),
@@ -95,8 +86,9 @@ let
           (.temp.gpu_temp_avg | floor),
           ((.memory.ram_usage / 1073741824 * 10 | round) / 10)
         ] | @tsv')"
-      IFS=$'\t' read -r cu cp ct gu gp gt mem <<< "$vals"
-      sketchybar --set cpu_usage label="''${cu}%" \
+      IFS=$'\t' read -r tp cu cp ct gu gp gt mem <<< "$vals"
+      sketchybar --set total_power label="''${tp}W" \
+                 --set cpu_usage label="''${cu}%" \
                  --set cpu_power label="''${cp}W" \
                  --set cpu_temp  label="''${ct}°" \
                  --set gpu_usage label="''${gu}%" \
@@ -128,39 +120,33 @@ in
         icon.padding_left=8 icon.padding_right=4 \
         background.color=0x00000000
 
-      # ── LINKS: Spaces als Dots (ohne Nummern) ──
-      space_items=()
-      for sid in $(seq 1 10); do
-        sketchybar --add item space.$sid left \
-          --set space.$sid \
-            icon="●" icon.font="${font}:Bold:9.0" icon.color=${overlay} \
-            icon.padding_left=5 icon.padding_right=5 \
-            label.drawing=off background.drawing=off \
-            script="${spaceScript}" \
-            click_script="${yabai} -m space --focus $sid" \
-          --subscribe space.$sid space_change
-        space_items+=(space.$sid)
-      done
-      sketchybar --add bracket spaces "''${space_items[@]}" --set spaces ${island}
+      # ── LINKS: Metrics-Island (macmon-gespeist, mit Separatoren) ──
+      # Separator-Item-Stil: duenne "│"-Linie in surface1.
+      add_sep() {
+        sketchybar --add item "$1" left \
+          --set "$1" label="│" label.color=${surface1} label.font="${font}:Regular:16.0" \
+            icon.drawing=off background.drawing=off padding_left=6 padding_right=6
+      }
 
-      # ── Abstand zwischen Spaces- und Metrics-Island ──
-      sketchybar --add item lgap left \
-        --set lgap icon.drawing=off label.drawing=off background.drawing=off \
-          padding_left=10 padding_right=10
-
-      # ── LINKS: Metrics-Island (macmon-gespeist) ──
+      sketchybar --add item total_power left \
+        --set total_power icon="󱐋" icon.color=${red} label="…"
+      add_sep sep1
       sketchybar --add item cpu_usage left --set cpu_usage icon="󰻠" icon.color=${green}  label="…" \
         --add item cpu_power left --set cpu_power icon="󱐋" icon.color=${peach}  label="…" \
-        --add item cpu_temp  left --set cpu_temp  icon="󰔏" icon.color=${yellow} label="…" \
-        --add item gpu_usage left --set gpu_usage icon="󰢮" icon.color=${teal}   label="…" \
+        --add item cpu_temp  left --set cpu_temp  icon="󰔏" icon.color=${yellow} label="…"
+      add_sep sep2
+      sketchybar --add item gpu_usage left --set gpu_usage icon="󰢮" icon.color=${teal}   label="…" \
         --add item gpu_power left --set gpu_power icon="󱐋" icon.color=${peach}  label="…" \
-        --add item gpu_temp  left --set gpu_temp  icon="󰔏" icon.color=${yellow} label="…" \
-        --add item mem       left --set mem       icon="󰍛" icon.color=${mauve}  label="…" \
-        --add item net_down  left --set net_down  icon="󰁆" icon.color=${blue}     label="…" \
-        --add item net_up    left --set net_up    icon="󰁞" icon.color=${sapphire} label="…" \
+        --add item gpu_temp  left --set gpu_temp  icon="󰔏" icon.color=${yellow} label="…"
+      add_sep sep3
+      sketchybar --add item mem left --set mem icon="󰍛" icon.color=${mauve} label="…"
+      add_sep sep4
+      sketchybar --add item net_down left --set net_down icon="󰁆" icon.color=${blue}     label="…" \
+        --add item net_up   left --set net_up   icon="󰁞" icon.color=${sapphire} label="…" \
           script="${netScript}" update_freq=3
+
       sketchybar --add bracket metrics \
-        cpu_usage cpu_power cpu_temp gpu_usage gpu_power gpu_temp mem net_down net_up \
+        total_power sep1 cpu_usage cpu_power cpu_temp sep2 gpu_usage gpu_power gpu_temp sep3 mem sep4 net_down net_up \
         --set metrics ${island}
 
       # ── RECHTS: System-Island (wifi volume battery clock) ──
