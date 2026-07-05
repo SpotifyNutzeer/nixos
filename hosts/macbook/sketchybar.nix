@@ -115,9 +115,9 @@ in
       sketchybar --default \
         icon.font="${font}:Bold:12.0" icon.color=${text} \
         label.font="${font}:Bold:11.0" label.color=${text} \
-        padding_left=2 padding_right=2 \
-        label.padding_left=2 label.padding_right=3 \
-        icon.padding_left=5 icon.padding_right=2 \
+        padding_left=3 padding_right=3 \
+        label.padding_left=3 label.padding_right=4 \
+        icon.padding_left=7 icon.padding_right=3 \
         background.color=0x00000000
 
       # ── LINKS: Metrics-Island (macmon-gespeist, mit Separatoren) ──
