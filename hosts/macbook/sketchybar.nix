@@ -35,8 +35,12 @@ let
 
   wifiScript = pkgs.writeShellScript "sb-wifi" ''
     ssid="$(ipconfig getsummary en0 2>/dev/null | sed -n 's/.*SSID : //p' | head -1)"
-    if [ -n "$ssid" ]; then
+    # macOS liefert ohne Standortdienst-Berechtigung den Literaltext "<redacted>".
+    # Dann (oder wenn leer) auf Verbindungsstatus zurueckfallen statt Muell zeigen.
+    if [ -n "$ssid" ] && [ "$ssid" != "<redacted>" ]; then
       sketchybar --set "$NAME" icon.color=${sky} label="$ssid" label.color=${text}
+    elif ifconfig en0 2>/dev/null | grep -q 'status: active'; then
+      sketchybar --set "$NAME" icon.color=${sky} label="on" label.color=${text}
     else
       sketchybar --set "$NAME" icon.color=${overlay} label="off" label.color=${overlay}
     fi
