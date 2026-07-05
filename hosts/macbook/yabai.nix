@@ -105,7 +105,7 @@ in
     # sehr duenn und bricht an den gerundeten Ecken. Mit hidpi=true rendert er
     # nativ (scharf, Ecken sauber).
     hidpi = true;
-    width = 5.0;                       # sichtbarer als Hyprlands 2px (Retina)
+    width = 2.0;                       # Hyprland border_size = 2 (mit hidpi scharf)
     style = "round";                   # gerundete Ecken analog Hyprland rounding
     order = "above";                   # Rahmen ueber dem Fenster -> Ecken sichtbar
     # Hyprland: col.active_border = $sky $teal 45deg ($sky=89dceb, $teal=94e2d5)
