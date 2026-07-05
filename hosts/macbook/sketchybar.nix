@@ -34,8 +34,9 @@ let
   '';
 
   wifiScript = pkgs.writeShellScript "sb-wifi" ''
-    if ifconfig en0 2>/dev/null | grep -q 'status: active'; then
-      sketchybar --set "$NAME" icon.color=${sky} label="WiFi" label.color=${text}
+    ssid="$(ipconfig getsummary en0 2>/dev/null | sed -n 's/.*SSID : //p' | head -1)"
+    if [ -n "$ssid" ]; then
+      sketchybar --set "$NAME" icon.color=${sky} label="$ssid" label.color=${text}
     else
       sketchybar --set "$NAME" icon.color=${overlay} label="off" label.color=${overlay}
     fi
@@ -47,16 +48,51 @@ let
     sketchybar --set "$NAME" label="$(printf '%-4s' "''${vol}%")"
   '';
 
+  # Batterie: Prozent/Status/Zeit aus pmset, Leistung (W) aus ioreg
+  # (Amperage[mA] x Voltage[mV] / 1e6; Amperage ist unsigned-wraparound ->
+  # bash 64-bit aufloesen). Setzt drei Items: battery, battery_power, battery_time.
   batteryScript = pkgs.writeShellScript "sb-battery" ''
-    batt="$(pmset -g batt)"
-    pct="$(printf '%s' "$batt" | grep -Eo '[0-9]+%' | head -1 | tr -d '%')"
+    pm="$(pmset -g batt)"
+    pct="$(printf '%s' "$pm" | grep -Eo '[0-9]+%' | head -1 | tr -d '%')"
     [ -z "$pct" ] && pct="?"
-    if printf '%s' "$batt" | grep -q 'AC Power'; then
-      sketchybar --set "$NAME" icon="󰂄" icon.color=${green} label="$(printf '%-4s' "''${pct}%")"
+    if printf '%s' "$pm" | grep -q 'AC Power'; then charging=1; else charging=0; fi
+    tm="$(printf '%s' "$pm" | grep -Eo '[0-9]+:[0-9]+' | head -1)"
+
+    # Leistung aus ioreg
+    io="$(ioreg -rn AppleSmartBattery)"
+    amp_raw="$(printf '%s' "$io" | awk '/"Amperage" =/{print $NF; exit}')"
+    volt="$(printf '%s' "$io" | awk '/"Voltage" =/{print $NF; exit}')"
+    watts=""
+    if [ -n "$amp_raw" ] && [ -n "$volt" ]; then
+      amp=$(( amp_raw ))
+      watts="$(awk -v a="$amp" -v v="$volt" 'BEGIN{p=a*v/1e6; if(p<0)p=-p; printf "%.0f", p}')"
+    fi
+
+    # Icon/Farbe fuers Prozent-Item
+    if [ "$charging" = 1 ]; then
+      bicon="󰂄"; bcolor=${green}
     elif [ "$pct" != "?" ] && [ "$pct" -le 15 ] 2>/dev/null; then
-      sketchybar --set "$NAME" icon="󰁻" icon.color=${red} label="$(printf '%-4s' "''${pct}%")"
+      bicon="󰁻"; bcolor=${red}
     else
-      sketchybar --set "$NAME" icon="󰁹" icon.color=${text} label="$(printf '%-4s' "''${pct}%")"
+      bicon="󰁹"; bcolor=${text}
+    fi
+    sketchybar --set battery icon="$bicon" icon.color="$bcolor" label="$(printf '%-4s' "''${pct}%")"
+
+    # Leistung
+    if [ -n "$watts" ]; then
+      sketchybar --set battery_power drawing=on label="$(printf '%-4s' "''${watts}W")"
+    else
+      sketchybar --set battery_power drawing=off
+    fi
+
+    # Restzeit "Hh Mm" mit Suffix
+    if [ -n "$tm" ] && [ "$tm" != "0:00" ]; then
+      h="''${tm%%:*}"; m="''${tm##*:}"
+      if [ "$h" = 0 ]; then ttxt="''${m}m"; else ttxt="''${h}h ''${m}m"; fi
+      if [ "$charging" = 1 ]; then ttxt="''${ttxt} bis voll"; else ttxt="''${ttxt} übrig"; fi
+      sketchybar --set battery_time drawing=on label="$ttxt"
+    else
+      sketchybar --set battery_time drawing=off
     fi
   '';
 
@@ -154,18 +190,24 @@ in
         total_power sep1 cpu_usage cpu_power cpu_temp sep2 gpu_usage gpu_power gpu_temp sep3 mem sep4 net_down net_up \
         --set metrics ${island}
 
-      # ── RECHTS: System-Island (wifi volume battery clock) ──
+      # ── RECHTS: System-Island (wifi volume battery [power] [time] clock) ──
       sketchybar --add item clock right \
         --set clock icon="󰃰" icon.color=${pink} update_freq=10 script="${clockScript}"
+      sketchybar --add item battery_time right \
+        --set battery_time icon.drawing=off label.color=${subtext0} \
+          label.font="${font}:Bold:10.0" drawing=off
+      sketchybar --add item battery_power right \
+        --set battery_power icon.drawing=off label.color=${peach} drawing=off
       sketchybar --add item battery right \
-        --set battery update_freq=120 script="${batteryScript}" \
+        --set battery update_freq=15 script="${batteryScript}" \
         --subscribe battery power_source_change system_woke
       sketchybar --add item volume right \
         --set volume icon="󰕾" icon.color=${sky} script="${volumeScript}" \
         --subscribe volume volume_change
       sketchybar --add item wifi right \
-        --set wifi icon="󰖩" update_freq=30 script="${wifiScript}"
-      sketchybar --add bracket system clock battery volume wifi --set system ${island}
+        --set wifi icon="󰖩" label.max_chars=18 update_freq=30 script="${wifiScript}"
+      sketchybar --add bracket system \
+        clock battery_time battery_power battery volume wifi --set system ${island}
 
       # ── HW-Provider starten (single instance) ──
       pkill -f sb-hw-provider 2>/dev/null || true
