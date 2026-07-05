@@ -41,5 +41,21 @@ wiederholen.
 - `alt-←/→/↑/↓` Fokus · `alt-1..0` Space 1..10 · `alt+shift-1..0` Fenster → Space
 - Maus: `alt`+Linksdrag = move, `alt`+Rechtsdrag = resize
 
+## Troubleshooting
+
+**Border flackert / verschwindet periodisch (~100ms alle paar Sekunden):**
+Es läuft eine zweite borders-Instanz (typisch: Homebrew-Leftover aus einem früheren
+manuellen yabai-Versuch), die mit dem nix-`org.nixos.jankyborders`-Service kollidiert —
+der nix-Service flappt dann (`launchctl print gui/$(id -u)/org.nixos.jankyborders`
+zeigt `state = spawn scheduled`, `runs` steigt). Prüfen:
+```
+launchctl list | grep -iE 'yabai|skhd|border'   # es darf nur org.nixos.* laufen
+brew list | grep -iE 'yabai|skhd|borders'        # keine Homebrew-WM-Tools
+```
+Homebrew-Leftover entfernen: `brew uninstall borders` und
+`rm ~/Library/LaunchAgents/homebrew.mxcl.borders.plist`, danach
+`launchctl kickstart -k gui/$(id -u)/org.nixos.jankyborders`.
+Generell gilt: WM-Stack (yabai/skhd/borders) NUR über nix, nie zusätzlich via Homebrew.
+
 ## Noch offen
 SketchyBar (Notch-Layout), Sol/Ueli-Launcher, Brave via homebrew, AeroSpace-Backup löschen.
