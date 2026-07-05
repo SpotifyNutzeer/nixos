@@ -9,6 +9,12 @@
       # Kein eigenes Login-Item — macht launchd (s.o.).
       start-at-login = false;
 
+      # Workaround fuer AeroSpace-Issue #905: der beim Start bereits belegte
+      # erste Workspace kommt trotz default-root-container-layout="tiles" im
+      # Accordion-Layout hoch (ein Fenster gross, Rest dahinter gestapelt).
+      # "layout tiles" nach dem Start zwingt den fokussierten Workspace auf Tiling.
+      after-startup-command = [ "layout tiles" ];
+
       default-root-container-layout = "tiles";
       default-root-container-orientation = "auto";
 
