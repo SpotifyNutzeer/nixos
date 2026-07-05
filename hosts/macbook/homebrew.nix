@@ -16,6 +16,11 @@
       # Rewards/Tor/VPN). In nixpkgs (noch) nicht verfuegbar, daher auf macOS via
       # Cask statt programs.brave. Linux nutzt weiterhin normales brave.
       "brave-origin"
+
+      # Sol: open-source Launcher/Command-Palette (rofi-nah). Ersetzt Raycast.
+      # Globaler Hotkey wird in Sols Settings gesetzt (GUI, nicht deklarierbar) —
+      # siehe hosts/macbook/README.md.
+      "sol"
     ];
   };
 }

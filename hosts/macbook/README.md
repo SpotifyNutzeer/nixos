@@ -32,12 +32,14 @@ wiederholen.
 ## Manuelle / nicht-deklarative Punkte
 - SIP-Partial-Disable (recoveryOS, Sicherheitsgrenze — nicht automatisierbar).
 - Accessibility-Berechtigung für yabai + skhd (einmalig).
-- Launcher: aktuell Raycast (Hotkey `alt+shift-return`). Später: Sol/Ueli.
-- Brave & GUI-Casks: via homebrew (offen).
+- **Launcher = Sol** (via homebrew cask installiert). Einmalig in Sols Settings:
+  globalen Hotkey auf **Alt+Shift+Return** setzen (Sol hält den Hotkey selbst;
+  skhd bindet ihn bewusst NICHT). Accessibility-Berechtigung für Sol erteilen.
+  (Sols Config ist GUI-basiert, daher nicht deklarierbar.)
 
 ## Keybinds (Modifier = Alt ⌥)
 - `alt-return` kitty · `alt+shift-q` close · `alt-f` fullscreen · `alt-v` float
-- `alt-j` split-Richtung togglen (dwindle) · `alt-e` Finder · `alt+shift-return` Raycast
+- `alt-j` split-Richtung togglen (dwindle) · `alt-e` Finder · `alt+shift-return` Sol (Launcher, via Sol-Hotkey)
 - `alt-←/→/↑/↓` Fokus · `alt-1..0` Space 1..10 · `alt+shift-1..0` Fenster → Space
 - Maus: `alt`+Linksdrag = move, `alt`+Rechtsdrag = resize
 
@@ -58,4 +60,4 @@ Homebrew-Leftover entfernen: `brew uninstall borders` und
 Generell gilt: WM-Stack (yabai/skhd/borders) NUR über nix, nie zusätzlich via Homebrew.
 
 ## Noch offen
-SketchyBar (Notch-Layout), Sol/Ueli-Launcher, Brave via homebrew, AeroSpace-Backup löschen.
+AeroSpace-Backup (`home/program-configs/darwin/aerospace.nix`) löschen, sobald yabai dauerhaft stabil.
