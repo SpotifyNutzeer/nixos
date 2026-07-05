@@ -24,8 +24,9 @@ let
   islandBorder = "0xff89dceb"; # volle Deckkraft -> praesenter auf dunklem Grund
   font = "JetBrainsMono Nerd Font";
 
-  # Island-Stil (bracket-Hintergrund): base + heller sky-Border + radius 12.
-  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=2 background.corner_radius=12 background.height=30";
+  # Island-Stil (bracket-Hintergrund): base + heller sky-Border, Hoehe/Radius
+  # exakt wie quickshell (height 40, radius 12).
+  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=2 background.corner_radius=12 background.height=40";
 
   # ── Scripts (''${VAR}=Bash, ${nix}=Nix-Interpolation) ──
   clockScript = pkgs.writeShellScript "sb-clock" ''
@@ -43,7 +44,7 @@ let
   volumeScript = pkgs.writeShellScript "sb-volume" ''
     vol="''${INFO}"
     [ -z "$vol" ] && vol="$(osascript -e 'output volume of (get volume settings)' 2>/dev/null)"
-    sketchybar --set "$NAME" label="''${vol}%"
+    sketchybar --set "$NAME" label="$(printf '%3s%%' "$vol")"
   '';
 
   batteryScript = pkgs.writeShellScript "sb-battery" ''
@@ -51,11 +52,11 @@ let
     pct="$(printf '%s' "$batt" | grep -Eo '[0-9]+%' | head -1 | tr -d '%')"
     [ -z "$pct" ] && pct="?"
     if printf '%s' "$batt" | grep -q 'AC Power'; then
-      sketchybar --set "$NAME" icon="󰂄" icon.color=${green} label="''${pct}%"
+      sketchybar --set "$NAME" icon="󰂄" icon.color=${green} label="$(printf '%3s%%' "$pct")"
     elif [ "$pct" != "?" ] && [ "$pct" -le 15 ] 2>/dev/null; then
-      sketchybar --set "$NAME" icon="󰁻" icon.color=${red} label="''${pct}%"
+      sketchybar --set "$NAME" icon="󰁻" icon.color=${red} label="$(printf '%3s%%' "$pct")"
     else
-      sketchybar --set "$NAME" icon="󰁹" icon.color=${text} label="''${pct}%"
+      sketchybar --set "$NAME" icon="󰁹" icon.color=${text} label="$(printf '%3s%%' "$pct")"
     fi
   '';
 
@@ -70,7 +71,8 @@ let
     drx=$(( (rx - prx) / dt )); dtx=$(( (tx - ptx) / dt ))
     [ $drx -lt 0 ] && drx=0; [ $dtx -lt 0 ] && dtx=0
     human() { b=$1; if [ $b -ge 1048576 ]; then printf '%dM' $((b/1048576)); elif [ $b -ge 1024 ]; then printf '%dK' $((b/1024)); else printf '%dB' $b; fi; }
-    sketchybar --set net_down label="$(human $drx)/s" --set net_up label="$(human $dtx)/s"
+    sketchybar --set net_down label="$(printf '%5s/s' "$(human $drx)")" \
+               --set net_up   label="$(printf '%5s/s' "$(human $dtx)")"
   '';
 
   # HW-Provider: EIN macmon-pipe-Prozess speist alle HW-Items (sudo-frei).
@@ -87,14 +89,16 @@ let
           ((.memory.ram_usage / 1073741824 * 10 | round) / 10)
         ] | @tsv')"
       IFS=$'\t' read -r tp cu cp ct gu gp gt mem <<< "$vals"
-      sketchybar --set total_power label="''${tp}W" \
-                 --set cpu_usage label="''${cu}%" \
-                 --set cpu_power label="''${cp}W" \
-                 --set cpu_temp  label="''${ct}°" \
-                 --set gpu_usage label="''${gu}%" \
-                 --set gpu_power label="''${gp}W" \
-                 --set gpu_temp  label="''${gt}°" \
-                 --set mem       label="''${mem}G"
+      # Rechtsbuendig auf feste Breite (Monospace) -> Island springt nicht,
+      # wenn ein Wert von 1 auf 2 Stellen wechselt (quickshell valueChars-Aequivalent).
+      sketchybar --set total_power label="$(printf '%3sW' "$tp")" \
+                 --set cpu_usage label="$(printf '%3s%%' "$cu")" \
+                 --set cpu_power label="$(printf '%4sW' "$cp")" \
+                 --set cpu_temp  label="$(printf '%3s°' "$ct")" \
+                 --set gpu_usage label="$(printf '%3s%%' "$gu")" \
+                 --set gpu_power label="$(printf '%4sW' "$gp")" \
+                 --set gpu_temp  label="$(printf '%3s°' "$gt")" \
+                 --set mem       label="$(printf '%4sG' "$mem")"
     done
   '';
 in
@@ -109,15 +113,15 @@ in
       #!/usr/bin/env bash
 
       sketchybar --bar \
-        height=38 position=top color=0x00000000 \
-        padding_left=12 padding_right=12 y_offset=5 sticky=on blur_radius=0
+        height=44 position=top color=0x00000000 \
+        padding_left=12 padding_right=12 y_offset=0 sticky=on blur_radius=0
 
       sketchybar --default \
         icon.font="${font}:Bold:12.0" icon.color=${text} \
         label.font="${font}:Bold:11.0" label.color=${text} \
-        padding_left=3 padding_right=3 \
-        label.padding_left=3 label.padding_right=4 \
-        icon.padding_left=7 icon.padding_right=3 \
+        padding_left=4 padding_right=4 \
+        label.padding_left=4 label.padding_right=5 \
+        icon.padding_left=8 icon.padding_right=4 \
         background.color=0x00000000
 
       # ── LINKS: Metrics-Island (macmon-gespeist, mit Separatoren) ──
@@ -125,7 +129,7 @@ in
       add_sep() {
         sketchybar --add item "$1" left \
           --set "$1" label="│" label.color=${surface1} label.font="${font}:Regular:13.0" \
-            icon.drawing=off background.drawing=off padding_left=3 padding_right=3
+            icon.drawing=off background.drawing=off padding_left=4 padding_right=4
       }
 
       sketchybar --add item total_power left \
