@@ -1,6 +1,6 @@
 { ... }:
 {
-  imports = [ ./yabai.nix ./homebrew.nix ];
+  imports = [ ./yabai.nix ./homebrew.nix ./sketchybar.nix ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 
