@@ -26,7 +26,7 @@ let
 
   # Island-Stil (bracket-Hintergrund): base + heller sky-Border, Hoehe/Radius
   # exakt wie quickshell (height 40, radius 12).
-  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=2 background.corner_radius=12 background.height=40";
+  island = "background.color=${base} background.border_color=${islandBorder} background.border_width=2 background.corner_radius=12 background.height=28";
 
   # ── Scripts (''${VAR}=Bash, ${nix}=Nix-Interpolation) ──
   clockScript = pkgs.writeShellScript "sb-clock" ''
@@ -44,7 +44,7 @@ let
   volumeScript = pkgs.writeShellScript "sb-volume" ''
     vol="''${INFO}"
     [ -z "$vol" ] && vol="$(osascript -e 'output volume of (get volume settings)' 2>/dev/null)"
-    sketchybar --set "$NAME" label="$(printf '%3s%%' "$vol")"
+    sketchybar --set "$NAME" label="$(printf '%-4s' "''${vol}%")"
   '';
 
   batteryScript = pkgs.writeShellScript "sb-battery" ''
@@ -52,11 +52,11 @@ let
     pct="$(printf '%s' "$batt" | grep -Eo '[0-9]+%' | head -1 | tr -d '%')"
     [ -z "$pct" ] && pct="?"
     if printf '%s' "$batt" | grep -q 'AC Power'; then
-      sketchybar --set "$NAME" icon="󰂄" icon.color=${green} label="$(printf '%3s%%' "$pct")"
+      sketchybar --set "$NAME" icon="󰂄" icon.color=${green} label="$(printf '%-4s' "''${pct}%")"
     elif [ "$pct" != "?" ] && [ "$pct" -le 15 ] 2>/dev/null; then
-      sketchybar --set "$NAME" icon="󰁻" icon.color=${red} label="$(printf '%3s%%' "$pct")"
+      sketchybar --set "$NAME" icon="󰁻" icon.color=${red} label="$(printf '%-4s' "''${pct}%")"
     else
-      sketchybar --set "$NAME" icon="󰁹" icon.color=${text} label="$(printf '%3s%%' "$pct")"
+      sketchybar --set "$NAME" icon="󰁹" icon.color=${text} label="$(printf '%-4s' "''${pct}%")"
     fi
   '';
 
@@ -71,8 +71,9 @@ let
     drx=$(( (rx - prx) / dt )); dtx=$(( (tx - ptx) / dt ))
     [ $drx -lt 0 ] && drx=0; [ $dtx -lt 0 ] && dtx=0
     human() { b=$1; if [ $b -ge 1048576 ]; then printf '%dM' $((b/1048576)); elif [ $b -ge 1024 ]; then printf '%dK' $((b/1024)); else printf '%dB' $b; fi; }
-    sketchybar --set net_down label="$(printf '%5s/s' "$(human $drx)")" \
-               --set net_up   label="$(printf '%5s/s' "$(human $dtx)")"
+    d="$(human $drx)/s"; u="$(human $dtx)/s"
+    sketchybar --set net_down label="$(printf '%-6s' "$d")" \
+               --set net_up   label="$(printf '%-6s' "$u")"
   '';
 
   # HW-Provider: EIN macmon-pipe-Prozess speist alle HW-Items (sudo-frei).
@@ -91,14 +92,14 @@ let
       IFS=$'\t' read -r tp cu cp ct gu gp gt mem <<< "$vals"
       # Rechtsbuendig auf feste Breite (Monospace) -> Island springt nicht,
       # wenn ein Wert von 1 auf 2 Stellen wechselt (quickshell valueChars-Aequivalent).
-      sketchybar --set total_power label="$(printf '%3sW' "$tp")" \
-                 --set cpu_usage label="$(printf '%3s%%' "$cu")" \
-                 --set cpu_power label="$(printf '%4sW' "$cp")" \
-                 --set cpu_temp  label="$(printf '%3s°' "$ct")" \
-                 --set gpu_usage label="$(printf '%3s%%' "$gu")" \
-                 --set gpu_power label="$(printf '%4sW' "$gp")" \
-                 --set gpu_temp  label="$(printf '%3s°' "$gt")" \
-                 --set mem       label="$(printf '%4sG' "$mem")"
+      sketchybar --set total_power label="$(printf '%-4s' "''${tp}W")" \
+                 --set cpu_usage label="$(printf '%-4s' "''${cu}%")" \
+                 --set cpu_power label="$(printf '%-5s' "''${cp}W")" \
+                 --set cpu_temp  label="$(printf '%-4s' "''${ct}°")" \
+                 --set gpu_usage label="$(printf '%-4s' "''${gu}%")" \
+                 --set gpu_power label="$(printf '%-5s' "''${gp}W")" \
+                 --set gpu_temp  label="$(printf '%-4s' "''${gt}°")" \
+                 --set mem       label="$(printf '%-5s' "''${mem}G")"
     done
   '';
 in
@@ -113,7 +114,7 @@ in
       #!/usr/bin/env bash
 
       sketchybar --bar \
-        height=44 position=top color=0x00000000 \
+        height=34 position=top color=0x00000000 \
         padding_left=12 padding_right=12 y_offset=0 sticky=on blur_radius=0
 
       sketchybar --default \
