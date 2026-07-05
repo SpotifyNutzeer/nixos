@@ -1,15 +1,45 @@
 # macbook (nix-darwin)
 
-## Erst-Setup
-1. `sudo nix run nix-darwin -- switch --flake .#macbook`
-2. Bedienungshilfen-Berechtigung für **AeroSpace** erteilen
+## Window-Manager: yabai + skhd (BSP = dwindle)
+
+WM ist **yabai** (echtes Binary-Space-Partitioning, entspricht Hyprlands dwindle) mit
+**skhd** als Hotkey-Daemon und **JankyBorders** für den Fensterrahmen. AeroSpace liegt
+noch als Backup unter `home/program-configs/darwin/aerospace.nix`, ist aber NICHT
+importiert (zwei WMs kollidieren) — wird gelöscht, sobald yabai stabil läuft.
+
+## Erst-Setup (Reihenfolge wichtig!)
+
+1. **SIP partiell deaktivieren** (nötig für yabais Scripting Addition = Space-Steuerung):
+   - Neustart in recoveryOS: Mac ausschalten, dann Power-Taste gedrückt halten bis
+     „Startoptionen werden geladen" erscheint → **Optionen** → Terminal öffnen.
+   - Dort ausführen: `csrutil enable --without fs --without debug --without nvram`
+     (yabais empfohlene Teil-Deaktivierung; NICHT komplett `csrutil disable`).
+   - Neu starten.
+2. `darwin-rebuild switch --flake .#macbook` (bzw. beim allerersten Mal
+   `sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#macbook`).
+3. **Bedienungshilfen-Berechtigung** erteilen für **yabai** UND **skhd**
    (Systemeinstellungen → Datenschutz & Sicherheit → Bedienungshilfen).
-3. Danach normal: `darwin-rebuild switch --flake .#macbook`
+4. yabai/skhd neu starten lassen (`yabai --restart-service`, `skhd --restart-service`)
+   oder ab-/anmelden. Die 10 Spaces werden beim yabai-Start automatisch angelegt.
+
+## Nach macOS-Updates
+
+Ein macOS-Update kann die Scripting Addition entladen. Dann einmalig:
+`sudo yabai --load-sa` (läuft dank nix-darwin passwordlos) oder yabai neu starten.
+Selten macht ein größeres Update auch den SIP-Teil-Disable rückgängig → Schritt 1
+wiederholen.
 
 ## Manuelle / nicht-deklarative Punkte
-- AeroSpace-Accessibility-Berechtigung (einmalig, macOS-Sicherheit).
-- Launcher: im MVP Raycast (Hotkey `alt-shift-enter` via AeroSpace). Phase 2: Sol/Ueli.
-- Brave & GUI-Casks: Phase 2 via homebrew.
+- SIP-Partial-Disable (recoveryOS, Sicherheitsgrenze — nicht automatisierbar).
+- Accessibility-Berechtigung für yabai + skhd (einmalig).
+- Launcher: aktuell Raycast (Hotkey `alt+shift-return`). Später: Sol/Ueli.
+- Brave & GUI-Casks: via homebrew (offen).
 
-## Phase 2 (offen)
-SketchyBar (Notch-Layout), JankyBorders (Sky→Teal), Sol/Ueli-Launcher, Brave via homebrew.
+## Keybinds (Modifier = Alt ⌥)
+- `alt-return` kitty · `alt+shift-q` close · `alt-f` fullscreen · `alt-v` float
+- `alt-j` split-Richtung togglen (dwindle) · `alt-e` Finder · `alt+shift-return` Raycast
+- `alt-←/→/↑/↓` Fokus · `alt-1..0` Space 1..10 · `alt+shift-1..0` Fenster → Space
+- Maus: `alt`+Linksdrag = move, `alt`+Rechtsdrag = resize
+
+## Noch offen
+SketchyBar (Notch-Layout), Sol/Ueli-Launcher, Brave via homebrew, AeroSpace-Backup löschen.

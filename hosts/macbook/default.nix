@@ -1,5 +1,7 @@
 { ... }:
 {
+  imports = [ ./yabai.nix ];
+
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   networking.hostName = "paul-macbook";
