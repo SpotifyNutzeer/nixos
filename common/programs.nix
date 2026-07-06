@@ -45,6 +45,7 @@ in
     seadrive-gui
     davinci-resolve-studio
     hyprshot
+    fping
   ];
 
   programs.fish.enable                = true;
