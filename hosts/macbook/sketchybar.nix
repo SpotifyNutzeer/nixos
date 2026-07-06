@@ -147,7 +147,7 @@ in
   fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
 
   services.sketchybar = {
-    enable = true;
+    enable = false;
     extraPackages = [ pkgs.jq pkgs.macmon ];
 
     config = ''
