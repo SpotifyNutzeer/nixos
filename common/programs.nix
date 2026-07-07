@@ -44,7 +44,6 @@ in
     telegram-desktop
     seadrive-gui
     davinci-resolve-studio
-    hyprshot
     fping
     gh
     ffmpeg
