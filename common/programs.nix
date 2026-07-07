@@ -47,6 +47,7 @@ in
     hyprshot
     fping
     gh
+    ffmpeg
   ];
 
   programs.fish.enable                = true;
