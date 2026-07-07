@@ -1,18 +1,18 @@
 { pkgs, ... }:
 let
-  # DaVinci Resolve dekodiert unter Linux kein AAC-Audio (gilt auch fuer
-  # Studio – es ist eine Audio-Limitierung der Linux-Version, unabhaengig von
-  # der Lizenz). H.264/H.265-Video kann Resolve Studio dagegen. Darum wird nur
-  # die Tonspur nach PCM (pcm_s16le) umgewandelt, das Video 1:1 kopiert und in
-  # einen .mov-Container (PCM-freundlich, Resolve-nativ) gemuxt.
+  # DaVinci Resolve dekodiert unter Linux kein AAC-Audio, und AV1-Video ist ein
+  # Delivery-Codec (Long-GOP, schwer zu dekodieren, Resolve-Support wackelig).
+  # Darum wird nach dem Standard-Resolve-Ingest transkodiert: Video -> DNxHR HQ
+  # (8-bit 4:2:2), Audio -> PCM (pcm_s16le), in einen .mov-Container. Das
+  # importiert garantiert und scrubbt fluessig.
   resolve-reencode = pkgs.writeShellScriptBin "resolve-reencode" ''
     set -eu
     if [ "$#" -eq 0 ]; then
       echo "Usage: resolve-reencode <video> [<video>...]" >&2
       echo "" >&2
-      echo "Wandelt AAC-Audio nach PCM (s16le) in einem .mov-Container um," >&2
-      echo "damit DaVinci Resolve die Datei importieren kann." >&2
-      echo "Das Video wird unveraendert kopiert. Ausgabe: <name>_resolve.mov" >&2
+      echo "Transkodiert Video nach DNxHR HQ und Audio nach PCM (s16le) in einem" >&2
+      echo ".mov-Container, damit DaVinci Resolve die Datei importieren kann." >&2
+      echo "Ausgabe: <name>_resolve.mov" >&2
       exit 1
     fi
 
@@ -31,8 +31,9 @@ let
 
       echo ">> $src -> $out"
       if ${pkgs.ffmpeg}/bin/ffmpeg -hide_banner -i "$src" \
-          -map 0:v -map 0:a? \
-          -c:v copy -c:a pcm_s16le \
+          -map 0:v:0 -map 0:a? \
+          -c:v dnxhd -profile:v dnxhr_hq -pix_fmt yuv422p \
+          -c:a pcm_s16le \
           "$out"; then
         :
       else
