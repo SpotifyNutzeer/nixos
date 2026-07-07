@@ -5,6 +5,7 @@
     ./users.nix
     ./environment.nix
     ./programs.nix
+    ./resolve-reencode.nix
     ./desktop.nix
     ./nix.nix
     ./fonts.nix
