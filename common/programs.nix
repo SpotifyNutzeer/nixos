@@ -46,6 +46,7 @@ in
     davinci-resolve-studio
     hyprshot
     fping
+    gh
   ];
 
   programs.fish.enable                = true;
