@@ -50,6 +50,7 @@ in
     ripgrep
     eza
     bat
+    teamspeak6-client
   ];
 
   programs.fish.enable                = true;
