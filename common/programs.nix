@@ -47,6 +47,7 @@ in
     fping
     gh
     ffmpeg
+    ripgrep
   ];
 
   programs.fish.enable                = true;
