@@ -48,6 +48,8 @@ in
     gh
     ffmpeg
     ripgrep
+    eza
+    bat
   ];
 
   programs.fish.enable                = true;

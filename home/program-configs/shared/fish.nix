@@ -4,6 +4,11 @@
     enable = true;
     # Completions aus Man-Pages generieren (für Tools ohne eigene Fish-Completions)
     generateCompletions = true;
+    shellAliases = {
+      grep = "rg";
+      ls = "eza -la --group-directories-first --icons";
+      cat = "bat";
+    };
   };
 
   # Completions für hunderte CLIs (git, docker, kubectl, nix, ...) inkl. Beschreibungen
