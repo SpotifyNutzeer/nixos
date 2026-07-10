@@ -40,7 +40,6 @@ in
         PROTON_LOCAL_SHADER_CACHE = "1";
         PROTON_USE_NTSYNC = "1";                 # ntsync statt fsync (/dev/ntsync)
         PROTON_VKD3D_HEAP = "1";                 # fixt NVIDIA-Xid-109-Crashes
-        VKD3D_CONFIG = "descriptor_heap";
         __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
       };
     };
