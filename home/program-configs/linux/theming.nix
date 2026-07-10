@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  home.pointerCursor.enable = true;
   # Ergaenzt die shared Catppuccin-Basis um Linux-spezifisches Theming.
   catppuccin = {
     cursors.enable = true;
