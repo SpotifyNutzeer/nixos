@@ -1,9 +1,12 @@
 { pkgs, ... }:
 {
-  home.pointerCursor.enable = true;
   # Ergaenzt die shared Catppuccin-Basis um Linux-spezifisches Theming.
   catppuccin = {
-    cursors.enable = true;
+    cursors = {
+      enable = true;
+      # Default-Cursor: Catppuccin Mocha Dark statt des Teal-Akzents.
+      accent = "dark";
+    };
     hyprland.enable = false;
     # hyprlock wird manuell in linux/hyprlock.nix gethemet.
     hyprlock.enable = false;
@@ -38,7 +41,9 @@
   };
 
   home.pointerCursor = {
+    enable = true;
     gtk.enable = true;
     size = 24;
+
   };
 }
