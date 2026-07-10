@@ -9,6 +9,7 @@
       { id = "gebbhagfogifgggkldgodflihgfeippi"; } # Return Youtube Dislike
       { id = "mnjggcdmjocbbbhaepdhchncahnbgone"; } # SponsorBlock for Youtube
       { id = "bkkmolkhemgaeaeggcmfbghljjjoofoh"; } # Catppuccin Mocha Theme
+      { id = "mmioliijnhnoblpgimnlajmefafdfilb"; } # Shazam
     ];
   };
 }
