@@ -51,6 +51,9 @@ in
     eza
     bat
     teamspeak6-client
+    nodejs
+    pnpm
+    corepack
   ];
 
   programs.fish.enable                = true;
