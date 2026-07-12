@@ -83,6 +83,13 @@
 
       dwindle = { preserve_split = true; };
       master = { new_status = "master"; };
+      # Natives Scrolling-Layout (seit Hyprland 0.51, hier via Toggle SUPER+TAB nutzbar).
+      scrolling = {
+        column_width = 0.5;                                  # Standardbreite neuer Spalten (0.1–1.0)
+        focus_fit_method = 1;                                # fokussierte Spalte einpassen statt zentrieren (0=center, 1=fit)
+        explicit_column_widths = "0.333, 0.5, 0.667, 1.0";   # Presets, die colresize +conf/-conf durchschaltet
+        # direction = "right";                               # Richtung, in der neue Spalten wachsen (left/right/down/up)
+      };
       misc = { force_default_wallpaper = -1; disable_hyprland_logo = false; };
       render = {
         # use_shader_blur_blend = 1;
@@ -112,6 +119,23 @@
         "$mainMod SHIFT, Return, exec, $menu"
         "$mainMod, P, pseudo,"
         "$mainMod, J, layoutmsg, togglesplit"
+
+        # ── Layout dwindle <-> scrolling umschalten ──
+        "$mainMod, TAB, exec, if hyprctl getoption general:layout | grep -q scrolling; then hyprctl keyword general:layout dwindle; else hyprctl keyword general:layout scrolling; fi"
+
+        # ── Scrolling-Layout (layoutmsg wirkt nur im scrolling-Layout, ist im dwindle harmlos) ──
+        "$mainMod, period, layoutmsg, move +col"              # Tape eine Spalte nach rechts scrollen
+        "$mainMod, comma, layoutmsg, move -col"               # Tape eine Spalte nach links scrollen
+        "$mainMod SHIFT, period, layoutmsg, swapcol r"        # aktive Spalte mit rechter Nachbarspalte tauschen
+        "$mainMod SHIFT, comma, layoutmsg, swapcol l"         # aktive Spalte mit linker Nachbarspalte tauschen
+        "$mainMod, R, layoutmsg, colresize +conf"             # Spaltenbreite durch Presets vorwaerts schalten
+        "$mainMod SHIFT, R, layoutmsg, colresize -conf"       # Spaltenbreite durch Presets rueckwaerts schalten
+        "$mainMod, G, layoutmsg, fit visible"                 # alle aktuell sichtbaren Spalten sauber einpassen
+        "$mainMod, M, layoutmsg, fit expand"                  # aktives Fenster den freien Platz fuellen lassen
+        "$mainMod, C, layoutmsg, consume"                     # Fenster in die vorige Spalte einsaugen (vertikal stapeln)
+        "$mainMod, X, layoutmsg, expel"                       # Fenster aus der Spalte in eine eigene Spalte loesen
+        "$mainMod, U, layoutmsg, promote"                     # Fenster in eine neue eigene Spalte befoerdern
+
         "$mainMod SHIFT, S, exec, $screenshot"
         "$mainMod, L, exec, hyprlock"
         "$mainMod SHIFT, T, exec, ~/.config/quickshell/scripts/theme-switch.sh menu"
