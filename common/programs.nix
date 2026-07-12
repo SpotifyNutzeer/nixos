@@ -54,6 +54,7 @@ in
     nodejs
     pnpm
     corepack
+    s-tui
   ];
 
   programs.fish.enable                = true;
