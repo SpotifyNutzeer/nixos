@@ -56,6 +56,7 @@ in
     corepack
     s-tui
     goverlay
+    labymod-launcher
   ];
 
   programs.fish.enable                = true;
