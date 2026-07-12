@@ -98,5 +98,6 @@ in
     vulkan-tools
     wineWow64Packages.stable
     winetricks
+    zenity
   ];
 }
