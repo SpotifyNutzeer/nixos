@@ -55,6 +55,7 @@ in
     pnpm
     corepack
     s-tui
+    goverlay
   ];
 
   programs.fish.enable                = true;
