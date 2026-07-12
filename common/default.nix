@@ -13,6 +13,7 @@
     ./hyprlock.nix
     ./brave-policies.nix
     ./sudo.nix
+    ./virtualisation.nix
   ];
 
   networking.networkmanager.enable = true;
