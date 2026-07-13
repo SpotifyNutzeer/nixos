@@ -57,6 +57,9 @@ in
     s-tui
     goverlay
     labymod-launcher
+    gnumake
+    gcc
+    python3
   ];
 
   programs.fish.enable                = true;
