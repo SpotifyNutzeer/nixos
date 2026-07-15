@@ -30,9 +30,11 @@
 
       general = {
         gaps_in = 5;
-        gaps_out = 10;
+        # Defaults = Zen-Variante (quickshell Theme.qml koppelt beim Themenwechsel
+        # zur Laufzeit via hyprctl: zen -> diese Werte, mocha/liquidglass -> 10 / $sky $teal 45deg / 10)
+        gaps_out = "12, 22, 22, 22";
         border_size = 2;
-        "col.active_border" = "$sky $teal 45deg";
+        "col.active_border" = "$teal";
         "col.inactive_border" = "rgba(45475aaa)";
         resize_on_border = false;
         allow_tearing = false;
@@ -40,7 +42,7 @@
       };
 
       decoration = {
-        rounding = 10;
+        rounding = 12;
         rounding_power = 2;
         active_opacity = 1.0;
         inactive_opacity = 1.0;
