@@ -6,6 +6,16 @@
 
     discord.vencord.enable = true;
 
+    # Screensharing/Go-Live: Discord lief bisher unter XWayland und nutzte damit
+    # X11-Screencapture statt des Wayland-PipeWire-Portals -> xdg-desktop-portal
+    # (hyprland-share-picker) wurde nie aufgerufen, es erschien keine Auswahl.
+    # Native Wayland + PipeWire-Capturer erzwingen, damit getDisplayMedia ueber
+    # das Portal geht und die Quellen-Auswahl erscheint.
+    discord.commandLineArgs = [
+      "--enable-features=UseOzonePlatform,WebRTCPipeWireCapturer"
+      "--ozone-platform=wayland"
+    ];
+
     # Theming
     config = {
       useQuickCss = true;

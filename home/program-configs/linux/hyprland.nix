@@ -222,7 +222,19 @@
         # eigene cgroup/OOM-Grenzen, korrekte Zuordnung im Session-Baum.
         "uwsm app -- quickshell"
         "uwsm app -- discord"
-        "sleep 5; uwsm app -- tidal-hifi"
+        # Tidal (Electron/Chromium) bevorzugt PulseAudio, faellt aber auf ALSA
+        # zurueck, wenn es beim Start von pipewire-pulse keine Verbindung bekommt.
+        # pipewire-pulse.service ist socket-aktiviert (Type=simple): der Socket ist
+        # frueh da, der Dienst startet aber erst beim ersten Client-Connect KALT.
+        # Am Boot triggert Tidals Connect diesen Kaltstart, dessen Latenz laeuft in
+        # Chromiums Pulse-Handshake-Timeout -> ALSA-Fallback. Je nach Backend meldet
+        # sich Tidal bei WirePlumber unter verschiedener Identitaet (pulse=Chromium,
+        # alsa=PipeWire ALSA [tidal-hifi]), wodurch das in pavucontrol/durch die
+        # pulse.rules gesetzte Ziel nach einem Neustart verloren geht.
+        # Fix: pipewire-pulse VOR Tidal explizit warmstarten (systemctl start
+        # blockiert bis active), damit Tidal deterministisch ueber PulseAudio geht
+        # und die pulse.rules-Regel (siehe hosts/desktop/pipewire.nix) greift.
+        "systemctl --user start pipewire-pulse.service; uwsm app -- tidal-hifi"
         "uwsm app -- awww-daemon"
         "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
         "uwsm app -- streamcontroller -b"
