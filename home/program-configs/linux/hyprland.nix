@@ -20,13 +20,10 @@
       "$menu"        = "rofi -show drun";
       "$screenshot"  = "grimblast -f -n copy area";
 
-      env = [
-        "XCURSOR_SIZE,24"
-        "XCURSOR_THEME,catppuccin-mocha-dark-cursors"
-        "HYPRCURSOR_SIZE,24"
-        "QT_QPA_PLATFORMTHEME,qt6ct"
-        "QT_STYLE_OVERRIDE,kvantum"
-      ];
+      # HINWEIS: Session-Env liegt jetzt in ~/.config/uwsm/env-hyprland (siehe unten).
+      # Der Hyprland-env-Block wuerde nur an direkte exec-once-Kinder vererben, nicht
+      # an `uwsm app`-Scopes oder D-Bus-Dienste. Die uwsm-env-Datei laedt UWSM vor dem
+      # Compositor in die systemd-User-Umgebung -> alle erben konsistent.
 
       general = {
         gaps_in = 5;
@@ -209,23 +206,45 @@
 
       xwayland = { enabled = true; force_zero_scaling = true; };
       exec-once = [
+        # UWSM-Readiness: signalisiert dem wayland-wm@hyprland.service, dass der
+        # Compositor oben ist. Exportiert WAYLAND_DISPLAY/DISPLAY in die systemd-
+        # User- und D-Bus-Umgebung und aktiviert graphical-session.target. MUSS
+        # als erstes laufen, sonst haengt der Session-Unit im activating-Timeout.
+        "uwsm finalize"
+
         # NVIDIA-3-Display-Kaltstart-Bug: kommen alle Monitore gleichzeitig hoch,
         # bekommt der Hauptmonitor kein 4K@240 (DSC-/Head-Allokation). Fix: DP-2 kurz
         # rausnehmen (Haupt springt auf 240), dann via reload mit voller HDR-Config zurueck.
         # "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
-        "quickshell"
-        "discord"
-        "sleep 5; tidal-hifi"
-        "awww-daemon"
+
+        # GUI-Apps via `uwsm app --`: landen in eigenen systemd-Scopes (app.slice)
+        # statt als Kinder des Compositors -> sauberes Stoppen beim Session-Ende,
+        # eigene cgroup/OOM-Grenzen, korrekte Zuordnung im Session-Baum.
+        "uwsm app -- quickshell"
+        "uwsm app -- discord"
+        "sleep 5; uwsm app -- tidal-hifi"
+        "uwsm app -- awww-daemon"
         "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
-        "streamcontroller -b"
-        "steam -silent"
-        "gsr-ui"
-        "Telegram -startintray"
-        "seadrive-gui"
+        "uwsm app -- streamcontroller -b"
+        "uwsm app -- steam -silent"
+        "uwsm app -- gsr-ui"
+        "uwsm app -- Telegram -startintray"
+        "uwsm app -- seadrive-gui"
       ];
     };
   };
+
+  # UWSM-Session-Environment: wird VOR dem Compositor gesourced und in die systemd-
+  # User- + D-Bus-Activation-Environment geladen. Reicht damit an den Compositor
+  # selbst, alle `uwsm app`-Scopes und D-Bus-aktivierte Dienste (im Gegensatz zum
+  # Hyprland-env-Block, der nur direkte Kinder erreicht). Einzige Quelle der Wahrheit.
+  xdg.configFile."uwsm/env-hyprland".text = ''
+    export XCURSOR_SIZE=24
+    export XCURSOR_THEME=catppuccin-mocha-dark-cursors
+    export HYPRCURSOR_SIZE=24
+    export QT_QPA_PLATFORMTHEME=qt6ct
+    export QT_STYLE_OVERRIDE=kvantum
+  '';
 
   # Companion-Tool, das die Session JETZT braucht (Launcher). Wächst in Round 2.
   home.packages = with pkgs; [ rofi quickshell jq cava awww ];
