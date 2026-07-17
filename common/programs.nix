@@ -60,6 +60,7 @@ in
     gnumake
     gcc
     python3
+    kdePackages.ark
   ];
 
   programs.fish.enable                = true;
