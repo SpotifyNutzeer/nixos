@@ -58,8 +58,16 @@ in
     enable = true;
     skhdConfig = ''
       # ── Programme / Fenster ─────────────────────────────────
-      alt - return          : open -na kitty
-      alt + shift - q       : ${yabai} -m window --close
+      # --single-instance: neue Fenster laufen in der bestehenden kitty-Instanz
+      # (ein Prozess, ein Dock-Icon) statt pro Fenster eine eigene App-Instanz.
+      alt - return          : open -na kitty --args --single-instance
+      # yabai --close drueckt den AX-Close-Button — den hat kitty wegen
+      # hide_window_decorations nicht. Fuer kitty den Key durchreichen (~),
+      # dort schliesst ein natives Keybinding (close_os_window) das Fenster.
+      alt + shift - q [
+          "kitty" ~
+          *       : ${yabai} -m window --close
+      ]
       alt - f               : ${yabai} -m window --toggle zoom-fullscreen
       alt - v               : ${yabai} -m window --toggle float
       alt - j               : ${yabai} -m window --toggle split
@@ -99,6 +107,15 @@ in
       alt + shift - 0 : ${yabai} -m window --space 10
     '';
   };
+
+  # skhd laedt seine Config NICHT neu, wenn darwin-rebuild nur das Symlink-Ziel
+  # von /etc/skhdrc tauscht — der beobachtete Pfad aendert sich aus skhd-Sicht
+  # nie, und die launchd-Plist (und damit der Dienst) bleibt unveraendert.
+  # Daher nach jeder Aktivierung explizit neu starten.
+  system.activationScripts.postActivation.text = ''
+    echo "restarting skhd (config lebt in /etc/skhdrc, plist aendert sich nie)..."
+    launchctl kickstart -k "gui/$(id -u ${config.system.primaryUser})/org.nixos.skhd" || true
+  '';
 
   # ── JankyBorders: aktiver Fensterrahmen (ersetzt Hyprlands Gradient-Border) ──
   services.jankyborders = {
