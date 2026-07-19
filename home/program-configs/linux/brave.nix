@@ -10,6 +10,7 @@
       { id = "mnjggcdmjocbbbhaepdhchncahnbgone"; } # SponsorBlock for Youtube
       { id = "bkkmolkhemgaeaeggcmfbghljjjoofoh"; } # Catppuccin Mocha Theme
       { id = "mmioliijnhnoblpgimnlajmefafdfilb"; } # Shazam
+      { id = "jplgfhpmjnbigmhklmmbgecoobifkmpa"; } # Proton VPN
     ];
   };
 }
