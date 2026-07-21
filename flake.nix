@@ -45,6 +45,18 @@
         buildInputs = old.buildInputs ++ [ final.python3Packages.websockets ];
       });
     };
+    # Upstream-Bug (auch noch auf nixpkgs master, Stand 2026-07-21): das Paket
+    # ruft wrapGAppsHook manuell in einem symlinkJoin auf, wo $output nie
+    # gesetzt wird -> "wrapGAppsHookHasRunForOutput: bad array subscript".
+    # Overlay entfernen, sobald der Build upstream wieder durchlaeuft.
+    noriskOverlay = final: prev: {
+      noriskclient-launcher = prev.noriskclient-launcher.overrideAttrs (old: {
+        buildCommand = builtins.replaceStrings
+          [ "glibPostInstallHook" ]
+          [ "output=out\noutputBin=out\nglibPostInstallHook" ]
+          old.buildCommand;
+      });
+    };
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit tidaluna catppuccin streamcontroller-tidal gsr-ui-nix; };
@@ -58,7 +70,7 @@
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin; };
           home-manager.users.paul = import ./home/home-linux.nix;
-          nixpkgs.overlays = [ tidaluna.overlays.default streamcontrollerOverlay ];
+          nixpkgs.overlays = [ tidaluna.overlays.default streamcontrollerOverlay noriskOverlay ];
         }
       ];
     };
