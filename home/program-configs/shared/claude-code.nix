@@ -14,7 +14,7 @@
       theme   = "dark-ansi";
       tui     = "fullscreen";
       verbose = true;
-
+      model   = "Fable 5";
       # ── tmux ─────────────────────────────────────────────────────────
       # Agent-Teams laufen im tmux-Split-Pane-Modus: jeder Teammate bekommt
       # einen eigenen Pane. "tmux" erzwingt das (Alternative: "auto" = nur
