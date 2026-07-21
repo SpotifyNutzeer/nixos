@@ -53,58 +53,60 @@ in
   };
 
   # ── skhd: Hotkey-Daemon (yabai macht kein Key-Binding selbst) ───────────────
-  # Modifier = Alt (⌥), 1:1 zu den Hyprland-SUPER-Bindings / vorherigem AeroSpace.
+  # Modifier = NUR die linke Option-Taste (lalt), 1:1 zu den Hyprland-SUPER-
+  # Bindings. Die rechte Option bleibt frei fuer Sonderzeichen des deutschen
+  # Layouts (| \ [ ] { } @ ~ € liegen alle auf Option) — wie AltGr unter Linux.
   services.skhd = {
     enable = true;
     skhdConfig = ''
       # ── Programme / Fenster ─────────────────────────────────
       # --single-instance: neue Fenster laufen in der bestehenden kitty-Instanz
       # (ein Prozess, ein Dock-Icon) statt pro Fenster eine eigene App-Instanz.
-      alt - return          : open -na kitty --args --single-instance
+      lalt - return          : open -na kitty --args --single-instance
       # yabai --close drueckt den AX-Close-Button — den hat kitty wegen
       # hide_window_decorations nicht. Fuer kitty den Key durchreichen (~),
       # dort schliesst ein natives Keybinding (close_os_window) das Fenster.
-      alt + shift - q [
+      lalt + shift - q [
           "kitty" ~
           *       : ${yabai} -m window --close
       ]
-      alt - f               : ${yabai} -m window --toggle zoom-fullscreen
-      alt - v               : ${yabai} -m window --toggle float
-      alt - j               : ${yabai} -m window --toggle split
-      alt - e               : open -a Finder
+      lalt - f               : ${yabai} -m window --toggle zoom-fullscreen
+      lalt - v               : ${yabai} -m window --toggle float
+      lalt - j               : ${yabai} -m window --toggle split
+      lalt - e               : open -a Finder
 
       # Launcher: Raycast per URL-Scheme (= Hyprland $menu)
-      alt + shift - return  : open raycast://
+      lalt + shift - return  : open raycast://
 
       # ── Fokus bewegen ───────────────────────────────────────
-      alt - left            : ${yabai} -m window --focus west
-      alt - right           : ${yabai} -m window --focus east
-      alt - up              : ${yabai} -m window --focus north
-      alt - down            : ${yabai} -m window --focus south
+      lalt - left            : ${yabai} -m window --focus west
+      lalt - right           : ${yabai} -m window --focus east
+      lalt - up              : ${yabai} -m window --focus north
+      lalt - down            : ${yabai} -m window --focus south
 
       # ── Workspaces (Spaces) wechseln 1..10 ──────────────────
-      alt - 1 : ${yabai} -m space --focus 1
-      alt - 2 : ${yabai} -m space --focus 2
-      alt - 3 : ${yabai} -m space --focus 3
-      alt - 4 : ${yabai} -m space --focus 4
-      alt - 5 : ${yabai} -m space --focus 5
-      alt - 6 : ${yabai} -m space --focus 6
-      alt - 7 : ${yabai} -m space --focus 7
-      alt - 8 : ${yabai} -m space --focus 8
-      alt - 9 : ${yabai} -m space --focus 9
-      alt - 0 : ${yabai} -m space --focus 10
+      lalt - 1 : ${yabai} -m space --focus 1
+      lalt - 2 : ${yabai} -m space --focus 2
+      lalt - 3 : ${yabai} -m space --focus 3
+      lalt - 4 : ${yabai} -m space --focus 4
+      lalt - 5 : ${yabai} -m space --focus 5
+      lalt - 6 : ${yabai} -m space --focus 6
+      lalt - 7 : ${yabai} -m space --focus 7
+      lalt - 8 : ${yabai} -m space --focus 8
+      lalt - 9 : ${yabai} -m space --focus 9
+      lalt - 0 : ${yabai} -m space --focus 10
 
       # ── Fenster in Space verschieben 1..10 (Fokus bleibt) ───
-      alt + shift - 1 : ${yabai} -m window --space 1
-      alt + shift - 2 : ${yabai} -m window --space 2
-      alt + shift - 3 : ${yabai} -m window --space 3
-      alt + shift - 4 : ${yabai} -m window --space 4
-      alt + shift - 5 : ${yabai} -m window --space 5
-      alt + shift - 6 : ${yabai} -m window --space 6
-      alt + shift - 7 : ${yabai} -m window --space 7
-      alt + shift - 8 : ${yabai} -m window --space 8
-      alt + shift - 9 : ${yabai} -m window --space 9
-      alt + shift - 0 : ${yabai} -m window --space 10
+      lalt + shift - 1 : ${yabai} -m window --space 1
+      lalt + shift - 2 : ${yabai} -m window --space 2
+      lalt + shift - 3 : ${yabai} -m window --space 3
+      lalt + shift - 4 : ${yabai} -m window --space 4
+      lalt + shift - 5 : ${yabai} -m window --space 5
+      lalt + shift - 6 : ${yabai} -m window --space 6
+      lalt + shift - 7 : ${yabai} -m window --space 7
+      lalt + shift - 8 : ${yabai} -m window --space 8
+      lalt + shift - 9 : ${yabai} -m window --space 9
+      lalt + shift - 0 : ${yabai} -m window --space 10
     '';
   };
 
