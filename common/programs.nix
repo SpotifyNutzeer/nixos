@@ -64,6 +64,12 @@ in
     noriskclient-launcher
   ];
 
+  # Der NoRisk-Launcher laedt sein eigenes generisches Zulu-JDK nach
+  # ~/.local/share/noriskclientv3/meta/java/ und startet den Client damit.
+  # Ohne nix-ld fehlt dem Binary der dynamische Linker unter /lib64
+  # ("Could not start dynamically linked executable").
+  programs.nix-ld.enable = true;
+
   programs.fish.enable                = true;
   programs.nano.enable                = false;
   # gpu-screen-recorder + ShadowPlay-artige Overlay-UI aus der gsr-ui-nix Flake.
