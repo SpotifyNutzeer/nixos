@@ -51,9 +51,14 @@
     # Overlay entfernen, sobald der Build upstream wieder durchlaeuft.
     noriskOverlay = final: prev: {
       noriskclient-launcher = prev.noriskclient-launcher.overrideAttrs (old: {
+        # WebKitGTKs DMA-BUF-Renderer crasht auf NVIDIA/Wayland mit
+        # "Error 71 (Protocol error) dispatching to Wayland display".
         buildCommand = builtins.replaceStrings
-          [ "glibPostInstallHook" ]
-          [ "output=out\noutputBin=out\nglibPostInstallHook" ]
+          [ "glibPostInstallHook" "gappsWrapperArgsHook" ]
+          [
+            "output=out\noutputBin=out\nglibPostInstallHook"
+            "gappsWrapperArgs+=(--set WEBKIT_DISABLE_DMABUF_RENDERER 1)\ngappsWrapperArgsHook"
+          ]
           old.buildCommand;
       });
     };
