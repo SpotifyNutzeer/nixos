@@ -61,6 +61,7 @@ in
     gcc
     python3
     kdePackages.ark
+    noriskclient-launcher
   ];
 
   programs.fish.enable                = true;
