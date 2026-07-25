@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, tidaluna, ... }:
 {
   imports = [ ./yabai.nix ./homebrew.nix ./sketchybar.nix ];
 
@@ -25,6 +25,17 @@
   # Auf NixOS setzt common/programs.nix dies system-weit; darwin braucht das
   # Aequivalent, sonst schlaegt die Home-Manager-Evaluierung (useGlobalPkgs) fehl.
   nixpkgs.config.allowUnfree = true;
+
+  # Offizielle TIDAL.app (aarch64-darwin, unfree) mit injiziertem TidaLuna.
+  # Wie auf Linux (common/programs.nix) direkt aus der TidaLuna-Flake, die
+  # ihren EIGENEN nixpkgs-Pin mitbringt — der Overlay-Weg wuerde stattdessen
+  # mit unserem nixos-unstable bauen, dessen fetchPnpmDeps das von TidaLuna
+  # genutzte fetcherVersion=3 nicht mehr unterstuetzt. Der Linux-Wrapper
+  # (--password-store=gnome-libsecret) entfaellt hier: Electrons safeStorage
+  # nutzt auf macOS automatisch den Keychain.
+  environment.systemPackages = [
+    tidaluna.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ];
 
   # Systemweit Dark Mode.
   system.defaults.NSGlobalDomain.AppleInterfaceStyle = "Dark";

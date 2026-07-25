@@ -80,7 +80,7 @@
       ];
     };
     mkDarwin = host: nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit catppuccin; };
+      specialArgs = { inherit catppuccin tidaluna; };
       modules = [
         ./hosts/${host}
         home-manager.darwinModules.home-manager
