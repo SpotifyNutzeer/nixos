@@ -17,7 +17,7 @@ in
     settings = {
       display = {
         separator = " ";
-        key.width = 12;
+        key.width = 10;
       };
       modules = [
         {
@@ -33,15 +33,20 @@ in
           format = "─────────────────────";
           outputColor = dim;
         }
-        (m "os" " OS" teal)
-        (m "kernel" " Kernel" teal)
-        (m "uptime" " Uptime" teal)
-        (m "packages" "󰏖 Packages" teal)
-        (m "shell" " Shell" teal)
-        (m "wm" " WM" teal)
-        (m "cpu" " CPU" sky)
-        (m "memory" "󰑭 RAM" sky)
-        (m "disk" "󰋊 Disk" sky)
+        (m "os" "OS" teal)
+        # Nur den Board-/Gerätenamen, ohne Firmware-Versionsstring dahinter
+        ((m "host" "Host" teal) // { format = "{name}"; })
+        (m "kernel" "Kernel" teal)
+        (m "uptime" "Uptime" teal)
+        (m "packages" "Packages" teal)
+        (m "shell" "Shell" teal)
+        (m "terminal" "Terminal" teal)
+        (m "wm" "WM" teal)
+        (m "cpu" "CPU" sky)
+        (m "gpu" "GPU" sky)
+        (m "memory" "RAM" sky)
+        (m "disk" "Disk" sky)
+        (m "display" "Display" sky)
         { type = "break"; }
         {
           type = "colors";
