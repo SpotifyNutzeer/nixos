@@ -16,7 +16,7 @@
         sdr_min_luminance = 0.005; sdr_max_luminance = 250;
         min_luminance = 0; max_luminance = 1000; sdr_eotf = "gamma22"; vrr = 2;
       }
-      { output = "DP-3"; mode = "2560x720@60"; position = "0x3600"; }
+      { output = "DP-3"; mode = "2560x720@60"; position = "0x3600"; scale = "1.0"; }
     ];
 
     workspace = [

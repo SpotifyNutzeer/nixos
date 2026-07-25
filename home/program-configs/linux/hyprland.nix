@@ -45,6 +45,16 @@
         inactive_opacity = 1.0;
         shadow = { enabled = true; range = 4; render_power = 3; color = "rgba(11111bee)"; };
         blur = { enabled = true; size = 6; passes = 2; vibrancy = 0.1696; new_optimizations = false; };
+        motion_blur = { enabled = true; samples = 7; };
+        # Optik liegt komplett hier; nur enabled togglet Theme.qml (zen -> false,
+        # mocha/liquidglass -> true). Inaktive Fenster transparent -> Fokus-Indikator.
+        glow = {
+          enabled = false;
+          range = 10;
+          render_power = 3;
+          color = "rgba(89dceb66) rgba(94e2d566) 45deg";
+          color_inactive = "rgba(00000000)";
+        };
       };
 
       layerrule = [ "blur on, ignore_alpha 0.05, match:namespace quickshell" ];
@@ -62,6 +72,7 @@
           "global,        1, 10,   default"
           "border,        1, 5.39, easeOutQuint"
           "borderangle,   1, 60,   linear, loop"
+          "glowangle,     1, 60,   linear, loop"
           "windows,       1, 4.79, easeOutQuint"
           "windowsIn,     1, 4.1,  easeOutQuint, popin 87%"
           "windowsOut,    1, 1.49, linear, popin 87%"
