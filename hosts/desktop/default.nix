@@ -11,6 +11,7 @@
     ./coolercontrol.nix
     ./lact.nix
     ./streamcontroller.nix
+    ./vr.nix
   ];
 
   home-manager.users.paul.imports =
