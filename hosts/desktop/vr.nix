@@ -2,8 +2,10 @@
 {
   # WiVRn: OpenXR-Runtime + Streaming-Server (Monado-basiert) fuer die Pico 4.
   # xrizer ist im Paket als OpenVR-Compat-Layer gebuendelt; der Server
-  # verwaltet active_runtime.json und openvrpaths.vrpath selbst — SteamVR
-  # wird nicht installiert. Avahi/mDNS aktiviert das Modul automatisch.
+  # verwaltet openvrpaths.vrpath selbst und registriert die Runtime via
+  # Manifest unter /run/current-system/sw/share/openxr (Steam findet sie
+  # ueber PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES) — SteamVR wird nicht
+  # installiert. Avahi/mDNS aktiviert das Modul automatisch.
   services.wivrn = {
     enable = true;
     openFirewall = true;             # 9757 TCP/UDP fuer den Stream
