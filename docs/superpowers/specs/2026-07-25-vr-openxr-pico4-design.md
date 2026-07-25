@@ -88,6 +88,21 @@ nixpkgs-Update mit neuer WiVRn-Version ggf. Client-APK aktualisieren.
 3. Ein SteamVR-Spiel aus der Bibliothek startet über Proton, rendert im Headset,
    Controller und Audio (PipeWire) funktionieren.
 
+## Troubleshooting-Befunde (25.07.2026)
+
+- **GE-Proton11-1 ist für VR-Titel kaputt:** DXVK scheitert mit
+  `VK_ERROR_EXTENSION_NOT_PRESENT` beim Device-Aufbau (Unity meldet
+  "InitializeEngineGraphics failed"). Ursache-Kette: WiVRn/Monado meldet auf
+  der Legacy-Abfrage `xrGetVulkanDeviceExtensionsKHR` Linux-only-Extensions
+  (`VK_KHR_external_memory_fd`), xrizer reicht sie unübersetzt durch, und
+  GE-Proton11-1 (wine-staging 11.0) übersetzt sie nicht in die
+  `_win32`-Pendants — winevulkan lehnt ab. **Fix: VR-Spiele in Steam auf
+  „Proton Experimental" pinnen** (Eigenschaften → Kompatibilität). Flache
+  Spiele sind nicht betroffen. Bei künftigen GE-Proton-Updates neu testen.
+- Diagnose-Weg, falls es wieder auftritt: `PROTON_LOG=1 %command%`, dann in
+  `~/steam-<appid>.log` nach `VK_ERROR_EXTENSION_NOT_PRESENT` suchen;
+  xrizer-Log liegt in `~/.local/state/xrizer/xrizer.txt`.
+
 ## Nicht im Scope
 
 ALVR/SteamVR-Fallback, Lighthouse-/Full-Body-Tracking, Sim-Racing-Spezifika,
