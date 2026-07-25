@@ -34,28 +34,28 @@ Nur auf dem Desktop-Host, Import in `hosts/desktop/default.nix` — analog zu
 
 - `services.wivrn`:
   - `enable`, `openFirewall` (Port 9757 TCP/UDP), `autoStart` (Server startet
-    mit der User-Session), `defaultRuntime` (registriert WiVRn systemweit als
-    OpenXR-Runtime in `/etc/xdg/openxr/1/active_runtime.json`),
-    `highPriority` (CAP_SYS_NICE fürs Compositing).
-  - `steam.enable` + `steam.importOXRRuntimes`: macht den WiVRn-IPC-Socket in
-    der Steam-Pressure-Vessel-Sandbox sichtbar, damit Proton-Spiele die
-    Runtime erreichen.
-  - `config`: Encoder `nvenc` (Hardware-Encoding auf der NVIDIA-GPU),
-    Bitrate ~100 Mbit/s als Startwert.
-  - `monadoEnvironment`: erst mal leer lassen; nur bei konkreten
-    NVIDIA-Problemen Werte setzen (nicht auf Verdacht).
-- Avahi/mDNS (`services.avahi.enable` + `publish`), damit das Headset den PC
-  automatisch findet.
-- Tools als `environment.systemPackages`: `wlx-overlay-s` (Desktop-Overlay in
-  VR), `android-tools` (adb für die einmalige Client-Installation).
+    mit der User-Session), `highPriority` (CAP_SYS_NICE fürs Compositing).
+  - `steam.importOXRRuntimes`: exportiert
+    `PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES=1`, damit Proton-Spiele in der
+    Steam-Sandbox die Runtime erreichen (`steam.enable` ist default-an).
+  - `config` bleibt leer: Das Stock-Paket kann Vulkan-Video-Encode
+    (Hardware-Encoding auf NVIDIA ohne CUDA-Build); Encoder/Bitrate werden zur
+    Laufzeit im WiVRn-Dashboard eingestellt. NVENC bräuchte einen
+    unfreien, ungecachten CUDA-Build — YAGNI.
+  - `monadoEnvironment`: leer; nur bei konkreten NVIDIA-Problemen setzen.
+- Avahi/mDNS fürs Auto-Discovery aktiviert das Modul selbst mit.
+- Tools als `environment.systemPackages`: `wayvr` (Desktop-Overlay in VR,
+  Nachfolger von wlx-overlay-s), `android-tools` (adb für die einmalige
+  Client-Installation; USB-Zugriff kommt über systemd-uaccess-Regeln).
 
-### 2. xrizer als OpenVR-„Treiber" (home-manager, `hosts/desktop/vr.nix` im hm-Teil)
+### 2. xrizer als OpenVR-„Treiber" (keine eigene Konfig nötig)
 
-- `xdg.configFile."openvr/openvrpaths.vrpath"` deklarativ auf
-  `${pkgs.xrizer}/lib/xrizer` zeigen lassen (JSON mit `runtime`-Pfadliste).
-  Damit landet jedes Spiel, das OpenVR initialisiert, bei xrizer statt SteamVR.
-- Falls Steam die Datei überschreiben will: Datei ist ein read-only-Symlink in
-  den Store — Steam kann sie nicht ändern, das ist gewollt.
+Das nixpkgs-WiVRn-Paket bündelt xrizer als Standard-Eintrag im
+`OVR_COMPAT_SEARCH_PATH`; der WiVRn-Server verwaltet
+`~/.config/openvr/openvrpaths.vrpath` und die aktive OpenXR-Runtime selbst
+(deshalb wurde die frühere Modul-Option `defaultRuntime` entfernt). Es ist
+keine home-manager-Konfiguration nötig — SteamVR-Spiele landen automatisch
+bei xrizer, sobald der WiVRn-Server läuft.
 
 ### 3. Spiele-Start (Doku, keine Konfig)
 
