@@ -81,6 +81,10 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          # Existierende (imperativ entstandene) Dateien beim Uebernehmen durch
+          # home-manager nach *.hm-bak wegsichern statt die Aktivierung mit
+          # "would be clobbered" scheitern zu lassen.
+          home-manager.backupFileExtension = "hm-bak";
           home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin ruflo; };
           home-manager.users.paul = import ./home/home-linux.nix;
           nixpkgs.overlays = [ tidaluna.overlays.default streamcontrollerOverlay noriskOverlay ];
@@ -95,6 +99,8 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          # s.o. bei mkHost: imperative Altdateien sichern statt Abbruch.
+          home-manager.backupFileExtension = "hm-bak";
           home-manager.extraSpecialArgs = { inherit catppuccin ruflo; };
           home-manager.users.paulweber = import ./home/home-darwin.nix;
         }

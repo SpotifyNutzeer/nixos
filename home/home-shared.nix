@@ -11,6 +11,7 @@
     ./program-configs/shared/fastfetch.nix
     ./program-configs/shared/claude-code.nix
     ./program-configs/shared/claude-memory-sync.nix
+    ./program-configs/shared/ruflo.nix
     ./program-configs/shared/theming.nix
     ./program-configs/shared/ssh.nix
   ];

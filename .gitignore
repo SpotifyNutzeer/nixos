@@ -1,3 +1,15 @@
 
 # macOS
 .DS_Store
+
+# Ruflo local secrets and runtime data (Eintraege wie von `ruflo init` erzeugt;
+# .swarm/ und ruvector.db ergaenzt: SQLite-/Vector-DBs, die die Hooks zur
+# Laufzeit im Projekt anlegen)
+.env
+.env.local
+.env.*.local
+.claude-flow/data/
+.claude-flow/logs/
+.claude-flow/sessions/
+.swarm/
+ruvector.db
