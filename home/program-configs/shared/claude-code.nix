@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, pkgs, ruflo, ... }:
 {
   # Claude Code deklarativ ueber das home-manager-Modul. Es schreibt
   # ~/.claude/settings.json als (read-only) Nix-Store-Symlink — Einstellungen
@@ -51,7 +51,28 @@
         "superpowers@claude-plugins-official"     = true;
         "frontend-design@claude-plugins-official" = true;
         "code-review@claude-plugins-official"     = true;
+        # ruflo-core aus dem deklarativen "ruflo"-Marketplace (siehe
+        # marketplaces unten): bringt MCP-Server (npx @claude-flow/cli),
+        # Agents, Skills, Commands und Hooks in einem Plugin mit. Weitere
+        # Plugins aus demselben Marketplace bei Bedarf hier ergaenzen, z.B.
+        # "ruflo-swarm@ruflo" oder "ruflo-rag-memory@ruflo".
+        "ruflo-core@ruflo" = true;
       };
     };
+
+    # Ruflo (github.com/ruvnet/ruflo) — Swarm-Koordination, Memory und
+    # MCP-Tools fuer Claude Code. Statt imperativem
+    # "/plugin marketplace add ruvnet/ruflo" (wuerde in die read-only Config
+    # schreiben wollen) kommt das Repo als Flake-Input und wird hier als
+    # Marketplace registriert. Das home-manager-Modul schreibt dafuer
+    # extraKnownMarketplaces in settings.json sowie
+    # ~/.claude/plugins/known_marketplaces.json. Die Version pinnt flake.lock.
+    marketplaces.ruflo = "${ruflo}";
   };
+
+  # Der MCP-Server des ruflo-core-Plugins startet ueber "npx @claude-flow/cli"
+  # (laedt beim ersten Start aus dem npm-Registry nach, danach npx-Cache).
+  # Auf NixOS liegt nodejs bereits system-weit (common/programs.nix); auf
+  # darwin verwaltet Nix kein nodejs — hier fuer den Home-User nachziehen.
+  home.packages = lib.optionals pkgs.stdenv.isDarwin [ pkgs.nodejs ];
 }

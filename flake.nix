@@ -32,9 +32,17 @@
       url = "github:SpotifyNutzeer/streamcontroller-tidal";
       flake = false;
     };
+    # Ruflo-Plugin-Marketplace fuer Claude Code (github.com/ruvnet/ruflo).
+    # Kein Flake — nur der Repo-Baum, der als deklarativer Marketplace in
+    # home/program-configs/shared/claude-code.nix registriert wird.
+    # Update via `nix flake update ruflo`.
+    ruflo = {
+      url = "github:ruvnet/ruflo";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ruflo, ... }:
   let
     # Das Tidal-Plugin importiert `websockets`, das StreamController in nixpkgs
     # NICHT mitbringt (nur websocket-client). Da das Plugin-Backend direkt im
@@ -73,7 +81,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin; };
+          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin ruflo; };
           home-manager.users.paul = import ./home/home-linux.nix;
           nixpkgs.overlays = [ tidaluna.overlays.default streamcontrollerOverlay noriskOverlay ];
         }
@@ -87,7 +95,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit catppuccin; };
+          home-manager.extraSpecialArgs = { inherit catppuccin ruflo; };
           home-manager.users.paulweber = import ./home/home-darwin.nix;
         }
       ];
