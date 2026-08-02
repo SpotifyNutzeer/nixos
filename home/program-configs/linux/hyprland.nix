@@ -6,6 +6,12 @@
     package = null;
     portalPackage = null;
 
+    # Session-Management macht uwsm; die HM-Integration (Default true) feuert beim
+    # Start `systemctl --user stop hyprland-session.target`, das seit HM-Update per
+    # PropagatesStopTo=graphical-session.target die komplette uwsm-Session (inkl.
+    # Compositor) abreisst -> Hyprland beendet sich ~2s nach Login.
+    systemd.enable = false;
+
     configType = "hyprlang";
 
     settings = {
