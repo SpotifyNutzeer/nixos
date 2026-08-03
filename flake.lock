@@ -292,25 +292,8 @@
         "nixcord": "nixcord",
         "nixpkgs": "nixpkgs_3",
         "rodecaster-tidal-bridge": "rodecaster-tidal-bridge",
-        "ruflo": "ruflo",
         "streamcontroller-tidal": "streamcontroller-tidal",
         "tidaluna": "tidaluna"
-      }
-    },
-    "ruflo": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1785568126,
-        "narHash": "sha256-A76mmEtD+X5mYuOLUwOFLDMI2+zhJe8nMLdfjSDR9N0=",
-        "owner": "ruvnet",
-        "repo": "ruflo",
-        "rev": "913f9eaedee92627950544424e50339feaf98271",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ruvnet",
-        "repo": "ruflo",
-        "type": "github"
       }
     },
     "streamcontroller-tidal": {

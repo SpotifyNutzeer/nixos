@@ -1,4 +1,4 @@
-{ lib, pkgs, ruflo, ... }:
+{ ... }:
 {
   # Claude Code deklarativ ueber das home-manager-Modul. Es schreibt
   # ~/.claude/settings.json als (read-only) Nix-Store-Symlink — Einstellungen
@@ -51,40 +51,7 @@
         "superpowers@claude-plugins-official"     = true;
         "frontend-design@claude-plugins-official" = true;
         "code-review@claude-plugins-official"     = true;
-        # ruflo-core ist hier bewusst NICHT aktiviert: der komplette
-        # Ruflo-Harness kommt jetzt aus ruflo.nix (aequivalent zu
-        # install.sh --full, d.h. CLI + MCP-Server + `ruflo init`-Setup).
-        # Das Plugin ist laut Ruflo-README die "lite"-ALTERNATIVE dazu und
-        # wuerde parallel doppelte Hooks und einen zweiten MCP-Server
-        # (mcp__plugin_ruflo-core_ruflo__*, 314 Tools) registrieren.
-        # Andere Plugins aus dem Marketplace (nur Agents/Commands/Skills,
-        # z.B. "ruflo-swarm@ruflo") koennen gefahrlos ergaenzt werden.
-      };
-
-      # Ruflo-Marketplace (github.com/ruvnet/ruflo) deklarativ registrieren,
-      # Version pinnt flake.lock. BEWUSST via extraKnownMarketplaces statt
-      # der marketplaces-Option des Moduls: sobald `marketplaces` gesetzt
-      # ist, verwaltet das Modul ~/.claude/plugins/known_marketplaces.json
-      # als read-only Store-Symlink — dann kann Claude Code die offizielle
-      # Marketplace nicht mehr selbst registrieren (deren reservierter Name
-      # akzeptiert nur github-Quellen der anthropics-Org, was die Option
-      # nicht ausdruecken kann) und superpowers/code-review/frontend-design
-      # laden nicht mehr ("Marketplace not found"). So bleibt die Datei
-      # beschreibbarer Laufzeit-Zustand und Claude merged diesen Eintrag
-      # beim Start selbst dazu. Der komplette Ruflo-Harness (Hooks, Helpers,
-      # Agents, Skills, Commands, MCP, CLI) liegt in ruflo.nix.
-      extraKnownMarketplaces.ruflo = {
-        source = {
-          source = "directory";
-          path = "${ruflo}";
-        };
       };
     };
   };
-
-  # Ruflo-Hooks, -Statusline und -MCP-Server (ruflo.nix) brauchen node/npx
-  # auf dem PATH. Auf NixOS liegt nodejs bereits system-weit
-  # (common/programs.nix); auf darwin verwaltet Nix kein nodejs — hier fuer
-  # den Home-User nachziehen.
-  home.packages = lib.optionals pkgs.stdenv.isDarwin [ pkgs.nodejs ];
 }

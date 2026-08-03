@@ -32,17 +32,9 @@
       url = "github:SpotifyNutzeer/streamcontroller-tidal";
       flake = false;
     };
-    # Ruflo-Plugin-Marketplace fuer Claude Code (github.com/ruvnet/ruflo).
-    # Kein Flake — nur der Repo-Baum, der als deklarativer Marketplace in
-    # home/program-configs/shared/claude-code.nix registriert wird.
-    # Update via `nix flake update ruflo`.
-    ruflo = {
-      url = "github:ruvnet/ruflo";
-      flake = false;
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ruflo, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
   let
     # Das Tidal-Plugin importiert `websockets`, das StreamController in nixpkgs
     # NICHT mitbringt (nur websocket-client). Da das Plugin-Backend direkt im
@@ -85,7 +77,7 @@
           # home-manager nach *.hm-bak wegsichern statt die Aktivierung mit
           # "would be clobbered" scheitern zu lassen.
           home-manager.backupFileExtension = "hm-bak";
-          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin ruflo; };
+          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin; };
           home-manager.users.paul = import ./home/home-linux.nix;
           nixpkgs.overlays = [ tidaluna.overlays.default streamcontrollerOverlay noriskOverlay ];
         }
@@ -101,7 +93,7 @@
           home-manager.useUserPackages = true;
           # s.o. bei mkHost: imperative Altdateien sichern statt Abbruch.
           home-manager.backupFileExtension = "hm-bak";
-          home-manager.extraSpecialArgs = { inherit catppuccin ruflo; };
+          home-manager.extraSpecialArgs = { inherit catppuccin; };
           home-manager.users.paulweber = import ./home/home-darwin.nix;
         }
       ];
