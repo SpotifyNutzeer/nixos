@@ -1,6 +1,6 @@
 { pkgs, tidaluna, ... }:
 {
-  imports = [ ./yabai.nix ./homebrew.nix ./sketchybar.nix ];
+  imports = [ ./yabai.nix ./homebrew.nix ./sketchybar.nix ./sudo-askpass.nix ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 
