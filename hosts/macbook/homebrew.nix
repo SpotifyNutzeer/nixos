@@ -8,6 +8,7 @@
     casks = [
       "brave-origin"
       "vorssaint"
+      "obsidian"
     ];
   };
 }
