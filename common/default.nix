@@ -22,5 +22,4 @@
     enable = true;
     settings.PasswordAuthentication = true;
   };
-  services.spice-vdagentd.enable = true;
 }

@@ -21,6 +21,13 @@
     };
   };
 
+  # Install the alias targets right next to the aliases so they exist on
+  # every platform (on the Mac they used to come from Homebrew only).
+  # bat/eza also get catppuccin-themed via autoEnable this way.
+  programs.ripgrep.enable = true;
+  programs.eza.enable = true;
+  programs.bat.enable = true;
+
   # Completions für hunderte CLIs (git, docker, kubectl, nix, ...) inkl. Beschreibungen
   programs.carapace = {
     enable = true;
@@ -34,8 +41,4 @@
   };
 
   home.sessionPath = [ "$HOME/.local/bin" ];
-  
-  home.sessionVariables = {
-    DOCKER_HOST = "unix:///run/user/1000/docker.sock";
-  };
 }

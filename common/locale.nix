@@ -15,10 +15,8 @@
     LC_TIME = "de_DE.UTF-8";
   };
   
-  services.xserver.xkb = {
-    layout = "de";
-    variant = "";
-  };
-  
+  services.xserver.xkb.layout = "de";
+
   console.keyMap = "de";
-}       
+}
+

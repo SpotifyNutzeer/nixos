@@ -1,10 +1,10 @@
-{ pkgs, inputs, tidaluna, gsr-ui-nix, ... }:
+{ pkgs, tidaluna, gsr-ui-nix, ... }:
 let
-  # tidal-hifi (TidaLuna) gewrappt: pinnt Electrons safeStorage auf gnome-libsecret.
-  # Sonst waehlt 'auto' unter Hyprland inkonsistent ein Backend, der
-  # luna-trust-store.enc wird nicht entschluesselt und TidaLuna fragt bei JEDEM
-  # Start neu nach Plugin-Permissions. Braucht entsperrten gnome-keyring
-  # (siehe hosts/desktop/sddm.nix).
+  # tidal-hifi (TidaLuna) wrapped to pin Electron's safeStorage to
+  # gnome-libsecret. Otherwise 'auto' picks a backend inconsistently under
+  # Hyprland, luna-trust-store.enc cannot be decrypted and TidaLuna asks for
+  # plugin permissions again on EVERY start. Requires an unlocked
+  # gnome-keyring (see common/sddm.nix).
   tidal-hifi = pkgs.symlinkJoin {
     name = "tidal-hifi-gnome-libsecret";
     paths = [ tidaluna.packages.${pkgs.stdenv.hostPlatform.system}.default ];
@@ -16,17 +16,16 @@ let
 in
 {
   nixpkgs.config.allowUnfree = true;
+  # CLI tools that have a home-manager module enabled in home/program-configs/
+  # (tmux, kitty, alacritty, fastfetch, hyfetch, ripgrep, eza, bat) live there
+  # as the single source, not here. vim stays system-wide on purpose:
+  # environment.variables.EDITOR = "vim" and root sessions need it too.
   environment.systemPackages = with pkgs; [
     vim
     htop
-    tmux
-    kitty
-    alacritty
     tidal-hifi
     pavucontrol
     grimblast
-    fastfetch
-    hyfetch
     usbutils
     mpv
     cowsay
@@ -47,9 +46,6 @@ in
     fping
     gh
     ffmpeg
-    ripgrep
-    eza
-    bat
     teamspeak6-client
     nodejs
     pnpm
@@ -72,11 +68,11 @@ in
 
   programs.fish.enable                = true;
   programs.nano.enable                = false;
-  # gpu-screen-recorder + ShadowPlay-artige Overlay-UI aus der gsr-ui-nix Flake.
-  # Recorder-Paket aus der Flake (5.13.8, gleiche Version wie nixpkgs), damit
-  # System und UI dieselbe Recorder-Binary nutzen. ui.enable legt zusaetzlich
-  # den security.wrapper fuer gsr-global-hotkeys (cap_setuid+ep) und den
-  # gpu-screen-recorder-ui systemd-User-Service an.
+  # gpu-screen-recorder + ShadowPlay-style overlay UI from the gsr-ui-nix
+  # flake. The recorder package comes from the flake too, so system and UI
+  # use the same recorder binary. ui.enable additionally sets up the
+  # security wrapper for gsr-global-hotkeys (cap_setuid+ep) and the
+  # gpu-screen-recorder-ui systemd user service.
   programs.gpu-screen-recorder = {
     package   = gsr-ui-nix.packages.${pkgs.stdenv.hostPlatform.system}.gpu-screen-recorder;
     enable    = true;

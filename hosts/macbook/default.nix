@@ -1,6 +1,11 @@
 { pkgs, tidaluna, ... }:
 {
-  imports = [ ./yabai.nix ./homebrew.nix ./sketchybar.nix ./sudo-askpass.nix ];
+  imports = [ ./yabai.nix ./homebrew.nix ./sudo-askpass.nix ];
+
+  # Terminal/UI font for the whole system (kitty, sketchybar-style tooling).
+  # Used to live in sketchybar.nix; the bar itself was removed (disabled
+  # since 2026-07-06, see git history if it should ever come back).
+  fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 

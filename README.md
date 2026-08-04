@@ -1,2 +1,2 @@
 # nixos
-my nixos configurations
+My NixOS and nix-darwin (macOS) configurations.

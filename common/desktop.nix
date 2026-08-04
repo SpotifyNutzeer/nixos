@@ -4,8 +4,6 @@
     enable = true;
     withUWSM = true;   # Hyprland via Universal Wayland Session Manager
   };
-  environment.pathsToLink = [ "/share/applications" "/share/xdg-desktop-portal" ];
-
   # Portal-Startreihenfolge: xdg-desktop-portal (Frontend) haengt sonst nur an
   # session.slice und startet damit VOR xdg-desktop-portal-hyprland, das erst
   # nach graphical-session.target (Compositor) hochkommt. Das Frontend liest die

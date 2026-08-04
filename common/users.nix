@@ -4,7 +4,6 @@
     isNormalUser = true;
     description = "Paul Reitmayer";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
     shell = pkgs.fish;
     # SSH-Key vom Desktop: Login per Key auf allen Hosts, auch wenn (wie bei
     # einer frischen Installation) noch kein Passwort gesetzt ist.

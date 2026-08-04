@@ -2,7 +2,6 @@
 {
   programs.kitty = {
     enable = true;
-    enableGitIntegration = true;
     settings = {
         font_family      = "JetBrainsMono Nerd Font";
         bold_font        = "auto";

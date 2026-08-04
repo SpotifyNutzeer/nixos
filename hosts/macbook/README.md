@@ -13,11 +13,13 @@ WM ist **yabai** (echtes Binary-Space-Partitioning, entspricht Hyprlands dwindle
    - Dort ausführen: `csrutil enable --without fs --without debug --without nvram`
      (yabais empfohlene Teil-Deaktivierung; NICHT komplett `csrutil disable`).
    - Neu starten.
-2. `darwin-rebuild switch --flake .#macbook` (bzw. beim allerersten Mal
+2. `sudo darwin-rebuild switch --flake .#macbook` (bzw. beim allerersten Mal
    `sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#macbook`).
 3. **Bedienungshilfen-Berechtigung** erteilen für **yabai** UND **skhd**
    (Systemeinstellungen → Datenschutz & Sicherheit → Bedienungshilfen).
-4. yabai/skhd neu starten lassen (`yabai --restart-service`, `skhd --restart-service`)
+4. yabai/skhd neu starten lassen (`launchctl kickstart -k gui/$(id -u)/org.nixos.yabai`
+   und `... org.nixos.skhd` — NICHT `yabai --restart-service`, das verwaltet yabais
+   eigene launchd-Plists und startet eine zweite Instanz neben den org.nixos.*-Services)
    oder ab-/anmelden. Die 10 Spaces werden beim yabai-Start automatisch angelegt.
 
 ## Nach macOS-Updates

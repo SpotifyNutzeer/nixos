@@ -62,6 +62,15 @@
           old.buildCommand;
       });
     };
+    # Shared home-manager base settings for mkHost and mkDarwin.
+    hmDefaults = {
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      # When home-manager takes over existing (imperatively created) files,
+      # back them up as *.hm-bak instead of failing activation with
+      # "would be clobbered".
+      home-manager.backupFileExtension = "hm-bak";
+    };
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit tidaluna catppuccin streamcontroller-tidal gsr-ui-nix; };
@@ -70,13 +79,8 @@
         disko.nixosModules.disko
         gsr-ui-nix.nixosModules.default
         home-manager.nixosModules.home-manager
+        hmDefaults
         {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          # Existierende (imperativ entstandene) Dateien beim Uebernehmen durch
-          # home-manager nach *.hm-bak wegsichern statt die Aktivierung mit
-          # "would be clobbered" scheitern zu lassen.
-          home-manager.backupFileExtension = "hm-bak";
           home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin; };
           home-manager.users.paul = import ./home/home-linux.nix;
           nixpkgs.overlays = [ tidaluna.overlays.default streamcontrollerOverlay noriskOverlay ];
@@ -88,11 +92,8 @@
       modules = [
         ./hosts/${host}
         home-manager.darwinModules.home-manager
+        hmDefaults
         {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          # s.o. bei mkHost: imperative Altdateien sichern statt Abbruch.
-          home-manager.backupFileExtension = "hm-bak";
           home-manager.extraSpecialArgs = { inherit catppuccin; };
           home-manager.users.paulweber = import ./home/home-darwin.nix;
         }

@@ -17,6 +17,8 @@
   # Hibernate: Resume aus dem Swap-LV im LUKS-Container (siehe disko.nix).
   boot.resumeDevice = "/dev/vg0/swap";
 
-  hardware.cpu.amd.updateMicrocode = true;
-  hardware.enableRedistributableFirmware = true;   # u.a. WLAN-Firmware (RTL8852CE)
+  # AMD microcode updates and redistributable firmware (incl. the RTL8852CE
+  # wifi firmware) are already enabled via hardware-configuration.nix
+  # (not-detected.nix sets enableRedistributableFirmware, which in turn
+  # drives updateMicrocode there).
 }
