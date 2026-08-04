@@ -12,9 +12,24 @@ Remove Tidal completely from every host and swap the Hyprland autostart.
 
 - No Spotify replacement for the RodeCaster MIDI bridge or the StreamController
   Tidal plugin. Both are Tidal-specific and get deleted, not ported.
-- No renaming of the `sink_tidal_combined` PipeWire sink. The sink is defined in
-  the separate `dotfiles` repo and stays as it is; only the routing rule that
-  points an application at it changes.
+- No Spotify equivalent of the quickshell theme switcher or any other unrelated
+  cleanup in the `dotfiles` repo.
+
+## Changes in the `dotfiles` repo
+
+`dotfiles` is a flake input, and two of its files are Tidal-specific in a way
+that breaks after the switch:
+
+- `.config/pipewire/pipewire.conf.d/99-rodecaster-multichannel.conf` — the
+  virtual sink is renamed `sink_tidal_combined` -> `sink_music_combined`
+  (node names, descriptions, section comments).
+- `.config/quickshell/Bar.qml` and `SidePanel.qml` — `activePlayer` prefers the
+  MPRIS player whose identity contains `tidal`; that becomes `spotify`.
+  Without this the bar's now-playing readout picks the wrong player.
+
+Both are committed in `dotfiles` (`25ffbc1`). The flake input has to be updated
+(`nix flake update dotfiles`) after pushing, otherwise the NixOS side still
+pulls the old revision.
 
 ## Approach
 
@@ -110,7 +125,7 @@ the playbar keeps its default variant. Cosmetic only.
 | `common/sddm.nix` | Keep `gnome-keyring` — Brave and seadrive-gui use the same secret service. Only rewrite the two comments that justify it via tidal-hifi. |
 | `home/program-configs/linux/hyprland.nix` | `exec-once`: `uwsm app -- tidal-hifi` -> `uwsm app -- spotify`. Keep the `systemctl --user start pipewire-pulse.service` warm start and rewrite its comment for Spotify — Spotify is Chromium-based and hits the identical PulseAudio cold-start / ALSA-fallback race. Window rule `^tidal-hifi$` -> `^spotify$`. |
 | `home/program-configs/linux/xdg-mime.nix` | `x-scheme-handler/tidaLuna` -> `x-scheme-handler/spotify` = `spotify.desktop`. |
-| `hosts/desktop/pipewire.nix` | Rename the drop-in to `50-spotify-target.conf` and match `application.process.binary = "~.*[Ss]potify.*"`. The regex form is deliberate: `spicetifyBuilder.nix` uses `wrapProgramShell`, so the running binary may be `.spotify-wrapped`. Target sink stays `sink_tidal_combined`. |
+| `hosts/desktop/pipewire.nix` | Rename the drop-in to `50-spotify-target.conf`, match `application.process.binary = "~.*[Ss]potify.*"` and target `sink_music_combined`. The regex form is deliberate: `spicetifyBuilder.nix` uses `wrapProgramShell`, so the running binary may be `.spotify-wrapped`. |
 | `hosts/desktop/rodecaster-tidal-bridge.nix` | Delete the file and its import in `hosts/desktop/default.nix`. |
 | `hosts/desktop/streamcontroller.nix` | Drop the `wtf_paul_TidalController` plugin link. StreamController itself and its udev rules stay. |
 | `hosts/macbook/default.nix` | Remove TIDAL.app and the `tidaluna` module argument; `environment.systemPackages` disappears entirely. |
@@ -124,5 +139,5 @@ the playbar keeps its default variant. Cosmetic only.
    are teal.
 4. `hyprctl clients` reports class `spotify` (confirms the window rule matches).
 5. `pactl list clients | grep -i binary` shows the actual process binary; confirm
-   the PipeWire regex matches and Spotify lands on `sink_tidal_combined`.
+   the PipeWire regex matches and Spotify lands on `sink_music_combined`.
 6. `grep -ri tidal` over the repo returns nothing but flake.lock history.

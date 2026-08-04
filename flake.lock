@@ -249,38 +249,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_4": {
-      "locked": {
-        "lastModified": 1778580735,
-        "narHash": "sha256-t+8AVV8ExvOmslz2sLIgw/hJBKlyl65rJvxjvvjHgpE=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "48d91f2c0ce7b9e589f967d4f685153dd765dcdd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "rodecaster-tidal-bridge": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1779631875,
-        "narHash": "sha256-Y4RkqU2+/QMRdCzdAcg655gbxTv0wtX4+vQJwfOTgTc=",
-        "owner": "SpotifyNutzeer",
-        "repo": "rodecaster-tidal-bridge",
-        "rev": "265d58549c0c3bf76d6a420191733319346ce5c7",
-        "type": "github"
-      },
-      "original": {
-        "owner": "SpotifyNutzeer",
-        "repo": "rodecaster-tidal-bridge",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "catppuccin": "catppuccin",
@@ -291,24 +259,27 @@
         "nix-darwin": "nix-darwin",
         "nixcord": "nixcord",
         "nixpkgs": "nixpkgs_3",
-        "rodecaster-tidal-bridge": "rodecaster-tidal-bridge",
-        "streamcontroller-tidal": "streamcontroller-tidal",
-        "tidaluna": "tidaluna"
+        "spicetify-nix": "spicetify-nix"
       }
     },
-    "streamcontroller-tidal": {
-      "flake": false,
+    "spicetify-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": "systems_2"
+      },
       "locked": {
-        "lastModified": 1785607240,
-        "narHash": "sha256-bB8/roz6ALDpXFOm22Zd9wasNg/+/lbS/YePUAZ5bQQ=",
-        "owner": "SpotifyNutzeer",
-        "repo": "streamcontroller-tidal",
-        "rev": "f5fa05927e1bb7c8c386e89476fe0d62c7145e26",
+        "lastModified": 1785652745,
+        "narHash": "sha256-pD0VE/XwjQ3tLyxTzXKdm6JuIEWr/Jaote6xpXGZrXk=",
+        "owner": "Gerg-L",
+        "repo": "spicetify-nix",
+        "rev": "802040514e09bb8539237f52f68cf053b987c65e",
         "type": "github"
       },
       "original": {
-        "owner": "SpotifyNutzeer",
-        "repo": "streamcontroller-tidal",
+        "owner": "Gerg-L",
+        "repo": "spicetify-nix",
         "type": "github"
       }
     },
@@ -327,21 +298,18 @@
         "type": "github"
       }
     },
-    "tidaluna": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_4"
-      },
+    "systems_2": {
       "locked": {
-        "lastModified": 1784416690,
-        "narHash": "sha256-JbiVHiybp1jrC6YSmTZgNGQo+bp3AvUnXTGfrfUz/+c=",
-        "owner": "Inrixia",
-        "repo": "TidaLuna",
-        "rev": "c83fcf61325aa9cddb5f94cf22a69846310765a1",
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
         "type": "github"
       },
       "original": {
-        "owner": "Inrixia",
-        "repo": "TidaLuna",
+        "owner": "nix-systems",
+        "repo": "default",
         "type": "github"
       }
     },

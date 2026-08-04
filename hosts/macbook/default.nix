@@ -1,4 +1,4 @@
-{ pkgs, tidaluna, ... }:
+{ pkgs, ... }:
 {
   imports = [ ./yabai.nix ./homebrew.nix ./sudo-askpass.nix ];
 
@@ -32,16 +32,9 @@
   # equivalent, otherwise the Home Manager evaluation (useGlobalPkgs) fails.
   nixpkgs.config.allowUnfree = true;
 
-  # Official TIDAL.app (aarch64-darwin, unfree) with injected TidaLuna.
-  # As on Linux (common/programs.nix) taken directly from the TidaLuna flake,
-  # which brings its OWN nixpkgs pin — the overlay route would instead build
-  # with our nixos-unstable, whose fetchPnpmDeps no longer supports the
-  # fetcherVersion=3 used by TidaLuna. The Linux wrapper
-  # (--password-store=gnome-libsecret) is not needed here: Electron's safeStorage
-  # automatically uses the Keychain on macOS.
-  environment.systemPackages = [
-    tidaluna.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ];
+  # Spotify comes from the shared spicetify module
+  # (home/program-configs/shared/spicetify.nix) via home-manager, with the same
+  # extensions and Catppuccin theme as on the desktop.
 
   # System-wide dark mode.
   system.defaults.NSGlobalDomain.AppleInterfaceStyle = "Dark";

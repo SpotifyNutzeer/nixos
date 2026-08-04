@@ -215,7 +215,7 @@
         { name = "fix-xwayland-drags"; "match:class" = "^$"; "match:title" = "^$"; "match:xwayland" = true; "match:float" = true; "match:fullscreen" = false; "match:pin" = false; no_focus = true; }
         { name = "move-hyprland-run"; "match:class" = "hyprland-run"; move = "20 monitor_h-120"; float = "yes"; }
         { name = "discord-position"; "match:class" = "^discord$"; workspace = "2"; }
-        { name = "tidal-position"; "match:class" = "^tidal-hifi$"; workspace = "2"; }
+        { name = "spotify-position"; "match:class" = "^spotify$"; workspace = "2"; }
         { name = "steam-bigpicture"; "match:class" = "^steam$"; "match:title" = "^Steam Big Picture Mode$"; monitor = "HDMI-A-1"; fullscreen = 1; }
         { name = "bitwarden-extension"; "match:class" = "^brave-nngceckbapebfimnlniiiahkandclblb-Default$"; float = true; }
         { name = "thunar-file-operation-float"; "match:class" = "^thunar$"; "match:title" = "^File Operation Progress$"; float = "yes"; size = "600 300"; center = 1; }
@@ -239,19 +239,19 @@
         # own cgroup/OOM limits, correct placement in the session tree.
         "uwsm app -- quickshell"
         "uwsm app -- discord"
-        # Tidal (Electron/Chromium) prefers PulseAudio but falls back to ALSA
+        # Spotify (Chromium/CEF) prefers PulseAudio but falls back to ALSA
         # if it gets no connection to pipewire-pulse at startup.
         # pipewire-pulse.service is socket-activated (Type=simple): the socket is
         # there early, but the service only starts COLD on the first client connect.
-        # At boot, Tidal's connect triggers this cold start, whose latency runs into
+        # At boot, Spotify's connect triggers this cold start, whose latency runs into
         # Chromium's Pulse handshake timeout -> ALSA fallback. Depending on backend,
-        # Tidal registers with WirePlumber under a different identity (pulse=Chromium,
-        # alsa=PipeWire ALSA [tidal-hifi]), which makes the target set in pavucontrol/
-        # via the pulse.rules get lost after a restart.
-        # Fix: explicitly warm-start pipewire-pulse BEFORE Tidal (systemctl start
-        # blocks until active) so that Tidal deterministically goes via PulseAudio
+        # the client registers with WirePlumber under a different identity, which
+        # makes the target set in pavucontrol / via the pulse.rules get lost after a
+        # restart.
+        # Fix: explicitly warm-start pipewire-pulse BEFORE Spotify (systemctl start
+        # blocks until active) so that Spotify deterministically goes via PulseAudio
         # and the pulse.rules rule (see hosts/desktop/pipewire.nix) takes effect.
-        "systemctl --user start pipewire-pulse.service; uwsm app -- tidal-hifi"
+        "systemctl --user start pipewire-pulse.service; uwsm app -- spotify"
         "uwsm app -- awww-daemon"
         "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
         "uwsm app -- streamcontroller -b"

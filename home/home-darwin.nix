@@ -2,6 +2,7 @@
 {
   imports = [
     ./home-shared.nix
+    ./program-configs/shared/spicetify.nix
     ./program-configs/darwin/ssh.nix
     ./program-configs/darwin/fish.nix
     ./program-configs/darwin/hyfetch.nix

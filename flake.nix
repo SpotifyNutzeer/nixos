@@ -5,8 +5,11 @@
       url = "github:rPlakama/gsr-ui-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    tidaluna.url = "github:Inrixia/TidaLuna";
     nixcord.url = "github:FlameFlag/nixcord";
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -24,27 +27,10 @@
       url = "github:SpotifyNutzeer/dotfiles";
       flake = false;
     };
-    rodecaster-tidal-bridge = {
-      url = "github:SpotifyNutzeer/rodecaster-tidal-bridge";
-      flake = false;
-    };
-    streamcontroller-tidal = {
-      url = "github:SpotifyNutzeer/streamcontroller-tidal";
-      flake = false;
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, nixcord, spicetify-nix, catppuccin, gsr-ui-nix, ... }:
   let
-    # The Tidal plugin imports `websockets`, which StreamController in nixpkgs
-    # does NOT ship (only websocket-client). Since the plugin backend runs
-    # directly inside the StreamController Python process and `pip install`
-    # does not work on NixOS, the library is injected into the package here.
-    streamcontrollerOverlay = final: prev: {
-      streamcontroller = prev.streamcontroller.overrideAttrs (old: {
-        buildInputs = old.buildInputs ++ [ final.python3Packages.websockets ];
-      });
-    };
     # Upstream bug (still present on nixpkgs master as of 2026-07-21): the
     # package calls wrapGAppsHook manually inside a symlinkJoin where $output
     # is never set -> "wrapGAppsHookHasRunForOutput: bad array subscript".
@@ -73,7 +59,7 @@
     };
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit tidaluna catppuccin streamcontroller-tidal gsr-ui-nix; };
+      specialArgs = { inherit catppuccin gsr-ui-nix; };
       modules = [
         ./hosts/${host}
         disko.nixosModules.disko
@@ -81,20 +67,20 @@
         home-manager.nixosModules.home-manager
         hmDefaults
         {
-          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-tidal-bridge nixcord catppuccin; };
+          home-manager.extraSpecialArgs = { inherit dotfiles nixcord spicetify-nix catppuccin; };
           home-manager.users.paul = import ./home/home-linux.nix;
-          nixpkgs.overlays = [ tidaluna.overlays.default streamcontrollerOverlay noriskOverlay ];
+          nixpkgs.overlays = [ noriskOverlay ];
         }
       ];
     };
     mkDarwin = host: nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit catppuccin tidaluna; };
+      specialArgs = { inherit catppuccin; };
       modules = [
         ./hosts/${host}
         home-manager.darwinModules.home-manager
         hmDefaults
         {
-          home-manager.extraSpecialArgs = { inherit catppuccin; };
+          home-manager.extraSpecialArgs = { inherit catppuccin spicetify-nix; };
           home-manager.users.paulweber = import ./home/home-darwin.nix;
         }
       ];

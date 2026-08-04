@@ -18,7 +18,6 @@
     [
       ./pipewire.nix
       ./fosi-keepalive.nix
-      ./rodecaster-tidal-bridge.nix
       ./mangohud.nix
       ./hyprland-monitors.nix
     ];
