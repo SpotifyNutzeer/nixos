@@ -49,7 +49,6 @@ in
     teamspeak6-client
     nodejs
     pnpm
-    corepack
     s-tui
     goverlay
     labymod-launcher
