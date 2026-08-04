@@ -41,7 +41,7 @@
     gnumake
     gcc
     python3
-    python314Packages.spotipy
+    python313Packages.spotipyfree
     kdePackages.ark
     noriskclient-launcher
   ];
