@@ -12,11 +12,11 @@ let
       websockets
       tomli-w
     ];
-    doCheck = false;   # Tests brauchen MIDI-Hardware / pytest-asyncio
+    doCheck = false;   # tests need MIDI hardware / pytest-asyncio
   };
 in
 {
-  home.packages = [ bridge ];          # macht `rodecaster-tidal-bridge --learn` im Terminal verfügbar
+  home.packages = [ bridge ];          # makes `rodecaster-tidal-bridge --learn` available in the terminal
 
   systemd.user.services.rodecaster-tidal-bridge = {
     Unit = {

@@ -1,25 +1,25 @@
 { pkgs, ... }:
 {
-  # WiVRn: OpenXR-Runtime + Streaming-Server (Monado-basiert) fuer die Pico 4.
-  # xrizer ist im Paket als OpenVR-Compat-Layer gebuendelt; der Server
-  # verwaltet openvrpaths.vrpath selbst und registriert die Runtime via
-  # Manifest unter /run/current-system/sw/share/openxr (Steam findet sie
-  # ueber PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES) — SteamVR wird nicht
-  # installiert. Avahi/mDNS aktiviert das Modul automatisch.
+  # WiVRn: OpenXR runtime + streaming server (Monado-based) for the Pico 4.
+  # xrizer is bundled in the package as an OpenVR compat layer; the server
+  # manages openvrpaths.vrpath itself and registers the runtime via a
+  # manifest under /run/current-system/sw/share/openxr (Steam finds it
+  # through PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES) — SteamVR is not
+  # installed. The module enables Avahi/mDNS automatically.
   services.wivrn = {
     enable = true;
-    openFirewall = true;             # 9757 TCP/UDP fuer den Stream
-    autoStart = true;                # Server startet mit der User-Session
-    highPriority = true;             # CAP_SYS_NICE fuer Async-Reprojection
-    # Runtime in der Steam-Pressure-Vessel-Sandbox sichtbar machen
-    # (steam.enable ist default-an). Wird erst nach Re-Login wirksam.
+    openFirewall = true;             # 9757 TCP/UDP for the stream
+    autoStart = true;                # server starts with the user session
+    highPriority = true;             # CAP_SYS_NICE for async reprojection
+    # Make the runtime visible inside the Steam pressure-vessel sandbox
+    # (steam.enable is on by default). Only takes effect after re-login.
     steam.importOXRRuntimes = true;
-    # config/monadoEnvironment bewusst leer: Vulkan-Encode laeuft auf NVIDIA
-    # ohne CUDA-Build, Encoder/Bitrate stellt man im WiVRn-Dashboard ein.
+    # config/monadoEnvironment deliberately empty: Vulkan encode runs on NVIDIA
+    # without a CUDA build; encoder/bitrate is set in the WiVRn dashboard.
   };
 
   environment.systemPackages = with pkgs; [
-    wayvr          # Desktop-Overlay in VR (Nachfolger von wlx-overlay-s)
-    android-tools  # adb fuer die einmalige Client-Installation aufs Headset
+    wayvr          # desktop overlay in VR (successor of wlx-overlay-s)
+    android-tools  # adb for the one-time client installation onto the headset
   ];
 }

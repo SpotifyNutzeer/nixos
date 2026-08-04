@@ -36,22 +36,22 @@
 
   outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-tidal-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
   let
-    # Das Tidal-Plugin importiert `websockets`, das StreamController in nixpkgs
-    # NICHT mitbringt (nur websocket-client). Da das Plugin-Backend direkt im
-    # StreamController-Python-Prozess laeuft und `pip install` auf NixOS nicht
-    # funktioniert, wird die Library hier ins Paket injiziert.
+    # The Tidal plugin imports `websockets`, which StreamController in nixpkgs
+    # does NOT ship (only websocket-client). Since the plugin backend runs
+    # directly inside the StreamController Python process and `pip install`
+    # does not work on NixOS, the library is injected into the package here.
     streamcontrollerOverlay = final: prev: {
       streamcontroller = prev.streamcontroller.overrideAttrs (old: {
         buildInputs = old.buildInputs ++ [ final.python3Packages.websockets ];
       });
     };
-    # Upstream-Bug (auch noch auf nixpkgs master, Stand 2026-07-21): das Paket
-    # ruft wrapGAppsHook manuell in einem symlinkJoin auf, wo $output nie
-    # gesetzt wird -> "wrapGAppsHookHasRunForOutput: bad array subscript".
-    # Overlay entfernen, sobald der Build upstream wieder durchlaeuft.
+    # Upstream bug (still present on nixpkgs master as of 2026-07-21): the
+    # package calls wrapGAppsHook manually inside a symlinkJoin where $output
+    # is never set -> "wrapGAppsHookHasRunForOutput: bad array subscript".
+    # Remove the overlay once the build passes upstream again.
     noriskOverlay = final: prev: {
       noriskclient-launcher = prev.noriskclient-launcher.overrideAttrs (old: {
-        # WebKitGTKs DMA-BUF-Renderer crasht auf NVIDIA/Wayland mit
+        # WebKitGTK's DMA-BUF renderer crashes on NVIDIA/Wayland with
         # "Error 71 (Protocol error) dispatching to Wayland display".
         buildCommand = builtins.replaceStrings
           [ "glibPostInstallHook" "gappsWrapperArgsHook" ]

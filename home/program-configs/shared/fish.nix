@@ -2,11 +2,11 @@
 {
   programs.fish = {
     enable = true;
-    # Completions aus Man-Pages generieren (für Tools ohne eigene Fish-Completions)
+    # Generate completions from man pages (for tools without their own fish completions)
     generateCompletions = true;
-    # Startup-Übersicht: hyfetch (teal-sky-Module aus fastfetch.nix) nur im
-    # ersten interaktiven Fish pro Terminal-Fenster — nested Shells und
-    # tmux-Splits erben __greeting_shown und bleiben ruhig.
+    # Startup overview: hyfetch (teal-sky modules from fastfetch.nix) only in the
+    # first interactive fish per terminal window — nested shells and
+    # tmux splits inherit __greeting_shown and stay quiet.
     interactiveShellInit = ''
       set -g fish_greeting
       if not set -q __greeting_shown
@@ -28,13 +28,13 @@
   programs.eza.enable = true;
   programs.bat.enable = true;
 
-  # Completions für hunderte CLIs (git, docker, kubectl, nix, ...) inkl. Beschreibungen
+  # Completions for hundreds of CLIs (git, docker, kubectl, nix, ...) incl. descriptions
   programs.carapace = {
     enable = true;
     enableFishIntegration = true;
   };
 
-  # Fuzzy-Finder: Ctrl+R = fuzzy History, Ctrl+T = Dateien, Alt+C = cd
+  # Fuzzy finder: Ctrl+R = fuzzy history, Ctrl+T = files, Alt+C = cd
   programs.fzf = {
     enable = true;
     enableFishIntegration = true;

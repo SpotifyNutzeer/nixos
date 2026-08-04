@@ -1,11 +1,11 @@
 { pkgs, ... }:
 {
-  # TLP fuer Akku-Laufzeit; Defaults reichen fuer den Anfang.
+  # TLP for battery runtime; the defaults are enough for a start.
   services.tlp.enable = true;
-  # power-profiles-daemon kollidiert mit TLP.
+  # power-profiles-daemon conflicts with TLP.
   services.power-profiles-daemon.enable = false;
 
-  # Helligkeitstasten: die Binds (XF86MonBrightness*) existieren bereits
-  # in der geteilten Hyprland-Config, es fehlt nur das Tool.
+  # Brightness keys: the binds (XF86MonBrightness*) already exist in the
+  # shared Hyprland config, only the tool is missing.
   environment.systemPackages = [ pkgs.brightnessctl ];
 }

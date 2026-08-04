@@ -1,17 +1,17 @@
 { pkgs, streamcontroller-tidal, ... }:
 {
-  # StreamController (Stream-Deck-Steuerung). websockets wird per Overlay in
-  # flake.nix ins Paket gezogen, siehe Kommentar dort.
+  # StreamController (Stream Deck control). websockets is pulled into the
+  # package via an overlay in flake.nix, see the comment there.
   environment.systemPackages = [ pkgs.streamcontroller ];
 
-  # udev-Regel aus dem Paket aktiviert den Zugriff auf das Stream-Deck-USB-HID
-  # ohne root (sonst findet StreamController das Geraet nicht).
+  # The udev rule from the package enables access to the Stream Deck USB HID
+  # without root (otherwise StreamController does not find the device).
   services.udev.packages = [ pkgs.streamcontroller ];
 
-  # Tidal-Plugin deklarativ in den StreamController-Plugin-Ordner verlinken.
-  # StreamController nutzt nativ (kein Flatpak) den Datenpfad
-  # ~/.var/app/com.core447.StreamController/data, Plugins liegen darunter.
-  # Der Ordnername muss der plugin-id aus manifest.json entsprechen.
+  # Link the Tidal plugin declaratively into the StreamController plugin folder.
+  # StreamController natively (no Flatpak) uses the data path
+  # ~/.var/app/com.core447.StreamController/data, plugins live underneath it.
+  # The folder name must match the plugin-id from manifest.json.
   home-manager.users.paul.home.file.".var/app/com.core447.StreamController/data/plugins/wtf_paul_TidalController".source =
     streamcontroller-tidal;
 }

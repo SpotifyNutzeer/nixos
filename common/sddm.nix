@@ -2,28 +2,28 @@
 {
   imports = [ catppuccin.nixosModules.catppuccin ];
 
-  # X11-Greeter: auf NVIDIA zuverlässig. Macht die Session NICHT zu X11 —
-  # Hyprland startet weiterhin als Wayland-Session; X ist nur fürs Login-Fenster.
+  # X11 greeter: reliable on NVIDIA. Does NOT turn the session into X11 --
+  # Hyprland still starts as a Wayland session; X is only for the login window.
   services.xserver.enable = true;
 
   services.displayManager.sddm = {
     enable = true;
-    package = pkgs.kdePackages.sddm;   # Qt6 – vom Catppuccin-Theme verlangt
+    package = pkgs.kdePackages.sddm;   # Qt6 - required by the Catppuccin theme
   };
   services.displayManager.defaultSession = "hyprland-uwsm";
 
-  # gnome-keyring als Secret-Service (org.freedesktop.secrets), beim Login
-  # automatisch mit dem Login-Passwort entsperren. tidal-hifi
-  # (--password-store=gnome-libsecret) braucht das, sonst fragt TidaLuna bei
-  # jedem Start neu nach Plugin-Permissions.
+  # gnome-keyring as secret service (org.freedesktop.secrets), unlocked
+  # automatically with the login password at login. tidal-hifi
+  # (--password-store=gnome-libsecret) needs this, otherwise TidaLuna asks
+  # for plugin permissions again on every start.
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
 
-  # gnome-keyring aktiviert per Default auch gcr-ssh-agent. Der hat unter Hyprland
-  # aber keinen funktionierenden Passphrase-Prompt (kein gnome-shell/gcr-prompter),
-  # dadurch hängt jede SSH-Signatur (git clone/push blockiert bei "Cloning into...").
-  # Secret-Service (org.freedesktop.secrets) für tidal bleibt aktiv – nur der
-  # SSH-Teil wird abgeschaltet. Den SSH-Agent übernimmt home-manager
+  # gnome-keyring by default also enables gcr-ssh-agent. Under Hyprland,
+  # however, it has no working passphrase prompt (no gnome-shell/gcr-prompter),
+  # so every SSH signature hangs (git clone/push blocks at "Cloning into...").
+  # The secret service (org.freedesktop.secrets) for tidal stays active - only
+  # the SSH part is disabled. The SSH agent is handled by home-manager
   # (services.ssh-agent) in home/program-configs/linux/ssh.nix.
   services.gnome.gcr-ssh-agent.enable = false;
 

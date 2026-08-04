@@ -1,6 +1,6 @@
 { ... }:
 {
-  # Realtime-Scheduling für Audio (niedrige Latenz, kein Stottern)
+  # Realtime scheduling for audio (low latency, no stuttering)
   security.rtkit.enable = true;
 
   services.pipewire = {

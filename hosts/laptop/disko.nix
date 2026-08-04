@@ -1,7 +1,7 @@
-# Deklaratives Partitionslayout fuer nixos-anywhere/disko.
-# ESP + LUKS-Container, darin LVM: 20G Swap (Hibernate) + btrfs-Root.
-# passwordFile wird nur beim Formatieren gelesen (nixos-anywhere
-# --disk-encryption-keys /tmp/luks-password <lokale Datei>).
+# Declarative partition layout for nixos-anywhere/disko.
+# ESP + LUKS container, inside it LVM: 20G swap (hibernate) + btrfs root.
+# passwordFile is only read during formatting (nixos-anywhere
+# --disk-encryption-keys /tmp/luks-password <local file>).
 { ... }:
 {
   disko.devices = {
@@ -27,7 +27,7 @@
               type = "luks";
               name = "cryptroot";
               passwordFile = "/tmp/luks-password";
-              settings.allowDiscards = true;   # TRIM auf NVMe durchreichen
+              settings.allowDiscards = true;   # pass TRIM through to the NVMe
               content = {
                 type = "lvm_pv";
                 vg = "vg0";
@@ -41,7 +41,7 @@
       type = "lvm_vg";
       lvs = {
         swap = {
-          size = "20G";   # > 16G RAM, damit das Hibernate-Image sicher passt
+          size = "20G";   # > 16G RAM so the hibernate image is guaranteed to fit
           content = { type = "swap"; };
         };
         root = {

@@ -1,20 +1,20 @@
 { pkgs, ... }:
 let
-  # DaVinci Resolve dekodiert unter Linux kein AAC-Audio, und AV1-Video ist ein
-  # Delivery-Codec (Long-GOP, schwer zu dekodieren, Resolve-Support wackelig).
-  # Darum wird nach dem Standard-Resolve-Ingest transkodiert: Video -> DNxHR HQ
-  # (8-bit 4:2:2), Audio -> PCM (pcm_s16le), in einen .mov-Container. Das
-  # importiert garantiert und scrubbt fluessig.
+  # DaVinci Resolve does not decode AAC audio on Linux, and AV1 video is a
+  # delivery codec (long-GOP, hard to decode, Resolve support shaky).
+  # That is why we transcode after the standard Resolve ingest: video -> DNxHR
+  # HQ (8-bit 4:2:2), audio -> PCM (pcm_s16le), into a .mov container. That is
+  # guaranteed to import and scrubs smoothly.
   #
-  # Der AV1-Decode laeuft per NVDEC auf der GPU (-hwaccel cuda), die Frames
-  # werden dann fuer den CPU-DNxHR-Encoder in den RAM geholt (NVENC kann kein
-  # DNxHR). Bei Codecs ohne NVDEC-Support faellt ffmpeg automatisch auf
-  # Software-Decode zurueck.
+  # The AV1 decode runs via NVDEC on the GPU (-hwaccel cuda), the frames are
+  # then pulled into RAM for the CPU DNxHR encoder (NVENC cannot do DNxHR).
+  # For codecs without NVDEC support ffmpeg automatically falls back to
+  # software decoding.
   #
-  # Fortschritt: ffmpeg schreibt maschinenlesbare Werte via -progress; ein
-  # awk-Filter rendert daraus eine Bar mit Prozent, Speed und ETA (ETA aus der
-  # Restdauer / aktuellem Speed). Faellt automatisch auf ffmpegs Standard-
-  # Ausgabe zurueck, wenn nicht in ein Terminal geschrieben wird.
+  # Progress: ffmpeg writes machine-readable values via -progress; an awk
+  # filter renders a bar with percent, speed and ETA from them (ETA from the
+  # remaining duration / current speed). Automatically falls back to ffmpeg's
+  # default output when not writing to a terminal.
   resolve-reencode = pkgs.writeShellScriptBin "resolve-reencode" ''
     set -u
     FF=${pkgs.ffmpeg}/bin/ffmpeg
@@ -23,9 +23,9 @@ let
     if [ "$#" -eq 0 ]; then
       echo "Usage: resolve-reencode <video> [<video>...]" >&2
       echo "" >&2
-      echo "Transkodiert Video nach DNxHR HQ und Audio nach PCM (s16le) in einem" >&2
-      echo ".mov-Container, damit DaVinci Resolve die Datei importieren kann." >&2
-      echo "Ausgabe: <name>_resolve.mov" >&2
+      echo "Transcodes video to DNxHR HQ and audio to PCM (s16le) into a" >&2
+      echo ".mov container so that DaVinci Resolve can import the file." >&2
+      echo "Output: <name>_resolve.mov" >&2
       exit 1
     fi
 
@@ -35,7 +35,7 @@ let
     for src in "$@"; do
       idx=$((idx + 1))
       if [ ! -f "$src" ]; then
-        printf '\033[31m✗ nicht gefunden:\033[0m %s\n' "$src" >&2
+        printf '\033[31m✗ not found:\033[0m %s\n' "$src" >&2
         status=1
         continue
       fi
@@ -46,7 +46,7 @@ let
       out="$dir/''${stem}_resolve.mov"
       outbase=$(basename -- "$out")
 
-      # Gesamtdauer (in Mikrosekunden) fuer Prozent + ETA.
+      # Total duration (in microseconds) for percent + ETA.
       dur=$("$FP" -v error -show_entries format=duration \
               -of default=nk=1:nw=1 -- "$src" 2>/dev/null || true)
       dur_us=$(awk -v d="$dur" 'BEGIN { printf "%d", (d == "" || d == "N/A") ? 0 : d * 1000000 }')
@@ -54,7 +54,7 @@ let
       printf '\033[1m[%d/%d]\033[0m %s \033[2m→\033[0m %s\n' "$idx" "$count" "$base" "$outbase" >&2
 
       if [ -t 2 ]; then
-        # Fortschritts-Pipeline: -progress auf stdout, awk zeichnet die Bar auf stderr.
+        # Progress pipeline: -progress on stdout, awk draws the bar on stderr.
         "$FF" -hide_banner -loglevel error -nostats -progress pipe:1 \
             -hwaccel cuda -i "$src" \
             -map 0:v:0 -map 0:a? \
@@ -85,8 +85,8 @@ let
                   etastr = (eta >= 0) ? hms(eta) : "—"
                   printf "\r\033[2K\033[32m%s\033[0m %5.1f%%  \033[36m%7s\033[0m  ETA \033[33m%s\033[0m", bar, pct, spdstr, etastr > "/dev/stderr"
                 } else {
-                  # Ohne bekannte Dauer nur verstrichene Zeit + Speed zeigen.
-                  printf "\r\033[2K  %s verarbeitet  \033[36m%s\033[0m", hms(t / 1000000), spdstr > "/dev/stderr"
+                  # Without a known duration, only show elapsed time + speed.
+                  printf "\r\033[2K  %s processed  \033[36m%s\033[0m", hms(t / 1000000), spdstr > "/dev/stderr"
                 }
                 if (done) printf "\n" > "/dev/stderr"
                 fflush()
@@ -94,7 +94,7 @@ let
             '
         rc=''${PIPESTATUS[0]}
       else
-        # Nicht-Terminal (Log/Pipe): ffmpegs Standard-Statuszeile.
+        # Non-terminal (log/pipe): ffmpeg's default status line.
         "$FF" -hide_banner -hwaccel cuda -i "$src" \
             -map 0:v:0 -map 0:a? \
             -c:v dnxhd -profile:v dnxhr_hq -pix_fmt yuv422p \
@@ -107,7 +107,7 @@ let
         sz=$(du -h -- "$out" 2>/dev/null | cut -f1)
         printf '\033[32m✓\033[0m %s \033[2m(%s)\033[0m\n\n' "$outbase" "$sz" >&2
       else
-        printf '\033[31m✗ ffmpeg fehlgeschlagen (rc=%s) fuer\033[0m %s\n\n' "$rc" "$src" >&2
+        printf '\033[31m✗ ffmpeg failed (rc=%s) for\033[0m %s\n\n' "$rc" "$src" >&2
         status=1
       fi
     done

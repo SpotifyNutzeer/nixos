@@ -1,52 +1,53 @@
 { ... }:
 {
-  # Claude Code deklarativ ueber das home-manager-Modul. Es schreibt
-  # ~/.claude/settings.json als (read-only) Nix-Store-Symlink — Einstellungen
-  # also HIER aendern, nicht zur Laufzeit ueber /config (das wuerde nicht
-  # persistieren). Das claude-Binary kommt ueber home.packages aus diesem Modul,
-  # deshalb ist es aus common/programs.nix entfernt. tmux selbst bleibt
-  # system-weit in common/programs.nix.
+  # Claude Code declaratively via the home-manager module. It writes
+  # ~/.claude/settings.json as a (read-only) Nix-store symlink — so change
+  # settings HERE, not at runtime via /config (that would not persist).
+  # The claude binary comes via home.packages from this module, which is
+  # why it was removed from common/programs.nix. tmux itself stays
+  # system-wide in common/programs.nix.
   programs.claude-code = {
     enable = true;
 
     settings = {
-      # ── bestehende Settings uebernommen ──────────────────────────────
+      # ── existing settings carried over ───────────────────────────────
       theme   = "dark-ansi";
       tui     = "fullscreen";
       verbose = true;
       model   = "Fable";
       # ── tmux ─────────────────────────────────────────────────────────
-      # Agent-Teams laufen im tmux-Split-Pane-Modus: jeder Teammate bekommt
-      # einen eigenen Pane. "tmux" erzwingt das (Alternative: "auto" = nur
-      # falls tmux/iTerm2 vorhanden). Braucht das experimentelle Feature-Flag.
+      # Agent teams run in tmux split-pane mode: every teammate gets a
+      # pane of its own. "tmux" forces this (alternative: "auto" = only
+      # if tmux/iTerm2 is present). Requires the experimental feature flag.
       teammateMode = "tmux";
 
       env = {
         CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
 
-        # Auto-Updater aus. Auf NixOS liegt die claude-Binary immutable im
-        # Nix-Store; der Updater versucht sie zu ersetzen, scheitert und
-        # blockiert den Start. Es gibt keinen settings.json-Config-Key dafuer
-        # (autoUpdates in ~/.claude.json ist nur App-State) — die Env-Variable
-        # ist der zuverlaessige Kill-Switch und wird vor dem Updater-Check
-        # angewendet. Updates kommen ausschliesslich ueber nixos-rebuild.
-        # DISABLE_UPDATES = "1" wuerde zusaetzlich manuelles `claude update` sperren.
+        # Auto-updater off. On NixOS the claude binary lives immutable in
+        # the Nix store; the updater tries to replace it, fails, and
+        # blocks startup. There is no settings.json config key for this
+        # (autoUpdates in ~/.claude.json is only app state) — the env variable
+        # is the reliable kill switch and is applied before the updater
+        # check. Updates come exclusively via nixos-rebuild.
+        # DISABLE_UPDATES = "1" would additionally block manual `claude update`.
         DISABLE_AUTOUPDATER = "1";
       };
 
       permissions = {
         defaultMode = "auto";
-        # tmux-Kommandos ohne Rueckfrage erlauben (send-keys, split-window, …).
+        # Allow tmux commands without confirmation (send-keys, split-window, …).
         allow = [ "Bash(tmux:*)" ];
       };
 
-      # Plugins deklarativ aktivieren. Format: "<plugin>@<marketplace>" = true.
-      # Die Marketplace "claude-plugins-official" (anthropics/claude-plugins-official)
-      # registriert Claude Code beim ersten Start selbst; wir setzen hier nur das
-      # Enable-Flag — kein interaktives /plugin install noetig (das wuerde in die
-      # read-only settings.json schreiben wollen und fehlschlagen). code-review und
-      # frontend-design liegen als first-party Plugins direkt im Marketplace-Repo;
-      # superpowers (github.com/obra/superpowers) zieht Claude beim Aktivieren nach.
+      # Enable plugins declaratively. Format: "<plugin>@<marketplace>" = true.
+      # Claude Code registers the marketplace "claude-plugins-official"
+      # (anthropics/claude-plugins-official) itself on first start; here we only
+      # set the enable flag — no interactive /plugin install needed (that would
+      # want to write to the read-only settings.json and fail). code-review and
+      # frontend-design live as first-party plugins directly in the marketplace
+      # repo; superpowers (github.com/obra/superpowers) is fetched by Claude on
+      # activation.
       enabledPlugins = {
         "superpowers@claude-plugins-official"     = true;
         "frontend-design@claude-plugins-official" = true;

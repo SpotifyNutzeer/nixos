@@ -1,11 +1,11 @@
 { ... }:
 {
-  # Standard-Anwendungen fuer Dateitypen (schreibt ~/.config/mimeapps.list)
+  # Default applications for file types (writes ~/.config/mimeapps.list)
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "inode/directory" = "thunar.desktop";   # Ordner mit Thunar oeffnen
-      "inode/mount-point" = "thunar.desktop"; # FUSE-Mounts wie SeaDrive
+      "inode/directory" = "thunar.desktop";   # open folders with Thunar
+      "inode/mount-point" = "thunar.desktop"; # FUSE mounts like SeaDrive
       "text/html" = "brave-browser.desktop";
       "x-scheme-handler/http" = "brave-browser.desktop";
       "x-scheme-handler/https" = "brave-browser.desktop";

@@ -1,13 +1,13 @@
 { pkgs, ... }:
 let
-  # GUI-Passwortabfrage fuer sudo, wenn kein Terminal da ist — z.B. in
-  # Claude-Code-Sessions (deren Bash-Tool laeuft ohne TTY). sudo faellt ohne
-  # TTY automatisch auf den in /etc/sudo.conf registrierten Askpass-Helper
-  # zurueck; in interaktiven Shells erzwingt `sudo -A` den Dialog. $1 ist
-  # der sudo-Prompt ("[sudo] password for paul:"). Darwin-Gegenstueck:
+  # GUI password prompt for sudo when no terminal is available - e.g. in
+  # Claude Code sessions (their Bash tool runs without a TTY). Without a TTY,
+  # sudo automatically falls back to the askpass helper registered in
+  # /etc/sudo.conf; in interactive shells `sudo -A` forces the dialog. $1 is
+  # the sudo prompt ("[sudo] password for paul:"). Darwin counterpart:
   # hosts/macbook/sudo-askpass.nix.
   askpass = pkgs.writeShellScript "sudo-askpass" ''
-    exec ${pkgs.zenity}/bin/zenity --entry --hide-text --title sudo --text "''${1:-Passwort fuer sudo:}"
+    exec ${pkgs.zenity}/bin/zenity --entry --hide-text --title sudo --text "''${1:-sudo password:}"
   '';
 in
 {

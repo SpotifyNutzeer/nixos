@@ -4,29 +4,29 @@
     enable = true;
     withUWSM = true;   # Hyprland via Universal Wayland Session Manager
   };
-  # Portal-Startreihenfolge: xdg-desktop-portal (Frontend) haengt sonst nur an
-  # session.slice und startet damit VOR xdg-desktop-portal-hyprland, das erst
-  # nach graphical-session.target (Compositor) hochkommt. Das Frontend liest die
-  # AvailableCursorModes des Hyprland-Backends dann als 0 und cached das dauerhaft
-  # -> Discords Screenshare-Anfrage mit cursor_mode=2 (embedded) wird mit
-  # "Unavailable cursor mode 2" abgelehnt, SelectSources scheitert, der
-  # hyprland-share-picker erscheint nie. Fix: Frontend erst nach dem Backend
-  # starten, damit es die echten Cursor-Modi (3 = hidden|embedded) liest.
+  # Portal startup order: otherwise xdg-desktop-portal (frontend) only hangs
+  # off session.slice and thus starts BEFORE xdg-desktop-portal-hyprland, which
+  # only comes up after graphical-session.target (compositor). The frontend
+  # then reads the Hyprland backend's AvailableCursorModes as 0 and caches that
+  # permanently -> Discord's screenshare request with cursor_mode=2 (embedded)
+  # is rejected with "Unavailable cursor mode 2", SelectSources fails, the
+  # hyprland-share-picker never appears. Fix: start the frontend only after the
+  # backend so it reads the real cursor modes (3 = hidden|embedded).
   systemd.user.services.xdg-desktop-portal = {
     overrideStrategy = "asDropin";
     after = [ "xdg-desktop-portal-hyprland.service" ];
     wants = [ "xdg-desktop-portal-hyprland.service" ];
   };
 
-  # Thunar Dateimanager (kein HM-Modul vorhanden -> NixOS-Modul).
+  # Thunar file manager (no HM module available -> NixOS module).
   programs.thunar = {
     enable = true;
     plugins = with pkgs; [
-      thunar-archive-plugin   # Rechtsklick: Archive ent-/packen
-      thunar-volman           # Auto-Mount von USB-Geraeten
+      thunar-archive-plugin   # Right-click: extract/create archives
+      thunar-volman           # Auto-mount USB devices
     ];
   };
-  programs.xfconf.enable = true;    # Thunar-Einstellungen persistent speichern
-  services.gvfs.enable = true;      # Trash, Mounten, Netzwerk (smb/ftp), MTP
-  services.tumbler.enable = true;   # Thumbnails (Bilder/PDF/Video)
+  programs.xfconf.enable = true;    # Persist Thunar settings
+  services.gvfs.enable = true;      # Trash, mounting, network (smb/ftp), MTP
+  services.tumbler.enable = true;   # Thumbnails (images/PDF/video)
 }

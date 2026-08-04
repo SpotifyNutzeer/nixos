@@ -1,17 +1,17 @@
 { ... }:
 let
-  # Catppuccin Mocha, passend zum Starship-Powerline-Schema (starship.nix):
-  # System-Block teal, Hardware-Block sky, Gedimmtes overlay0.
+  # Catppuccin Mocha, matching the Starship powerline scheme (starship.nix):
+  # system block teal, hardware block sky, dimmed parts overlay0.
   teal = "38;2;148;226;213";
   sky = "38;2;137;220;235";
   dim = "38;2;108;112;134";
   m = type: key: keyColor: { inherit type key keyColor; };
 in
 {
-  # hyfetch (backend = "fastfetch") liefert nur das Logo; Auswahl und Farben der
-  # Info-Zeilen kommen aus dieser Config (~/.config/fastfetch/config.jsonc).
-  # enable installiert das Binary auf beiden Plattformen (macOS: kein extra
-  # home.packages in darwin/hyfetch.nix mehr noetig).
+  # hyfetch (backend = "fastfetch") only provides the logo; selection and colors
+  # of the info lines come from this config (~/.config/fastfetch/config.jsonc).
+  # enable installs the binary on both platforms (macOS: no extra
+  # home.packages in darwin/hyfetch.nix needed anymore).
   programs.fastfetch = {
     enable = true;
     settings = {
@@ -34,7 +34,7 @@ in
           outputColor = dim;
         }
         (m "os" "OS" teal)
-        # Nur den Board-/Gerätenamen, ohne Firmware-Versionsstring dahinter
+        # Only the board/device name, without the firmware version string after it
         ((m "host" "Host" teal) // { format = "{name}"; })
         (m "kernel" "Kernel" teal)
         (m "uptime" "Uptime" teal)

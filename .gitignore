@@ -2,7 +2,7 @@
 # macOS
 .DS_Store
 
-# Lokale Secrets
+# Local secrets
 .env
 .env.local
 .env.*.local

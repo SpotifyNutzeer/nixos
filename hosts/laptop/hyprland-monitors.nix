@@ -1,6 +1,6 @@
 { ... }:
 {
-  # Internes Display; Pendant zu hosts/desktop/hyprland-monitors.nix.
+  # Internal display; counterpart to hosts/desktop/hyprland-monitors.nix.
   wayland.windowManager.hyprland.settings.monitorv2 = [
     {
       output = "eDP-1"; mode = "1920x1200@60"; position = "0x0";

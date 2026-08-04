@@ -1,10 +1,10 @@
 { config, ... }:
 {
-  # hyfetch ist (in nixpkgs) ein Rust-Binary und sucht seine Config via dirs-Crate
-  # auf macOS in ~/Library/Application Support/hyfetch.json — NICHT in ~/.config,
-  # wohin programs.hyfetch (shared/hyfetch.nix) sie schreibt. Auf Linux mappt dirs
-  # auf ~/.config, daher geht es dort. Hier denselben generierten JSON zusaetzlich
-  # auf den macOS-Pfad verlinken (DRY, kein zweiter Settings-Block).
+  # hyfetch is (in nixpkgs) a Rust binary and looks for its config via the dirs
+  # crate on macOS in ~/Library/Application Support/hyfetch.json - NOT in ~/.config,
+  # where programs.hyfetch (shared/hyfetch.nix) writes it. On Linux, dirs maps to
+  # ~/.config, hence it works there. Here, additionally link the same generated
+  # JSON to the macOS path (DRY, no second settings block).
   home.file."Library/Application Support/hyfetch.json".source =
     config.xdg.configFile."hyfetch.json".source;
 }

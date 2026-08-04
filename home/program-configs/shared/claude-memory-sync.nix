@@ -1,23 +1,23 @@
 { config, lib, pkgs, ... }:
 
 let
-  # ── Kanonischer Store ────────────────────────────────────────────────────
-  # Ein Git-Checkout, den alle Geraete teilen. Die datei-basierten Memories
-  # sind winzige Markdown-Dateien; der Store haelt einen Ordner pro Projekt.
+  # ── Canonical store ──────────────────────────────────────────────────────
+  # One git checkout shared by all devices. The file-based memories are
+  # tiny Markdown files; the store keeps one folder per project.
   repoUrl = "git@github.com:SpotifyNutzeer/claude-memory.git";
   store   = "${config.home.homeDirectory}/claude-memory";
 
-  # ── Projekte ─────────────────────────────────────────────────────────────
-  # Logische Projekte == Store-Ordnernamen.
+  # ── Projects ─────────────────────────────────────────────────────────────
+  # Logical projects == store folder names.
   projectNames = [ "fluxcd" "nixos" "bernice-portfolio" ];
 
-  # Kandidaten-Elternverzeichnisse. Die Repos liegen je nach Rechner woanders
-  # (macOS: ~/fleet, NixOS: ~/git). Aus dem Projekt-Arbeitsverzeichnis leitet
-  # Claude Code den Projekt-Key ab (jeder "/" wird zu "-") — und der divergiert
-  # damit pro Rechner. Statt den Key hart zu kodieren, sucht das Activation-
-  # Script pro Projekt den ERSTEN existierenden Pfad und berechnet den Key
-  # daraus. So passt sich das Modul jedem Rechner selbst an, und es werden nur
-  # Symlinks fuer tatsaechlich ausgecheckte Projekte angelegt.
+  # Candidate parent directories. The repos live in different places depending
+  # on the machine (macOS: ~/fleet, NixOS: ~/git). Claude Code derives the
+  # project key from the project working directory (every "/" becomes "-") —
+  # so it diverges per machine. Instead of hard-coding the key, the activation
+  # script looks for the FIRST existing path per project and computes the key
+  # from it. This way the module adapts itself to every machine, and symlinks
+  # are only created for projects that are actually checked out.
   projectBases = [
     "${config.home.homeDirectory}/fleet"
     "${config.home.homeDirectory}/git"
@@ -25,10 +25,10 @@ let
 
   basesSh = lib.concatStringsSep " " (map lib.escapeShellArg projectBases);
 
-  # Pro Projekt: alle Basis-Verzeichnisse durchgehen; existiert eines, Key aus
-  # dem echten Pfad ableiten (/home/paul/git/nixos -> -home-paul-git-nixos) und
-  # den memory-Ordner durch einen Symlink auf den Store ersetzen. Ein echter
-  # vorhandener Ordner wird vorher gesichert, damit nichts verloren geht.
+  # Per project: walk all base directories; if one exists, derive the key from
+  # the real path (/home/paul/git/nixos -> -home-paul-git-nixos) and replace
+  # the memory folder with a symlink to the store. A real pre-existing folder
+  # is backed up beforehand so that nothing gets lost.
   linkLines = lib.concatStringsSep "\n" (map (name: ''
     for base in ${basesSh}; do
       proj="$base/${name}"
@@ -45,29 +45,29 @@ let
 
 in
 {
-  # git wird zur Aktivierungs- und Hook-Laufzeit gebraucht.
+  # git is needed at activation and hook runtime.
   home.packages = [ pkgs.git ];
 
-  # ── Aktivierung: Store klonen + Symlinks setzen ──────────────────────────
-  # Laeuft bei jedem `home-manager switch`. Idempotent: klont den Store beim
-  # ersten Mal, danach nur noch pull; setzt/erneuert die Symlinks.
+  # ── Activation: clone store + create symlinks ────────────────────────────
+  # Runs on every `home-manager switch`. Idempotent: clones the store the
+  # first time, afterwards only pulls; creates/refreshes the symlinks.
   home.activation.claudeMemorySync =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       export PATH="${pkgs.git}/bin:${pkgs.openssh}/bin:$PATH"
       if [ ! -d "${store}/.git" ]; then
         run git clone ${repoUrl} "${store}" || \
-          echo "claude-memory: clone fehlgeschlagen (SSH-Key vorhanden?) — Symlinks trotzdem gesetzt"
+          echo "claude-memory: clone failed (SSH key present?) — setting symlinks anyway"
       else
         run git -C "${store}" pull --rebase --autostash --quiet || true
       fi
       ${linkLines}
     '';
 
-  # ── Sync-Hooks ───────────────────────────────────────────────────────────
-  # Werden in ~/.claude/settings.json gemerged (home-manager fasst
-  # programs.claude-code.settings ueber Module hinweg zusammen).
+  # ── Sync hooks ───────────────────────────────────────────────────────────
+  # Merged into ~/.claude/settings.json (home-manager combines
+  # programs.claude-code.settings across modules).
   programs.claude-code.settings.hooks = {
-    # Beim Sessionstart den neuesten Stand der anderen Geraete holen.
+    # On session start, fetch the latest state from the other devices.
     SessionStart = [{
       hooks = [{
         type = "command";
@@ -75,8 +75,8 @@ in
       }];
     }];
 
-    # Beim Sessionende lokale Aenderungen zurueckspielen (nur bei Aenderung,
-    # race-sicher via pull --rebase vor push, || true gegen Session-Blockade).
+    # On session end, push back local changes (only when something changed,
+    # race-safe via pull --rebase before push, || true so the session is not blocked).
     Stop = [{
       hooks = [{
         type = "command";

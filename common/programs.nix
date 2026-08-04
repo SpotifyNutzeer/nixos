@@ -60,9 +60,9 @@ in
     noriskclient-launcher
   ];
 
-  # Der NoRisk-Launcher laedt sein eigenes generisches Zulu-JDK nach
-  # ~/.local/share/noriskclientv3/meta/java/ und startet den Client damit.
-  # Ohne nix-ld fehlt dem Binary der dynamische Linker unter /lib64
+  # The NoRisk launcher downloads its own generic Zulu JDK to
+  # ~/.local/share/noriskclientv3/meta/java/ and starts the client with it.
+  # Without nix-ld the binary lacks the dynamic linker under /lib64
   # ("Could not start dynamically linked executable").
   programs.nix-ld.enable = true;
 

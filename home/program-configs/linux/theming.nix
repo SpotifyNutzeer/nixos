@@ -1,24 +1,24 @@
 { pkgs, ... }:
 {
-  # Ergaenzt die shared Catppuccin-Basis um Linux-spezifisches Theming.
+  # Extends the shared Catppuccin base with Linux-specific theming.
   catppuccin = {
     cursors = {
       enable = true;
-      # Default-Cursor: Catppuccin Mocha Dark statt des Teal-Akzents.
+      # Default cursor: Catppuccin Mocha Dark instead of the teal accent.
       accent = "dark";
     };
     hyprland.enable = false;
-    # hyprlock wird manuell in linux/hyprlock.nix gethemet.
+    # hyprlock is themed manually in linux/hyprlock.nix.
     hyprlock.enable = false;
 
-    # Catppuccin-eingefaerbte Papirus-Icons (setzt gtk.iconTheme).
+    # Catppuccin-tinted Papirus icons (sets gtk.iconTheme).
     gtk.icon.enable = true;
 
-    # Qt-Theme via Kvantum.
+    # Qt theme via Kvantum.
     kvantum.enable = true;
   };
 
-  # Qt-Apps (z.B. Prism Launcher) ueber Kvantum + qt6ct themen.
+  # Theme Qt apps (e.g. Prism Launcher) via Kvantum + qt6ct.
   qt = {
     enable = true;
     platformTheme.name = "qtct";
@@ -28,7 +28,7 @@
     };
   };
 
-  # GTK-Widget-Theme (Fensterfarben/Buttons).
+  # GTK widget theme (window colors/buttons).
   gtk = {
     enable = true;
     theme = {

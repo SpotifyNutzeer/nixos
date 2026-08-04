@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
-  # AMD X3D CCD-Umschalter (Cache- vs. Frequenz-CCD). gamemode ruft das via
-  # sudo bei Spielstart/-ende auf; root noetig fuer den sysfs-Schreibzugriff.
+  # AMD X3D CCD switcher (cache vs. frequency CCD). gamemode calls this via
+  # sudo on game start/end; root is required for the sysfs write access.
   x3d-mode = pkgs.writeShellScriptBin "x3d-mode" ''
     set -eu
     mode="''${1:-}"
@@ -15,61 +15,61 @@ let
       printf '%s' "$mode" > "$f"
       found=1
     done
-    [ "$found" -eq 1 ] || { echo "x3d-mode: kein amd_x3d_vcache-Geraet gefunden" >&2; exit 1; }
+    [ "$found" -eq 1 ] || { echo "x3d-mode: no amd_x3d_vcache device found" >&2; exit 1; }
   '';
 in
 {
-  # ── Steam + Proton-Env (aus Arch steam-env.conf — nur fuer Steam, nicht global) ──
+  # ── Steam + Proton env (from Arch steam-env.conf — Steam only, not global) ──
   programs.steam = {
     enable = true;
-    extraCompatPackages = [ pkgs.proton-ge-bin ];   # GE-Proton (Arch nutzte proton-cachyos)
+    extraCompatPackages = [ pkgs.proton-ge-bin ];   # GE-Proton (Arch used proton-cachyos)
     package = pkgs.steam.override {
-      # gamescope/gamemoderun/mangohud auch innerhalb der Steam-FHS verfuegbar
+      # gamescope/gamemoderun/mangohud also available inside the Steam FHS
       extraPkgs = ps: with ps; [ mangohud gamescope gamemode ];
       extraEnv = {
-        MANGOHUD = "1";                          # HUD in allen Vulkan-Spielen
-        PULSE_LATENCY_MSEC = "60";               # Wine-Audio-Knistern vermeiden
-        PROTON_ENABLE_WAYLAND = "1";             # natives Wayland (Hyprland)
+        MANGOHUD = "1";                          # HUD in all Vulkan games
+        PULSE_LATENCY_MSEC = "60";               # avoid Wine audio crackling
+        PROTON_ENABLE_WAYLAND = "1";             # native Wayland (Hyprland)
         PROTON_ENABLE_HDR = "1";
         DXVK_HDR = "1";
-        PROTON_DLSS_UPGRADE = "1";               # DLSS-DLLs auto-upgraden
+        PROTON_DLSS_UPGRADE = "1";               # auto-upgrade DLSS DLLs
         PROTON_DLSS_INDICATOR = "1";
         PROTON_ENABLE_NVAPI = "1";
         PROTON_ENABLE_NGX_UPDATER = "1";
-        PROTON_NVIDIA_LIBS = "1";                # PhysX/CUDA im Prefix
+        PROTON_NVIDIA_LIBS = "1";                # PhysX/CUDA in the prefix
         PROTON_LOCAL_SHADER_CACHE = "1";
-        PROTON_USE_NTSYNC = "1";                 # ntsync statt fsync (/dev/ntsync)
-        PROTON_VKD3D_HEAP = "1";                 # fixt NVIDIA-Xid-109-Crashes
+        PROTON_USE_NTSYNC = "1";                 # ntsync instead of fsync (/dev/ntsync)
+        PROTON_VKD3D_HEAP = "1";                 # fixes NVIDIA Xid 109 crashes
         __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
       };
     };
   };
 
-  # ── gamescope (HDR/adaptive-sync-Wrapper) ──
+  # ── gamescope (HDR/adaptive-sync wrapper) ──
   programs.gamescope = {
     enable = true;
-    capSysNice = true;   # Real-Time-Prioritaet
+    capSysNice = true;   # real-time priority
   };
 
-  # ── gamemode + X3D-CCD-Switch ──
+  # ── gamemode + X3D CCD switch ──
   programs.gamemode = {
     enable = true;
     settings = {
       general.renice = 0;
       cpu = {
-        # 9950X3D: Kerne nicht parken, Spiel auf Kerne pinnen.
+        # 9950X3D: do not park cores, pin the game to cores.
         park_cores = "no";
         pin_cores = "yes";
       };
       custom = {
-        # Beim Spielen Cache-CCD bevorzugen, danach zurueck aufs Frequenz-CCD.
+        # Prefer the cache CCD while gaming, afterwards back to the frequency CCD.
         start = "/run/wrappers/bin/sudo ${x3d-mode}/bin/x3d-mode cache";
         end = "/run/wrappers/bin/sudo ${x3d-mode}/bin/x3d-mode frequency";
       };
     };
   };
 
-  # gamemoded laeuft als User -> NOPASSWD-sudo NUR fuer den x3d-mode-Schreibzugriff.
+  # gamemoded runs as the user -> NOPASSWD sudo ONLY for the x3d-mode write access.
   security.sudo.extraRules = [{
     users = [ "paul" ];
     commands = [{
@@ -78,7 +78,7 @@ in
     }];
   }];
 
-  # ── zram (Groessenordnungen schneller als Disk-Swap) + Swap-Tuning ──
+  # ── zram (orders of magnitude faster than disk swap) + swap tuning ──
   zramSwap.enable = true;   # defaults: zstd, 50% of RAM
   boot.kernel.sysctl = {
     "vm.swappiness" = 180;

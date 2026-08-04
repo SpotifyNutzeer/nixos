@@ -1,6 +1,6 @@
 { dotfiles, ... }:
 {
-  # Eigenes (angepasstes) Catppuccin-Theme verbatim aus den dotfiles ziehen.
-  # NICHT catppuccin.rofi nutzen — das wäre das Standard-Theme.
+  # Pull the own (customized) Catppuccin theme verbatim from the dotfiles.
+  # Do NOT use catppuccin.rofi - that would be the stock theme.
   xdg.configFile."rofi".source = "${dotfiles}/.config/rofi";
 }

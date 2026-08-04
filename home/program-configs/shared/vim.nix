@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  # Language-Server für Nix (Completion, Hover, Go-to-Definition)
+  # Language server for Nix (completion, hover, go-to-definition)
   home.packages = [ pkgs.nixd ];
 
   programs.vim = {
@@ -99,19 +99,19 @@
         call mkdir(expand('~/.vim/undo'), 'p')
       endif
 
-      " ── Nix-Dateien: 2-Space-Indent (Community-Konvention) ──
+      " ── Nix files: 2-space indent (community convention) ────
       autocmd FileType nix setlocal shiftwidth=2 softtabstop=2 tabstop=2
 
       " ── Autocomplete (asyncomplete + vim-lsp) ───────────────
       set completeopt=menuone,noinsert,noselect
       let g:asyncomplete_auto_popup = 1
 
-      " Tab/Shift-Tab durchs Popup, Enter übernimmt
+      " Tab/Shift-Tab through the popup, Enter accepts
       inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
       inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
       inoremap <expr> <CR>    pumvisible() ? asyncomplete#close_popup() : "\<CR>"
 
-      " Dateipfade in allen Dateitypen vervollständigen
+      " Complete file paths in all file types
       au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
             \ 'name': 'file',
             \ 'allowlist': ['*'],
@@ -119,14 +119,14 @@
             \ 'completor': function('asyncomplete#sources#file#completor'),
             \ }))
 
-      " Wörter aus offenen Buffern
+      " Words from open buffers
       au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
             \ 'name': 'buffer',
             \ 'allowlist': ['*'],
             \ 'completor': function('asyncomplete#sources#buffer#completor'),
             \ }))
 
-      " ── LSP: nixd für Nix ───────────────────────────────────
+      " ── LSP: nixd for Nix ───────────────────────────────────
       if executable('nixd')
         au User lsp_setup call lsp#register_server({
               \ 'name': 'nixd',

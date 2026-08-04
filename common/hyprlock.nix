@@ -1,8 +1,8 @@
 { ... }:
 {
-  # hyprlock authentifiziert ueber PAM und braucht dafuer einen eigenen
-  # PAM-Service. Ohne diesen kann der von home-manager installierte hyprlock
-  # den Bildschirm NICHT entsperren (jede Eingabe schlaegt fehl). Die eigentliche
-  # Lockscreen-Konfiguration liegt in home/program-configs/linux/hyprlock.nix.
+  # hyprlock authenticates via PAM and needs its own PAM service for that.
+  # Without it, the hyprlock installed by home-manager CANNOT unlock the
+  # screen (every input fails). The actual lockscreen configuration lives in
+  # home/program-configs/linux/hyprlock.nix.
   security.pam.services.hyprlock = { };
 }

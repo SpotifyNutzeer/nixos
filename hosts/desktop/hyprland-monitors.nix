@@ -9,8 +9,8 @@ let
   };
 in
 {
-  # Desktop-spezifische Monitore + Workspace-Zuordnung (aus der geteilten
-  # hyprland.nix herausgezogen; der Laptop hat sein eigenes Pendant).
+  # Desktop-specific monitors + workspace assignment (pulled out of the shared
+  # hyprland.nix; the laptop has its own counterpart).
   wayland.windowManager.hyprland.settings = {
     monitorv2 = [
       ({

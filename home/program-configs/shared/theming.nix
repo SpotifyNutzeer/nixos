@@ -2,9 +2,10 @@
 {
   imports = [ catppuccin.homeModules.catppuccin ];
 
-  # Plattformunabhaengige Catppuccin-Basis: themt via autoEnable alle aktivierten
-  # CLI-/TUI-Programme (kitty, fish, starship, tmux, bat, vim). GTK/Qt/Kvantum/Cursor
-  # sind Linux-Konzepte und liegen in linux/theming.nix.
+  # Platform-independent Catppuccin base: themes all enabled CLI/TUI programs
+  # via autoEnable (kitty, fish, starship, tmux, alacritty, fzf, bat). vim is
+  # NOT auto-themed — it uses the catppuccin-vim plugin manually in vim.nix.
+  # GTK/Qt/Kvantum/cursor are Linux concepts and live in linux/theming.nix.
   catppuccin = {
     enable = true;
     autoEnable = true;

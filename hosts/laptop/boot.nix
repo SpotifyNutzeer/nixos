@@ -6,15 +6,15 @@
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
-  # amdgpu schon im Initrd laden (early KMS): LUKS-Prompt in nativer
-  # Aufloesung statt simpledrm/efifb.
+  # Load amdgpu already in the initrd (early KMS): LUKS prompt in native
+  # resolution instead of simpledrm/efifb.
   boot.initrd.kernelModules = [ "amdgpu" ];
 
-  # systemd-initrd wendet console.keyMap ("de", common/locale.nix) schon
-  # VOR der LUKS-Passphrase-Abfrage an — scripted initrd kann das nicht.
+  # systemd-initrd applies console.keyMap ("de", common/locale.nix) already
+  # BEFORE the LUKS passphrase prompt — scripted initrd cannot do that.
   boot.initrd.systemd.enable = true;
 
-  # Hibernate: Resume aus dem Swap-LV im LUKS-Container (siehe disko.nix).
+  # Hibernate: resume from the swap LV inside the LUKS container (see disko.nix).
   boot.resumeDevice = "/dev/vg0/swap";
 
   # AMD microcode updates and redistributable firmware (incl. the RTL8852CE

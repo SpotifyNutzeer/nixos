@@ -1,120 +1,120 @@
-# Design: Hostprofil `laptop` (Lenovo IdeaPad, 10.0.1.46)
+# Design: Host profile `laptop` (Lenovo IdeaPad, 10.0.1.46)
 
-**Datum:** 2026-07-04
-**Status:** Entwurf validiert (Brainstorming abgeschlossen)
+**Date:** 2026-07-04
+**Status:** Implemented (status updated 2026-08-03)
 
-## Ziel
+## Goal
 
-Ein neues NixOS-Hostprofil `laptop` für den Lenovo-Laptop (aktuell Fedora 42,
-erreichbar via SSH unter `paul@10.0.1.46`), installiert per **nixos-anywhere**
-über SSH. Der Laptop bekommt dasselbe grafische Setup wie der Desktop
-(SDDM + Hyprland + Catppuccin), ergänzt um Laptop-Spezifika.
+A new NixOS host profile `laptop` for the Lenovo laptop (currently Fedora 42,
+reachable via SSH at `paul@10.0.1.46`), installed via **nixos-anywhere**
+over SSH. The laptop gets the same graphical setup as the desktop
+(SDDM + Hyprland + Catppuccin), extended with laptop specifics.
 
-## Hardware (per SSH ermittelt)
+## Hardware (determined via SSH)
 
-| Komponente | Wert |
+| Component | Value |
 |---|---|
-| Gerät | Lenovo 82X3 (IdeaPad) |
-| CPU/GPU | AMD Ryzen 5 7540U mit Radeon 740M (integriert, Phoenix) |
+| Device | Lenovo 82X3 (IdeaPad) |
+| CPU/GPU | AMD Ryzen 5 7540U with Radeon 740M (integrated, Phoenix) |
 | RAM | 16 GB |
 | Disk | 1 TB NVMe (`/dev/nvme0n1`) |
-| Display | eDP-1, 1920x1200 nativ |
-| WLAN | Realtek RTL8852CE (Kernel-Support vorhanden) |
+| Display | eDP-1, 1920x1200 native |
+| WLAN | Realtek RTL8852CE (kernel support available) |
 | Firmware | UEFI |
 
-## Entscheidungen
+## Decisions
 
-1. **Installation:** nixos-anywhere (Remote über SSH, löscht die Platte komplett —
-   Fedora und `/home` gehen verloren; Daten vorher sichern).
-2. **Verschlüsselung:** LUKS-Vollverschlüsselung, eine Passphrase beim Boot.
-3. **Grafisches Setup:** wie Desktop — SDDM wird geteiltes Modul.
-4. **Swap:** 20-GB-Swap-Partition **innerhalb** von LUKS, Hibernate-fähig.
+1. **Installation:** nixos-anywhere (remote over SSH, wipes the disk completely —
+   Fedora and `/home` are lost; back up data beforehand).
+2. **Encryption:** LUKS full-disk encryption, one passphrase at boot.
+3. **Graphical setup:** same as desktop — SDDM becomes a shared module.
+4. **Swap:** 20 GB swap partition **inside** LUKS, hibernate-capable.
 5. **Hostname:** `paul-laptop`.
 
-## Architektur
+## Architecture
 
-### 1. Flake-Änderungen (`flake.nix`)
+### 1. Flake changes (`flake.nix`)
 
-- Neuer Input `disko` (`github:nix-community/disko`, `inputs.nixpkgs.follows = "nixpkgs"`).
-- `disko.nixosModules.disko` in die `mkHost`-Modulliste (harmlos für `desktop`/`vm`,
-  die kein `disko.*` konfigurieren).
+- New input `disko` (`github:nix-community/disko`, `inputs.nixpkgs.follows = "nixpkgs"`).
+- `disko.nixosModules.disko` into the `mkHost` module list (harmless for `desktop`/`vm`,
+  which do not configure any `disko.*`).
 - `nixosConfigurations.laptop = mkHost "laptop"`.
 
-### 2. Festplattenlayout (`hosts/laptop/disko.nix`)
+### 2. Disk layout (`hosts/laptop/disko.nix`)
 
-GPT auf `/dev/nvme0n1`:
+GPT on `/dev/nvme0n1`:
 
-- **ESP:** 1 GB, vfat, gemountet als `/boot`.
-- **LUKS-Container `cryptroot`** (Rest der Platte), darin LVM (VG `vg0`):
-  - **LV `swap`:** 20 GB Swap (Hibernate-Image liegt damit verschlüsselt).
-  - **LV `root`:** Rest, btrfs mit Subvolumes `/root` (→ `/`), `/home`, `/nix`,
-    jeweils `compress=zstd`, `/nix` zusätzlich `noatime`.
+- **ESP:** 1 GB, vfat, mounted as `/boot`.
+- **LUKS container `cryptroot`** (rest of the disk), containing LVM (VG `vg0`):
+  - **LV `swap`:** 20 GB swap (so the hibernate image is stored encrypted).
+  - **LV `root`:** rest, btrfs with subvolumes `/root` (→ `/`), `/home`, `/nix`,
+    each with `compress=zstd`, `/nix` additionally `noatime`.
 
-Eine Passphrase entsperrt den Container; Swap und Root hängen am selben LUKS.
+One passphrase unlocks the container; swap and root hang off the same LUKS.
 
-### 3. Hostprofil (`hosts/laptop/`)
+### 3. Host profile (`hosts/laptop/`)
 
-- **`default.nix`** — importiert `../../common`, `../../common/sddm.nix`,
+- **`default.nix`** — imports `../../common`, `../../common/sddm.nix`,
   `./hardware-configuration.nix`, `./disko.nix`, `./boot.nix`, `./power.nix`;
-  injiziert `./hyprland-monitors.nix` via `home-manager.users.paul.imports`;
+  injects `./hyprland-monitors.nix` via `home-manager.users.paul.imports`;
   `networking.hostName = "paul-laptop"`; `system.stateVersion = "26.05"`.
-- **`boot.nix`** — systemd-boot, `configurationLimit`, zen-Kernel (wie Desktop);
-  **`boot.initrd.systemd.enable = true`** (siehe Tastaturlayout);
-  `boot.resumeDevice` auf das Swap-LV (`/dev/vg0/swap`) für Hibernate.
-- **`hardware-configuration.nix`** — wird bei der Installation von nixos-anywhere
-  generiert (`--generate-hardware-config`) und dabei überschrieben; bis dahin
-  Platzhalter mit `nixpkgs.hostPlatform = "x86_64-linux"`. Deshalb liegen
-  `hardware.cpu.amd.updateMicrocode = true` und
-  `hardware.enableRedistributableFirmware = true` (WLAN-Firmware) dauerhaft in
-  `boot.nix`, nicht hier.
-- **`power.nix`** — `services.tlp.enable = true` (Akku-Laufzeit),
-  `brightnessctl` als Systempaket (Helligkeitstasten sind in der Hyprland-Config
-  schon gebunden), `services.logind`-Defaults für Deckel-zu → Suspend.
-  AMD-GPU braucht keine Extra-Konfiguration (Mesa ist Standard).
-- **`hyprland-monitors.nix`** — Home-Manager-Modul:
+- **`boot.nix`** — systemd-boot, `configurationLimit`, zen kernel (same as desktop);
+  **`boot.initrd.systemd.enable = true`** (see keyboard layout);
+  `boot.resumeDevice` set to the swap LV (`/dev/vg0/swap`) for hibernate.
+- **`hardware-configuration.nix`** — generated during installation by nixos-anywhere
+  (`--generate-hardware-config`) and overwritten in the process; until then a
+  placeholder with `nixpkgs.hostPlatform = "x86_64-linux"`. That is why
+  `hardware.cpu.amd.updateMicrocode = true` and
+  `hardware.enableRedistributableFirmware = true` (WLAN firmware) live
+  permanently in `boot.nix`, not here.
+- **`power.nix`** — `services.tlp.enable = true` (battery life),
+  `brightnessctl` as a system package (the brightness keys are already bound
+  in the Hyprland config), `services.logind` defaults for lid-close → suspend.
+  The AMD GPU needs no extra configuration (Mesa is the default).
+- **`hyprland-monitors.nix`** — home-manager module:
   `monitorv2 = [{ output = "eDP-1"; mode = "1920x1200@60"; position = "0x0"; scale = "1.0"; }]`.
 
-### 4. SDDM wird geteiltes Modul
+### 4. SDDM becomes a shared module
 
-- `hosts/desktop/sddm.nix` → **`common/sddm.nix`** (inhaltlich unverändert,
-  inkl. Catppuccin und gnome-keyring).
-- Bewusst **nicht** in `common/default.nix` aufgenommen — sonst bekäme die VM
-  einen Login-Manager. Desktop und Laptop importieren es explizit.
+- `hosts/desktop/sddm.nix` → **`common/sddm.nix`** (content unchanged,
+  incl. Catppuccin and gnome-keyring).
+- Deliberately **not** added to `common/default.nix` — otherwise the VM would
+  get a login manager. Desktop and laptop import it explicitly.
 
-### 5. Hyprland-Monitore pro Host
+### 5. Hyprland monitors per host
 
-Die `monitorv2`-Einträge (HDMI-A-1, DP-2, DP-3) und die Workspace-Bindings
-(`1, monitor:HDMI-A-1` usw.) sind Desktop-spezifisch, liegen aber in der
-geteilten `home/program-configs/hyprland.nix`. Sie wandern in
-**`hosts/desktop/hyprland-monitors.nix`** (HM-Modul, injiziert über das
-bestehende `home-manager.users.paul.imports`-Muster). Der Laptop bekommt sein
-eigenes `hyprland-monitors.nix` (siehe oben). Der Rest der Hyprland-Config
-bleibt geteilt.
+The `monitorv2` entries (HDMI-A-1, DP-2, DP-3) and the workspace bindings
+(`1, monitor:HDMI-A-1` etc.) are desktop-specific but live in the shared
+`home/program-configs/hyprland.nix`. They move into
+**`hosts/desktop/hyprland-monitors.nix`** (HM module, injected via the
+existing `home-manager.users.paul.imports` pattern). The laptop gets its
+own `hyprland-monitors.nix` (see above). The rest of the Hyprland config
+stays shared.
 
-Bewusst unangetastet: `exec-once` startet Desktop-Apps (streamcontroller,
-steam, …) — auf dem Laptop fehlen die Binaries, die Aufrufe laufen ins Leere,
-kein Fehlverhalten.
+Deliberately left untouched: `exec-once` starts desktop apps (streamcontroller,
+steam, …) — on the laptop the binaries are missing, the calls simply go nowhere,
+no misbehavior.
 
-### 6. Deutsches Tastaturlayout ab dem LUKS-Prompt
+### 6. German keyboard layout starting at the LUKS prompt
 
-`console.keyMap = "de"` steht bereits in `common/locale.nix`, greift im
-klassischen (scripted) Initrd aber **nicht** — die LUKS-Passphrase müsste mit
-US-Layout eingetippt werden. Lösung: `boot.initrd.systemd.enable = true` im
-Laptop-`boot.nix`. Das systemd-Initrd richtet die Konsole inkl. Keymap ein,
-**bevor** die Passphrase abgefragt wird. Im TTY nach dem Boot gilt ohnehin
-`console.keyMap`. Der Desktop bleibt unverändert beim scripted Initrd.
+`console.keyMap = "de"` is already set in `common/locale.nix`, but does **not**
+take effect in the classic (scripted) initrd — the LUKS passphrase would have
+to be typed with the US layout. Solution: `boot.initrd.systemd.enable = true`
+in the laptop's `boot.nix`. The systemd initrd sets up the console incl. keymap
+**before** the passphrase is prompted. In the TTY after boot, `console.keyMap`
+applies anyway. The desktop stays unchanged on the scripted initrd.
 
-## Installationsablauf
+## Installation procedure
 
-> ⚠️ Löscht die komplette Platte inkl. Fedora und `/home`. Vorher Daten sichern!
+> ⚠️ Wipes the entire disk incl. Fedora and `/home`. Back up data first!
 
-Voraussetzungen: `paul@10.0.1.46` per SSH-Key erreichbar, `paul` kann auf dem
-Laptop `sudo` (nixos-anywhere lädt darüber den kexec-Installer).
+Prerequisites: `paul@10.0.1.46` reachable via SSH key, `paul` can `sudo` on the
+laptop (nixos-anywhere uses this to load the kexec installer).
 
 ```sh
-# LUKS-Passphrase lokal in Datei ablegen (wird auf den Installer kopiert)
-# Passphrase abfragen statt ins Shell-History/Prozessliste zu schreiben:
-umask 077; read -s -p "LUKS-Passphrase: " pass; printf '%s' "$pass" > /tmp/disk.key; unset pass
+# Store the LUKS passphrase locally in a file (it gets copied to the installer)
+# Prompt for the passphrase instead of writing it into shell history/process list:
+umask 077; read -s -p "LUKS passphrase: " pass; printf '%s' "$pass" > /tmp/disk.key; unset pass
 
 nix run github:nix-community/nixos-anywhere -- \
   --flake .#laptop \
@@ -123,44 +123,44 @@ nix run github:nix-community/nixos-anywhere -- \
   --disk-encryption-keys /tmp/luks-password /tmp/disk.key
 ```
 
-`disko.nix` referenziert `/tmp/luks-password` als `passwordFile` für das
-Formatieren; beim Boot fragt systemd-cryptsetup interaktiv nach der Passphrase.
-Nach der Installation die generierte `hardware-configuration.nix` committen.
+`disko.nix` references `/tmp/luks-password` as the `passwordFile` for
+formatting; at boot, systemd-cryptsetup interactively prompts for the passphrase.
+After installation, commit the generated `hardware-configuration.nix`.
 
-## Fehlerbehandlung / Risiken
+## Error handling / risks
 
-- **Falsche Platte:** disko zielt explizit auf `/dev/nvme0n1` (einzige NVMe im Gerät).
-- **Passphrase-Eingabe beim ersten Boot:** dank systemd-Initrd mit deutschem Layout;
-  Passphrase trotzdem so wählen, dass sie auch mit US-Layout eintippbar wäre
-  (Versicherung gegen Firmware-/Fallback-Fälle).
-- **WLAN nach Installation:** RTL8852CE braucht `enableRedistributableFirmware`;
-  NetworkManager kommt über `common/`. Erste Verbindung ggf. per `nmtui`.
-- **Hibernate:** `resumeDevice` + Swap-Größe (20 GB > 16 GB RAM) sind ausreichend;
-  Test nach Installation: `systemctl hibernate`.
+- **Wrong disk:** disko explicitly targets `/dev/nvme0n1` (the only NVMe in the device).
+- **Passphrase entry on first boot:** German layout thanks to the systemd initrd;
+  still choose the passphrase so that it could also be typed with the US layout
+  (insurance against firmware/fallback cases).
+- **WLAN after installation:** RTL8852CE needs `enableRedistributableFirmware`;
+  NetworkManager comes in via `common/`. First connection possibly via `nmtui`.
+- **Hibernate:** `resumeDevice` + swap size (20 GB > 16 GB RAM) are sufficient;
+  test after installation: `systemctl hibernate`.
 
-## Testplan
+## Test plan
 
-1. `nix flake check` bzw. `nix build .#nixosConfigurations.laptop.config.system.build.toplevel`
-   lokal — Konfiguration evaluiert und baut.
-2. Desktop-Konfiguration baut weiterhin (`...#nixosConfigurations.desktop...toplevel`),
-   insbesondere nach dem SDDM-/Hyprland-Monitor-Refactoring **hash-gleich**
-   (`nix build` vorher/nachher vergleichen — reines Refactoring darf das System
-   nicht ändern; Modul-Reihenfolge kann die Reihenfolge in hyprland.conf ändern,
-   dann zumindest inhaltlich prüfen).
-3. Nach der Installation: Boot mit LUKS-Prompt (deutsches Layout verifizieren,
-   z. B. Sonderzeichen), SDDM-Login, Hyprland auf eDP-1 mit 1920x1200,
-   WLAN, Helligkeitstasten, `systemctl hibernate`.
+1. `nix flake check` or `nix build .#nixosConfigurations.laptop.config.system.build.toplevel`
+   locally — the configuration evaluates and builds.
+2. The desktop configuration still builds (`...#nixosConfigurations.desktop...toplevel`),
+   in particular **hash-identical** after the SDDM/Hyprland monitor refactoring
+   (compare `nix build` before/after — a pure refactoring must not change the
+   system; module order can change the ordering in hyprland.conf, in that case
+   at least verify the content).
+3. After installation: boot with LUKS prompt (verify German layout,
+   e.g. special characters), SDDM login, Hyprland on eDP-1 at 1920x1200,
+   WLAN, brightness keys, `systemctl hibernate`.
 
-## Out of Scope
+## Out of scope
 
-- Aufräumen der Desktop-`exec-once`-Liste für den Laptop.
-- Migration von Daten aus dem Fedora-`/home`.
-- Ungenutztes `hosts/desktop/greetd.nix` (bleibt liegen).
+- Cleaning up the desktop `exec-once` list for the laptop.
+- Migrating data from the Fedora `/home`.
+- The unused `hosts/desktop/greetd.nix` (stays as-is).
 
-## Nachtrag (Review-Befund, 2026-07-04)
+## Addendum (review finding, 2026-07-04)
 
-Das Refactoring der Hyprland-Monitore ändert auch die generierte
-`hyprland.conf` der **VM** (die entfernten monitorv2-/workspace-Einträge waren
-dort wirkungslos, weil die VM nur `Virtual-1` hat — Verhalten unverändert,
-Artefakt nicht). Die Verifikation hat nur den Desktop-Hash verglichen; die
-Aussage „VM unverändert" gilt funktional, nicht artefakt-genau.
+The Hyprland monitor refactoring also changes the generated
+`hyprland.conf` of the **VM** (the removed monitorv2/workspace entries had
+no effect there because the VM only has `Virtual-1` — behavior unchanged,
+the artifact is not). The verification only compared the desktop hash; the
+statement "VM unchanged" holds functionally, not artifact-exact.

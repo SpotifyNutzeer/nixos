@@ -1,15 +1,16 @@
 { ... }:
 {
-  # macOS hat einen system-eigenen ssh-agent (kein systemd noetig). UseKeychain
-  # laedt die Passphrase aus der macOS-Keychain; zusammen mit AddKeysToAgent (shared)
-  # wird der Key einmalig entsperrt und danach nicht mehr abgefragt.
+  # macOS has a system-provided ssh-agent (no systemd needed). UseKeychain
+  # loads the passphrase from the macOS keychain; together with AddKeysToAgent
+  # (shared) the key is unlocked once and never asked for again.
   programs.ssh.settings."*" = {
     UseKeychain = "yes";
-    # UseKeychain ist ein Apple-Patch; Upstream-OpenSSH aus Nix (z.B. im PATH
-    # des claudeMemorySync-Activation-Scripts) bricht sonst mit "Bad
-    # configuration option" ab. IgnoreUnknown laesst fremde ssh-Varianten die
-    # Option ueberspringen. (Muss im Config-File VOR UseKeychain stehen —
-    # passt, da home-manager Optionen alphabetisch rendert.)
+    # UseKeychain is an Apple patch; upstream OpenSSH from Nix (e.g. in the PATH
+    # of the claudeMemorySync activation script) otherwise aborts with "Bad
+    # configuration option". IgnoreUnknown lets non-Apple ssh variants skip the
+    # option. (Must come BEFORE UseKeychain in the config file - guaranteed
+    # because home-manager's ssh module special-cases IgnoreUnknown and always
+    # emits it first in each block.)
     IgnoreUnknown = "UseKeychain";
   };
 }

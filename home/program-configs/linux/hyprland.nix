@@ -6,35 +6,35 @@
     package = null;
     portalPackage = null;
 
-    # Session-Management macht uwsm; die HM-Integration (Default true) feuert beim
-    # Start `systemctl --user stop hyprland-session.target`, das seit HM-Update per
-    # PropagatesStopTo=graphical-session.target die komplette uwsm-Session (inkl.
-    # Compositor) abreisst -> Hyprland beendet sich ~2s nach Login.
+    # Session management is done by uwsm; the HM integration (default true) fires
+    # `systemctl --user stop hyprland-session.target` on start, which since an HM
+    # update tears down the entire uwsm session (incl. compositor) via
+    # PropagatesStopTo=graphical-session.target -> Hyprland exits ~2s after login.
     systemd.enable = false;
 
     configType = "hyprlang";
 
     settings = {
-      # ── Farben (nur was hyprland.conf nutzt; volle Palette spaeter ins shared-Modul) ──
+      # ── Colors (only what hyprland.conf uses; full palette later into the shared module) ──
       "$sky"  = "rgb(89dceb)";
       "$teal" = "rgb(94e2d5)";
 
-      # ── Variablen ──
+      # ── Variables ──
       "$mainMod"     = "SUPER";
       "$terminal"    = "kitty";
       "$fileManager" = "thunar";
       "$menu"        = "rofi -show drun";
       "$screenshot"  = "grimblast -f -n copy area";
 
-      # HINWEIS: Session-Env liegt jetzt in ~/.config/uwsm/env-hyprland (siehe unten).
-      # Der Hyprland-env-Block wuerde nur an direkte exec-once-Kinder vererben, nicht
-      # an `uwsm app`-Scopes oder D-Bus-Dienste. Die uwsm-env-Datei laedt UWSM vor dem
-      # Compositor in die systemd-User-Umgebung -> alle erben konsistent.
+      # NOTE: Session env now lives in ~/.config/uwsm/env-hyprland (see below).
+      # The Hyprland env block would only inherit to direct exec-once children, not
+      # to `uwsm app` scopes or D-Bus services. UWSM loads the uwsm env file into
+      # the systemd user environment before the compositor -> all inherit consistently.
 
       general = {
         gaps_in = 5;
-        # Defaults = Zen-Variante (quickshell Theme.qml koppelt beim Themenwechsel
-        # zur Laufzeit via hyprctl: zen -> diese Werte, mocha/liquidglass -> 10 / $sky $teal 45deg / 10)
+        # Defaults = zen variant (quickshell Theme.qml couples at runtime on theme
+        # switch via hyprctl: zen -> these values, mocha/liquidglass -> 10 / $sky $teal 45deg / 10)
         gaps_out = "12, 22, 22, 22";
         border_size = 2;
         "col.active_border" = "$teal";
@@ -52,8 +52,8 @@
         shadow = { enabled = true; range = 4; render_power = 3; color = "rgba(11111bee)"; };
         blur = { enabled = true; size = 6; passes = 2; vibrancy = 0.1696; new_optimizations = false; };
         motion_blur = { enabled = true; samples = 7; };
-        # Optik liegt komplett hier; nur enabled togglet Theme.qml (zen -> false,
-        # mocha/liquidglass -> true). Inaktive Fenster transparent -> Fokus-Indikator.
+        # The look lives entirely here; Theme.qml only toggles enabled (zen -> false,
+        # mocha/liquidglass -> true). Inactive windows transparent -> focus indicator.
         glow = {
           enabled = false;
           range = 10;
@@ -99,12 +99,12 @@
 
       dwindle = { preserve_split = true; };
       master = { new_status = "master"; };
-      # Natives Scrolling-Layout (seit Hyprland 0.51, hier via Toggle SUPER+TAB nutzbar).
+      # Native scrolling layout (since Hyprland 0.51, usable here via toggle SUPER+TAB).
       scrolling = {
-        column_width = 0.5;                                  # Standardbreite neuer Spalten (0.1–1.0)
-        focus_fit_method = 1;                                # fokussierte Spalte einpassen statt zentrieren (0=center, 1=fit)
-        explicit_column_widths = "0.333, 0.5, 0.667, 1.0";   # Presets, die colresize +conf/-conf durchschaltet
-        # direction = "right";                               # Richtung, in der neue Spalten wachsen (left/right/down/up)
+        column_width = 0.5;                                  # default width of new columns (0.1-1.0)
+        focus_fit_method = 1;                                # fit the focused column instead of centering (0=center, 1=fit)
+        explicit_column_widths = "0.333, 0.5, 0.667, 1.0";   # presets that colresize +conf/-conf cycles through
+        # direction = "right";                               # direction in which new columns grow (left/right/down/up)
       };
       misc = { force_default_wallpaper = -1; disable_hyprland_logo = false; };
       render = {
@@ -139,21 +139,21 @@
         "$mainMod, P, pseudo,"
         "$mainMod, J, layoutmsg, togglesplit"
 
-        # ── Layout dwindle <-> scrolling umschalten ──
+        # ── Toggle layout dwindle <-> scrolling ──
         "$mainMod, TAB, exec, if hyprctl getoption general:layout | grep -q scrolling; then hyprctl keyword general:layout dwindle; else hyprctl keyword general:layout scrolling; fi"
 
-        # ── Scrolling-Layout (layoutmsg wirkt nur im scrolling-Layout, ist im dwindle harmlos) ──
-        "$mainMod, period, layoutmsg, move +col"              # Tape eine Spalte nach rechts scrollen
-        "$mainMod, comma, layoutmsg, move -col"               # Tape eine Spalte nach links scrollen
-        "$mainMod SHIFT, period, layoutmsg, swapcol r"        # aktive Spalte mit rechter Nachbarspalte tauschen
-        "$mainMod SHIFT, comma, layoutmsg, swapcol l"         # aktive Spalte mit linker Nachbarspalte tauschen
-        "$mainMod, R, layoutmsg, colresize +conf"             # Spaltenbreite durch Presets vorwaerts schalten
-        "$mainMod SHIFT, R, layoutmsg, colresize -conf"       # Spaltenbreite durch Presets rueckwaerts schalten
-        "$mainMod, G, layoutmsg, fit visible"                 # alle aktuell sichtbaren Spalten sauber einpassen
-        "$mainMod, M, layoutmsg, fit expand"                  # aktives Fenster den freien Platz fuellen lassen
-        "$mainMod, C, layoutmsg, consume"                     # Fenster in die vorige Spalte einsaugen (vertikal stapeln)
-        "$mainMod, X, layoutmsg, expel"                       # Fenster aus der Spalte in eine eigene Spalte loesen
-        "$mainMod, U, layoutmsg, promote"                     # Fenster in eine neue eigene Spalte befoerdern
+        # ── Scrolling layout (layoutmsg only acts in the scrolling layout, harmless in dwindle) ──
+        "$mainMod, period, layoutmsg, move +col"              # scroll the tape one column to the right
+        "$mainMod, comma, layoutmsg, move -col"               # scroll the tape one column to the left
+        "$mainMod SHIFT, period, layoutmsg, swapcol r"        # swap the active column with its right neighbor column
+        "$mainMod SHIFT, comma, layoutmsg, swapcol l"         # swap the active column with its left neighbor column
+        "$mainMod, R, layoutmsg, colresize +conf"             # cycle column width forward through the presets
+        "$mainMod SHIFT, R, layoutmsg, colresize -conf"       # cycle column width backward through the presets
+        "$mainMod, G, layoutmsg, fit visible"                 # neatly fit all currently visible columns
+        "$mainMod, M, layoutmsg, fit expand"                  # let the active window fill the free space
+        "$mainMod, C, layoutmsg, consume"                     # suck the window into the previous column (stack vertically)
+        "$mainMod, X, layoutmsg, expel"                       # detach the window from its column into its own column
+        "$mainMod, U, layoutmsg, promote"                     # promote the window into a new column of its own
 
         "$mainMod SHIFT, S, exec, $screenshot"
         "$mainMod, L, exec, hyprlock"
@@ -223,34 +223,34 @@
 
       xwayland = { enabled = true; force_zero_scaling = true; };
       exec-once = [
-        # UWSM-Readiness: signalisiert dem wayland-wm@hyprland.service, dass der
-        # Compositor oben ist. Exportiert WAYLAND_DISPLAY/DISPLAY in die systemd-
-        # User- und D-Bus-Umgebung und aktiviert graphical-session.target. MUSS
-        # als erstes laufen, sonst haengt der Session-Unit im activating-Timeout.
+        # UWSM readiness: signals to wayland-wm@hyprland.service that the
+        # compositor is up. Exports WAYLAND_DISPLAY/DISPLAY into the systemd
+        # user and D-Bus environment and activates graphical-session.target. MUST
+        # run first, otherwise the session unit hangs in the activating timeout.
         "uwsm finalize"
 
-        # NVIDIA-3-Display-Kaltstart-Bug: kommen alle Monitore gleichzeitig hoch,
-        # bekommt der Hauptmonitor kein 4K@240 (DSC-/Head-Allokation). Fix: DP-2 kurz
-        # rausnehmen (Haupt springt auf 240), dann via reload mit voller HDR-Config zurueck.
+        # NVIDIA 3-display cold-boot bug: if all monitors come up at the same time,
+        # the main monitor does not get 4K@240 (DSC/head allocation). Fix: briefly take
+        # DP-2 out (main jumps to 240), then back via reload with the full HDR config.
         # "sleep 3; hyprctl keyword monitor 'DP-2,disable'; hyprctl keyword monitor 'DP-3,disable'; sleep 1; hyprctl reload"
 
-        # GUI-Apps via `uwsm app --`: landen in eigenen systemd-Scopes (app.slice)
-        # statt als Kinder des Compositors -> sauberes Stoppen beim Session-Ende,
-        # eigene cgroup/OOM-Grenzen, korrekte Zuordnung im Session-Baum.
+        # GUI apps via `uwsm app --`: they land in their own systemd scopes (app.slice)
+        # instead of as children of the compositor -> clean stopping at session end,
+        # own cgroup/OOM limits, correct placement in the session tree.
         "uwsm app -- quickshell"
         "uwsm app -- discord"
-        # Tidal (Electron/Chromium) bevorzugt PulseAudio, faellt aber auf ALSA
-        # zurueck, wenn es beim Start von pipewire-pulse keine Verbindung bekommt.
-        # pipewire-pulse.service ist socket-aktiviert (Type=simple): der Socket ist
-        # frueh da, der Dienst startet aber erst beim ersten Client-Connect KALT.
-        # Am Boot triggert Tidals Connect diesen Kaltstart, dessen Latenz laeuft in
-        # Chromiums Pulse-Handshake-Timeout -> ALSA-Fallback. Je nach Backend meldet
-        # sich Tidal bei WirePlumber unter verschiedener Identitaet (pulse=Chromium,
-        # alsa=PipeWire ALSA [tidal-hifi]), wodurch das in pavucontrol/durch die
-        # pulse.rules gesetzte Ziel nach einem Neustart verloren geht.
-        # Fix: pipewire-pulse VOR Tidal explizit warmstarten (systemctl start
-        # blockiert bis active), damit Tidal deterministisch ueber PulseAudio geht
-        # und die pulse.rules-Regel (siehe hosts/desktop/pipewire.nix) greift.
+        # Tidal (Electron/Chromium) prefers PulseAudio but falls back to ALSA
+        # if it gets no connection to pipewire-pulse at startup.
+        # pipewire-pulse.service is socket-activated (Type=simple): the socket is
+        # there early, but the service only starts COLD on the first client connect.
+        # At boot, Tidal's connect triggers this cold start, whose latency runs into
+        # Chromium's Pulse handshake timeout -> ALSA fallback. Depending on backend,
+        # Tidal registers with WirePlumber under a different identity (pulse=Chromium,
+        # alsa=PipeWire ALSA [tidal-hifi]), which makes the target set in pavucontrol/
+        # via the pulse.rules get lost after a restart.
+        # Fix: explicitly warm-start pipewire-pulse BEFORE Tidal (systemctl start
+        # blocks until active) so that Tidal deterministically goes via PulseAudio
+        # and the pulse.rules rule (see hosts/desktop/pipewire.nix) takes effect.
         "systemctl --user start pipewire-pulse.service; uwsm app -- tidal-hifi"
         "uwsm app -- awww-daemon"
         "sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png"
@@ -263,10 +263,10 @@
     };
   };
 
-  # UWSM-Session-Environment: wird VOR dem Compositor gesourced und in die systemd-
-  # User- + D-Bus-Activation-Environment geladen. Reicht damit an den Compositor
-  # selbst, alle `uwsm app`-Scopes und D-Bus-aktivierte Dienste (im Gegensatz zum
-  # Hyprland-env-Block, der nur direkte Kinder erreicht). Einzige Quelle der Wahrheit.
+  # UWSM session environment: sourced BEFORE the compositor and loaded into the
+  # systemd user + D-Bus activation environment. Thus reaches the compositor
+  # itself, all `uwsm app` scopes and D-Bus-activated services (in contrast to the
+  # Hyprland env block, which only reaches direct children). Single source of truth.
   xdg.configFile."uwsm/env-hyprland".text = ''
     export XCURSOR_SIZE=24
     export XCURSOR_THEME=catppuccin-mocha-dark-cursors
@@ -275,6 +275,6 @@
     export QT_STYLE_OVERRIDE=kvantum
   '';
 
-  # Companion-Tool, das die Session JETZT braucht (Launcher). Wächst in Round 2.
+  # Companion tools the session needs NOW (launcher). Grows in round 2.
   home.packages = with pkgs; [ rofi quickshell jq cava awww ];
 }

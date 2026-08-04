@@ -12,10 +12,10 @@
     DefaultSearchProviderSearchURL  = "https://google.com/search?q={searchTerms}";
     DefaultSearchProviderSuggestURL = "https://google.com/complete/search?output=chrome&q={searchTerms}";
 
-    # Neuer Tab -> Google
+    # New tab -> Google
     NewTabPageLocation = "https://google.com";
 
-    # Bitwarden auf deinen Self-Host zeigen lassen
+    # Point Bitwarden at your self-hosted instance
     "3rdparty".extensions."nngceckbapebfimnlniiiahkandclblb".environment.base =
       "https://webvault.paul.wtf";
   };

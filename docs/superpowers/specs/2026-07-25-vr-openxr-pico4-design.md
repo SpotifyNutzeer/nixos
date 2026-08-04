@@ -1,110 +1,110 @@
-# VR/OpenXR auf paul-desktop (Pico 4 + WiVRn + xrizer)
+# VR/OpenXR on paul-desktop (Pico 4 + WiVRn + xrizer)
 
-Datum: 2026-07-25 · Status: approved
+Date: 2026-07-25 · Status: Implemented (status updated 2026-08-03)
 
-## Ziel
+## Goal
 
-SteamVR-Spiele (Proton) auf dem Desktop (NVIDIA, Hyprland/Wayland) in VR spielen,
-gestreamt auf eine Pico 4 per WLAN (PC an Ethernet, Headset im 5-GHz-WLAN).
-Vollständig deklarativ, ohne SteamVR: WiVRn ist die OpenXR-Runtime und der
-Streaming-Server, xrizer übersetzt die OpenVR-API der SteamVR-Spiele nach OpenXR.
+Play SteamVR games (Proton) on the desktop (NVIDIA, Hyprland/Wayland) in VR,
+streamed to a Pico 4 over WLAN (PC on Ethernet, headset on 5 GHz WLAN).
+Fully declarative, without SteamVR: WiVRn is the OpenXR runtime and the
+streaming server, xrizer translates the OpenVR API of SteamVR games to OpenXR.
 
 ```
-Pico 4 (WiVRn-Client-App)
-   │  5-GHz-WLAN ←→ Router ←→ Ethernet
+Pico 4 (WiVRn client app)
+   │  5 GHz WLAN ←→ Router ←→ Ethernet
    ▼
-WiVRn-Server (systemd user service, OpenXR-Runtime, Monado-basiert)
+WiVRn server (systemd user service, OpenXR runtime, Monado-based)
    ▲                    ▲
    │ OpenXR             │ OpenXR
-native OpenXR-Apps    xrizer (OpenVR → OpenXR)
+native OpenXR apps    xrizer (OpenVR → OpenXR)
                         ▲
-                        │ OpenVR-API
-                      SteamVR-Spiele unter Proton
+                        │ OpenVR API
+                      SteamVR games under Proton
 ```
 
-Verwendete Pakete aus dem gepinnten nixpkgs: `wivrn` 26.6.2 (mit NixOS-Modul
-`services.wivrn` inkl. Steam-Integration), `xrizer` 0.5.
+Packages used from the pinned nixpkgs: `wivrn` 26.6.2 (with NixOS module
+`services.wivrn` incl. Steam integration), `xrizer` 0.5.
 
 ## Design
 
-### 1. WiVRn-Server (`hosts/desktop/vr.nix`, neu)
+### 1. WiVRn server (`hosts/desktop/vr.nix`, new)
 
-Nur auf dem Desktop-Host, Import in `hosts/desktop/default.nix` — analog zu
-`gaming.nix` & Co.
+Desktop host only, imported in `hosts/desktop/default.nix` — analogous to
+`gaming.nix` & co.
 
 - `services.wivrn`:
-  - `enable`, `openFirewall` (Port 9757 TCP/UDP), `autoStart` (Server startet
-    mit der User-Session), `highPriority` (CAP_SYS_NICE fürs Compositing).
-  - `steam.importOXRRuntimes`: exportiert
-    `PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES=1`, damit Proton-Spiele in der
-    Steam-Sandbox die Runtime erreichen (`steam.enable` ist default-an).
-  - `config` bleibt leer: Das Stock-Paket kann Vulkan-Video-Encode
-    (Hardware-Encoding auf NVIDIA ohne CUDA-Build); Encoder/Bitrate werden zur
-    Laufzeit im WiVRn-Dashboard eingestellt. NVENC bräuchte einen
-    unfreien, ungecachten CUDA-Build — YAGNI.
-  - `monadoEnvironment`: leer; nur bei konkreten NVIDIA-Problemen setzen.
-- Avahi/mDNS fürs Auto-Discovery aktiviert das Modul selbst mit.
-- Tools als `environment.systemPackages`: `wayvr` (Desktop-Overlay in VR,
-  Nachfolger von wlx-overlay-s), `android-tools` (adb für die einmalige
-  Client-Installation; USB-Zugriff kommt über systemd-uaccess-Regeln).
+  - `enable`, `openFirewall` (port 9757 TCP/UDP), `autoStart` (server starts
+    with the user session), `highPriority` (CAP_SYS_NICE for compositing).
+  - `steam.importOXRRuntimes`: exports
+    `PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES=1` so that Proton games inside
+    the Steam sandbox can reach the runtime (`steam.enable` is on by default).
+  - `config` stays empty: the stock package can do Vulkan video encode
+    (hardware encoding on NVIDIA without a CUDA build); encoder/bitrate are
+    set at runtime in the WiVRn dashboard. NVENC would require an
+    unfree, uncached CUDA build — YAGNI.
+  - `monadoEnvironment`: empty; only set it for concrete NVIDIA problems.
+- Avahi/mDNS for auto-discovery is enabled by the module itself.
+- Tools as `environment.systemPackages`: `wayvr` (desktop overlay in VR,
+  successor of wlx-overlay-s), `android-tools` (adb for the one-time
+  client installation; USB access comes via systemd uaccess rules).
 
-### 2. xrizer als OpenVR-„Treiber" (keine eigene Konfig nötig)
+### 2. xrizer as the OpenVR "driver" (no dedicated config needed)
 
-Das nixpkgs-WiVRn-Paket bündelt xrizer als Standard-Eintrag im
-`OVR_COMPAT_SEARCH_PATH`; der WiVRn-Server verwaltet
-`~/.config/openvr/openvrpaths.vrpath` und die aktive OpenXR-Runtime selbst
-(deshalb wurde die frühere Modul-Option `defaultRuntime` entfernt). Es ist
-keine home-manager-Konfiguration nötig — SteamVR-Spiele landen automatisch
-bei xrizer, sobald der WiVRn-Server läuft.
+The nixpkgs WiVRn package bundles xrizer as the default entry in
+`OVR_COMPAT_SEARCH_PATH`; the WiVRn server manages
+`~/.config/openvr/openvrpaths.vrpath` and the active OpenXR runtime itself
+(which is why the earlier module option `defaultRuntime` was removed). No
+home-manager configuration is needed — SteamVR games automatically end up
+at xrizer as soon as the WiVRn server is running.
 
-### 3. Spiele-Start (Doku, keine Konfig)
+### 3. Game launch (documentation, no config)
 
-- Durch `services.wivrn.steam.enable` ist keine Launch-Option nötig; falls ein
-  Spiel den Socket doch nicht sieht, ist der dokumentierte Fallback:
+- Thanks to `services.wivrn.steam.enable` no launch option is needed; if a
+  game still does not see the socket, the documented fallback is:
   `PRESSURE_VESSEL_FILESYSTEMS_RW=$XDG_RUNTIME_DIR/wivrn/comp_ipc %command%`
-- Native OpenXR-Spiele brauchen nichts weiter (Runtime ist systemweit gesetzt).
-- Audio + Mikrofon laufen über PipeWire; WiVRn legt beim Verbinden ein eigenes
-  Sink/Source-Paar an und routet automatisch.
+- Native OpenXR games need nothing further (the runtime is set system-wide).
+- Audio + microphone run via PipeWire; on connect, WiVRn creates its own
+  sink/source pair and routes automatically.
 
-### 4. Headset-Seite (einmalig, manuell — einziger nicht-deklarativer Teil)
+### 4. Headset side (one-time, manual — the only non-declarative part)
 
-1. Pico 4: Developer-Mode aktivieren (Einstellungen → Allgemein → Info,
-   mehrfach auf die Versionsnummer tippen, dann Entwickleroptionen → USB-Debugging).
-2. WiVRn-Client-APK vom WiVRn-GitHub-Release passend zur Server-Version laden.
-3. Headset per USB an den PC, `adb install wivrn-client…apk`, Debugging-Prompt
-   im Headset bestätigen.
-4. App auf der Pico starten — der PC erscheint via mDNS automatisch; Verbindung
-   einmalig im WiVRn-Dashboard auf dem PC bestätigen.
+1. Pico 4: enable developer mode (Settings → General → About,
+   tap the version number several times, then Developer options → USB debugging).
+2. Download the WiVRn client APK from the WiVRn GitHub release matching the server version.
+3. Connect the headset to the PC via USB, `adb install wivrn-client…apk`, confirm
+   the debugging prompt in the headset.
+4. Start the app on the Pico — the PC shows up automatically via mDNS; confirm
+   the connection once in the WiVRn dashboard on the PC.
 
-Wichtig: Client- und Server-Version müssen zusammenpassen; nach einem
-nixpkgs-Update mit neuer WiVRn-Version ggf. Client-APK aktualisieren.
+Important: client and server versions must match; after a
+nixpkgs update with a new WiVRn version, update the client APK if needed.
 
-## Verifikation
+## Verification
 
-1. `nix build` der Desktop-Konfiguration schlägt nicht fehl; nach Rebuild läuft
-   `wivrn.service` (user) und lauscht auf 9757.
-2. Pico 4 findet den PC automatisch, verbindet sich; WiVRn-Dashboard zeigt den
-   Stream, Headset zeigt die Monado-Void-Scene.
-3. Ein SteamVR-Spiel aus der Bibliothek startet über Proton, rendert im Headset,
-   Controller und Audio (PipeWire) funktionieren.
+1. `nix build` of the desktop configuration does not fail; after rebuild,
+   `wivrn.service` (user) is running and listening on 9757.
+2. The Pico 4 finds the PC automatically and connects; the WiVRn dashboard shows
+   the stream, the headset shows the Monado void scene.
+3. A SteamVR game from the library launches via Proton, renders in the headset,
+   controllers and audio (PipeWire) work.
 
-## Troubleshooting-Befunde (25.07.2026)
+## Troubleshooting findings (2026-07-25)
 
-- **GE-Proton11-1 ist für VR-Titel kaputt:** DXVK scheitert mit
-  `VK_ERROR_EXTENSION_NOT_PRESENT` beim Device-Aufbau (Unity meldet
-  "InitializeEngineGraphics failed"). Ursache-Kette: WiVRn/Monado meldet auf
-  der Legacy-Abfrage `xrGetVulkanDeviceExtensionsKHR` Linux-only-Extensions
-  (`VK_KHR_external_memory_fd`), xrizer reicht sie unübersetzt durch, und
-  GE-Proton11-1 (wine-staging 11.0) übersetzt sie nicht in die
-  `_win32`-Pendants — winevulkan lehnt ab. **Fix: VR-Spiele in Steam auf
-  „Proton Experimental" pinnen** (Eigenschaften → Kompatibilität). Flache
-  Spiele sind nicht betroffen. Bei künftigen GE-Proton-Updates neu testen.
-- Diagnose-Weg, falls es wieder auftritt: `PROTON_LOG=1 %command%`, dann in
-  `~/steam-<appid>.log` nach `VK_ERROR_EXTENSION_NOT_PRESENT` suchen;
-  xrizer-Log liegt in `~/.local/state/xrizer/xrizer.txt`.
+- **GE-Proton11-1 is broken for VR titles:** DXVK fails with
+  `VK_ERROR_EXTENSION_NOT_PRESENT` during device creation (Unity reports
+  "InitializeEngineGraphics failed"). Cause chain: on the legacy query
+  `xrGetVulkanDeviceExtensionsKHR`, WiVRn/Monado reports Linux-only extensions
+  (`VK_KHR_external_memory_fd`), xrizer passes them through untranslated, and
+  GE-Proton11-1 (wine-staging 11.0) does not translate them into the
+  `_win32` counterparts — winevulkan rejects. **Fix: pin VR games in Steam to
+  "Proton Experimental"** (Properties → Compatibility). Flat
+  games are not affected. Re-test on future GE-Proton updates.
+- Diagnosis path if it happens again: `PROTON_LOG=1 %command%`, then search
+  `~/steam-<appid>.log` for `VK_ERROR_EXTENSION_NOT_PRESENT`;
+  the xrizer log is at `~/.local/state/xrizer/xrizer.txt`.
 
-## Nicht im Scope
+## Out of scope
 
-ALVR/SteamVR-Fallback, Lighthouse-/Full-Body-Tracking, Sim-Racing-Spezifika,
-Laptop-Host. Alles später nachrüstbar; bei Spielen, die mit xrizer nicht
-laufen, ist ALVR + SteamVR der dokumentierte Plan B.
+ALVR/SteamVR fallback, lighthouse/full-body tracking, sim-racing specifics,
+the laptop host. All of it can be retrofitted later; for games that do not
+run with xrizer, ALVR + SteamVR is the documented plan B.

@@ -2,14 +2,14 @@
 {
   programs.ssh = {
     enable = true;
-    # eigene Defaults statt der (deprecateten) home-manager-Vorgaben
+    # our own defaults instead of the (deprecated) home-manager presets
     enableDefaultConfig = false;
 
     settings = {
-      # Keys beim ersten Benutzen automatisch in den Agent laden.
+      # Load keys into the agent automatically on first use.
       "*".AddKeysToAgent = "yes";
 
-      # github: immer diesen Key nehmen
+      # github: always use this key
       "github.com" = {
         User = "git";
         IdentityFile = "~/.ssh/id_ed25519";

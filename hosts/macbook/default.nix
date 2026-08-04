@@ -11,41 +11,43 @@
 
   networking.hostName = "paul-macbook";
 
-  # nix-darwin verlangt fuer user-bezogene Optionen (homebrew, defaults) einen Primaeruser.
+  # nix-darwin requires a primary user for user-scoped options (homebrew, defaults).
   system.primaryUser = "paulweber";
   users.users.paulweber.home = "/Users/paulweber";
 
-  # Nix wird von Determinate Nix (eigener Daemon) verwaltet — nix-darwin darf
-  # die Nix-Installation NICHT ebenfalls verwalten, sonst bricht die Aktivierung
-  # ("Determinate detected, aborting activation"). Flakes/nix-command sind bei
-  # Determinate ohnehin global aktiv, daher entfaellt hier nix.settings.
+  # Nix is managed by Determinate Nix (its own daemon) — nix-darwin must NOT
+  # manage the Nix installation as well, otherwise activation breaks
+  # ("Determinate detected, aborting activation"). Flakes/nix-command are
+  # globally enabled with Determinate anyway, so nix.settings is omitted here.
   nix.enable = false;
 
-  # fish ist Login-Shell -> nix-darwin muss die System-Integration einrichten
-  # (/etc/fish + fish in /etc/shells + System-PATH), sonst hat die fish-Login-Shell
-  # weder nix- noch sonstige System-Pfade. (common/ mit demselben Flag ist NixOS-only.)
+  # fish is the login shell -> nix-darwin has to set up the system integration
+  # (/etc/fish + fish in /etc/shells + system PATH), otherwise the fish login shell
+  # has neither nix paths nor any other system paths. (common/ with the same flag
+  # is NixOS-only.)
   programs.fish.enable = true;
 
-  # home-shared.nix (programs.vim) zieht unfreie vim-Plugins (asyncomplete-buffer-vim).
-  # Auf NixOS setzt common/programs.nix dies system-weit; darwin braucht das
-  # Aequivalent, sonst schlaegt die Home-Manager-Evaluierung (useGlobalPkgs) fehl.
+  # home-shared.nix (programs.vim) pulls in unfree vim plugins (asyncomplete-buffer-vim).
+  # On NixOS common/programs.nix sets this system-wide; darwin needs the
+  # equivalent, otherwise the Home Manager evaluation (useGlobalPkgs) fails.
   nixpkgs.config.allowUnfree = true;
 
-  # Offizielle TIDAL.app (aarch64-darwin, unfree) mit injiziertem TidaLuna.
-  # Wie auf Linux (common/programs.nix) direkt aus der TidaLuna-Flake, die
-  # ihren EIGENEN nixpkgs-Pin mitbringt — der Overlay-Weg wuerde stattdessen
-  # mit unserem nixos-unstable bauen, dessen fetchPnpmDeps das von TidaLuna
-  # genutzte fetcherVersion=3 nicht mehr unterstuetzt. Der Linux-Wrapper
-  # (--password-store=gnome-libsecret) entfaellt hier: Electrons safeStorage
-  # nutzt auf macOS automatisch den Keychain.
+  # Official TIDAL.app (aarch64-darwin, unfree) with injected TidaLuna.
+  # As on Linux (common/programs.nix) taken directly from the TidaLuna flake,
+  # which brings its OWN nixpkgs pin — the overlay route would instead build
+  # with our nixos-unstable, whose fetchPnpmDeps no longer supports the
+  # fetcherVersion=3 used by TidaLuna. The Linux wrapper
+  # (--password-store=gnome-libsecret) is not needed here: Electron's safeStorage
+  # automatically uses the Keychain on macOS.
   environment.systemPackages = [
     tidaluna.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
-  # Systemweit Dark Mode.
+  # System-wide dark mode.
   system.defaults.NSGlobalDomain.AppleInterfaceStyle = "Dark";
 
-  # nix-darwin-Schema-Version. Falls darwin-rebuild einen anderen Wert erwartet,
-  # meldet es das explizit — dann hier anpassen.
+  # nix-darwin schema version. Note: darwin-rebuild only errors when
+  # stateVersion is unset or outside the supported range — an outdated value is
+  # accepted silently, so any bump has to be a deliberate manual change here.
   system.stateVersion = 5;
 }
