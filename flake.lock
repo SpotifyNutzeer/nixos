@@ -41,11 +41,11 @@
     "dotfiles": {
       "flake": false,
       "locked": {
-        "lastModified": 1784980450,
-        "narHash": "sha256-A9ArZGxa6Yji1accZUhJG/o04ilo4RvUQi1zUZ8nGm4=",
+        "lastModified": 1785873309,
+        "narHash": "sha256-VQ6S+kQJexlu8Xadu0lQIpLztOb9ivvenc555I63BJU=",
         "owner": "SpotifyNutzeer",
         "repo": "dotfiles",
-        "rev": "20ae1a0d02f7ce6e6e22f0af372b8c66d9fb222b",
+        "rev": "25ffbc148a49f664bfeade2c7481ec9edbfd14ef",
         "type": "github"
       },
       "original": {
