@@ -14,7 +14,7 @@
       theme   = "dark-ansi";
       tui     = "fullscreen";
       verbose = true;
-      model   = "Fable";
+      model   = "Opus 5";
       # ── tmux ─────────────────────────────────────────────────────────
       # Agent teams run in tmux split-pane mode: every teammate gets a
       # pane of its own. "tmux" forces this (alternative: "auto" = only
