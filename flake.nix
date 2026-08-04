@@ -27,9 +27,13 @@
       url = "github:SpotifyNutzeer/dotfiles";
       flake = false;
     };
+    rodecaster-volume-bridge = {
+      url = "github:SpotifyNutzeer/rodecaster-volume-bridge";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, nixcord, spicetify-nix, catppuccin, gsr-ui-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-volume-bridge, nixcord, spicetify-nix, catppuccin, gsr-ui-nix, ... }:
   let
     # Upstream bug (still present on nixpkgs master as of 2026-07-21): the
     # package calls wrapGAppsHook manually inside a symlinkJoin where $output
@@ -67,7 +71,7 @@
         home-manager.nixosModules.home-manager
         hmDefaults
         {
-          home-manager.extraSpecialArgs = { inherit dotfiles nixcord spicetify-nix catppuccin; };
+          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-volume-bridge nixcord spicetify-nix catppuccin; };
           home-manager.users.paul = import ./home/home-linux.nix;
           nixpkgs.overlays = [ noriskOverlay ];
         }

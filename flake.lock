@@ -249,6 +249,22 @@
         "type": "github"
       }
     },
+    "rodecaster-volume-bridge": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785880440,
+        "narHash": "sha256-gk61rLrhMU5Sv34u/KsJymTuROnK0fq9+De9ypdYAMY=",
+        "owner": "SpotifyNutzeer",
+        "repo": "rodecaster-volume-bridge",
+        "rev": "837c30d25ae9278a0be6fd0c9dcc4215f142ab69",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SpotifyNutzeer",
+        "repo": "rodecaster-volume-bridge",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "catppuccin": "catppuccin",
@@ -259,6 +275,7 @@
         "nix-darwin": "nix-darwin",
         "nixcord": "nixcord",
         "nixpkgs": "nixpkgs_3",
+        "rodecaster-volume-bridge": "rodecaster-volume-bridge",
         "spicetify-nix": "spicetify-nix"
       }
     },
