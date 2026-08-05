@@ -4,7 +4,7 @@ let
   # ── Canonical store ──────────────────────────────────────────────────────
   # One git checkout shared by all devices. The file-based memories are
   # tiny Markdown files; the store keeps one folder per project.
-  repoUrl = "git@github.com:SpotifyNutzeer/claude-memory.git";
+  repoUrl = "git@github.com:paul-wtf/claude-memory.git";
   store   = "${config.home.homeDirectory}/claude-memory";
 
   # ── Projects ─────────────────────────────────────────────────────────────

@@ -24,11 +24,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dotfiles = {
-      url = "github:SpotifyNutzeer/dotfiles";
+      url = "github:paul-wtf/dotfiles";
       flake = false;
     };
     rodecaster-volume-bridge = {
-      url = "github:SpotifyNutzeer/rodecaster-volume-bridge";
+      url = "github:paul-wtf/rodecaster-volume-bridge";
       flake = false;
     };
   };
