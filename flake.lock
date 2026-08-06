@@ -43,13 +43,13 @@
       "locked": {
         "lastModified": 1785873309,
         "narHash": "sha256-VQ6S+kQJexlu8Xadu0lQIpLztOb9ivvenc555I63BJU=",
-        "owner": "SpotifyNutzeer",
+        "owner": "paul-wtf",
         "repo": "dotfiles",
         "rev": "25ffbc148a49f664bfeade2c7481ec9edbfd14ef",
         "type": "github"
       },
       "original": {
-        "owner": "SpotifyNutzeer",
+        "owner": "paul-wtf",
         "repo": "dotfiles",
         "type": "github"
       }
@@ -254,13 +254,13 @@
       "locked": {
         "lastModified": 1785880440,
         "narHash": "sha256-gk61rLrhMU5Sv34u/KsJymTuROnK0fq9+De9ypdYAMY=",
-        "owner": "SpotifyNutzeer",
+        "owner": "paul-wtf",
         "repo": "rodecaster-volume-bridge",
         "rev": "837c30d25ae9278a0be6fd0c9dcc4215f142ab69",
         "type": "github"
       },
       "original": {
-        "owner": "SpotifyNutzeer",
+        "owner": "paul-wtf",
         "repo": "rodecaster-volume-bridge",
         "type": "github"
       }
