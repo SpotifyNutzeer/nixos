@@ -44,6 +44,7 @@
     python313Packages.spotipyfree
     kdePackages.ark
     noriskclient-launcher
+    obsidian
   ];
 
   # The NoRisk launcher downloads its own generic Zulu JDK to
