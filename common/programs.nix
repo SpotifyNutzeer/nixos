@@ -45,6 +45,7 @@
     kdePackages.ark
     noriskclient-launcher
     obsidian
+    lm_sensors
   ];
 
   # The NoRisk launcher downloads its own generic Zulu JDK to
