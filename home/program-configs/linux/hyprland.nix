@@ -52,6 +52,24 @@ in
             -- timeout.
             hl.exec_cmd("uwsm finalize")
 
+            -- NVIDIA 3-display cold-boot bug: if all monitors come up at the same time,
+            -- the main monitor does not get 4K@240 (DSC/head allocation). Fix: briefly take
+            -- DP-2 out (main jumps to 240), then back via reload with the full HDR config.
+            -- `hyprctl keyword` does not work under the Lua config manager (returns
+            -- "keyword can't work with non-legacy parsers. Use eval."), so the disable step
+            -- now calls hl.monitor() directly instead of shelling out; the restore step still
+            -- goes through `hyprctl reload` (unaffected by the keyword restriction) so it
+            -- picks the full HDR config back up from hyprland-monitors.nix instead of
+            -- guessing at hl.monitor's re-enable fields. Only needed if the cold-boot bug
+            -- reappears.
+            -- hl.timer(function()
+            --     hl.monitor({ output = "DP-2", disabled = true })
+            --     hl.monitor({ output = "DP-3", disabled = true })
+            --     hl.timer(function()
+            --         hl.exec_cmd("hyprctl reload")
+            --     end, { timeout = 1000, type = "oneshot" })
+            -- end, { timeout = 3000, type = "oneshot" })
+
             -- GUI apps via `uwsm app --`: they land in their own systemd scopes
             -- (app.slice) instead of as children of the compositor -> clean
             -- stopping at session end, own cgroup/OOM limits, correct placement

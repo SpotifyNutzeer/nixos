@@ -45,7 +45,7 @@ This means rollback is trivial: whichever file HM writes wins.
 - `settings.<name> = value` → `hl.<name>(<value>)`
 - `settings.<name> = [ a b ]` → one `hl.<name>(...)` call per element
 - `extraLuaFiles.<name>` → `$XDG_CONFIG_HOME/hypr/<name>.lua`, auto-`require`d
-- HM also writes `hypr/.luarc.json` for the Lua language server when `configType = "lua"`.
+- HM can also write `hypr/.luarc.json` for the Lua language server when `configType = "lua"`, but it gates that on `finalPackage != null` (`modules/services/window-managers/hyprland/default.nix:496`). This config sets `package = null`, so `.luarc.json` will **not** appear — don't chase its absence as a bug.
 
 **Generated file ordering** (from `modules/services/window-managers/hyprland/lib.nix`, `luaConfig`):
 `plugins` → `extraLuaFiles` requires → `settings` → `submaps` → start hook → shutdown hook → `extraConfig`.
@@ -74,11 +74,11 @@ if (Config::mgr()->type() != Config::CONFIG_LEGACY)
 | `workspace, N` | `hl.dsp.focus({ workspace = N })` |
 | `movetoworkspace, N` | `hl.dsp.window.move({ workspace = N })` |
 | `togglespecialworkspace, magic` | `hl.dsp.workspace.toggle_special("magic")` |
-| `movewindow` (bindm) | `hl.dsp.window.drag()` + `{ mouse = true }` |
-| `resizewindow` (bindm) | `hl.dsp.window.resize()` + `{ mouse = true }` |
+| `movewindow` (bindm) | `hl.dsp.window.drag()` — sets `releasePending = true` itself, giving press-and-hold behaviour (`dsp_mouseDrag`, `LuaBindingsDispatchers.cpp:677-684`) |
+| `resizewindow` (bindm) | `hl.dsp.window.resize()` — same self-release mechanism (`dsp_mouseResize`, `LuaBindingsDispatchers.cpp:686-693`) |
 | `exit` | `hl.dsp.exit()` |
 
-**Bind option flags** (`HL.BindOptions`): `bindm` → `{ mouse = true }`, `bindl` → `{ locked = true }`, `bindel` → `{ locked = true, repeating = true }`, `binde` → `{ repeating = true }`.
+**Bind option flags** (`HL.BindOptions`): `bindl` → `{ locked = true }`, `bindel` → `{ locked = true, repeating = true }`, `binde` → `{ repeating = true }`. `bindm` needs no flag: `hlBind`'s option parser (`LuaBindingsToplevel.cpp`) never reads a `mouse` field, and `HL.BindOptions` (`hl.meta.lua:437-453`) does not list one — the `{ mouse = true }` in `binds.lua` (verbatim from upstream's own default config) is inert. Press-and-hold works because `dsp_mouseDrag`/`dsp_mouseResize` set `releasePending` themselves, as noted above.
 
 **Type aliases** (`hl.meta.lua:393-398`):
 ```
@@ -632,6 +632,8 @@ This task changes no files.
 
 ### Task 4: Switch and verify the live session
 
+**⚠️ Do Task 4 and Task 6 in the same sitting.** Quickshell's `applyHyprland()` (`dotfiles/.config/quickshell/Theme.qml`) runs at quickshell *startup*, not only on a manual theme switch — the existing comment calls this "selbstheilend" (self-healing). Under the Lua config manager that startup call fails silently (`hyprctl keyword` is rejected; see the BLOCKER note above). `hyprland.nix`'s committed defaults are the **zen** variant. If the persisted theme is mocha or liquidglass, the session that comes up after this task's login will show zen decoration (gaps `12/22/22/22`, solid teal border, glow off) while quickshell still renders the mocha/liquidglass palette elsewhere. **This mismatch is expected, not a migration bug** — recognise it rather than debugging it, and go straight on to Task 6 to fix the underlying `hyprctl eval` breakage.
+
 **Files:**
 - Test: live session on the desktop host
 
@@ -648,7 +650,7 @@ Rollback is a one-line change: set `configType = "hyprlang"` in `home/program-co
 ```bash
 cd /home/paul/git/nixos && sudo nixos-rebuild switch --flake .#desktop
 ```
-Expected: succeeds. HM removes `~/.config/hypr/hyprland.conf` and creates `hyprland.lua`, `binds.lua`, `animations.lua`, `autostart.lua`, `.luarc.json`.
+Expected: succeeds. HM removes `~/.config/hypr/hyprland.conf` and creates `hyprland.lua`, `binds.lua`, `animations.lua`, `autostart.lua`. It does **not** create `.luarc.json` — that file is gated on `finalPackage != null`, and this config sets `package = null`, so its absence is expected, not a bug.
 
 ```bash
 ls -la ~/.config/hypr/
@@ -733,6 +735,8 @@ git add -A && git commit -m "hyprland: fix <specific item> on the laptop under t
 ---
 
 ### Task 6: Theme switcher — `hyprctl keyword` → `hyprctl eval`
+
+**⚠️ Do this in the same sitting as Task 4.** Quickshell's `applyHyprland()` runs at quickshell *startup* as well as on a manual switch ("selbstheilend"), and it silently fails under the Lua config manager until this task lands. Between logging into the Lua-configured session (Task 4) and finishing this task, expect a visible mismatch if the persisted theme is mocha/liquidglass: `hyprland.nix`'s committed defaults are the zen variant, so decoration shows zen (gaps `12/22/22/22`, solid teal border, glow off) while quickshell's own rendering still reflects mocha/liquidglass. That is the known gap this task closes, not a bug to chase.
 
 This is the one thing the migration actively breaks. `hyprctl keyword` returns `keyword can't work with non-legacy parsers. Use eval.` under the Lua config manager, and the zen/mocha/liquidglass switch is built entirely on it. Do this task even if Task 4's checklist passed — the breakage is silent (the Process just gets an error string back).
 
