@@ -12,7 +12,7 @@ in
   # Desktop-specific monitors + workspace assignment (pulled out of the shared
   # hyprland.nix; the laptop has its own counterpart).
   wayland.windowManager.hyprland.settings = {
-    monitorv2 = [
+    monitor = [
       ({
         output = "HDMI-A-1"; mode = "3840x2160@240.00"; position = "0x1440";
         scale = "1.0"; vrr = 2;
@@ -24,10 +24,10 @@ in
       { output = "DP-3"; mode = "2560x720@60"; position = "0x3600"; scale = "1.0"; }
     ];
 
-    workspace = [
-      "1, monitor:HDMI-A-1"
-      "2, monitor:DP-3"
-      "3, monitor:DP-2"
+    workspace_rule = [
+      { workspace = "1"; monitor = "HDMI-A-1"; }
+      { workspace = "2"; monitor = "DP-3"; }
+      { workspace = "3"; monitor = "DP-2"; }
     ];
   };
 }
