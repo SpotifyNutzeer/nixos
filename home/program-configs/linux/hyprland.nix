@@ -212,5 +212,8 @@ in
   '';
 
   # Companion tools the session needs NOW (launcher). Grows in round 2.
-  home.packages = with pkgs; [ rofi quickshell jq cava awww ];
+  # playerctl backs the XF86AudioNext/Pause/Play/Prev binds in hypr/binds.lua. It
+  # was never declared anywhere, so those four keys had been dead since long
+  # before the Lua migration -- the binds fire, they just called a missing binary.
+  home.packages = with pkgs; [ rofi quickshell jq cava awww playerctl ];
 }
