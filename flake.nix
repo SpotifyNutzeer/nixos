@@ -5,11 +5,8 @@
       url = "github:rPlakama/gsr-ui-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tidaluna.url = "github:Inrixia/TidaLuna";
     nixcord.url = "github:FlameFlag/nixcord";
-    spicetify-nix = {
-      url = "github:Gerg-L/spicetify-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -31,9 +28,13 @@
       url = "github:paul-wtf/rodecaster-volume-bridge";
       flake = false;
     };
+    streamcontroller-tidal = {
+      url = "github:paul-wtf/streamcontroller-tidal";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-volume-bridge, nixcord, spicetify-nix, catppuccin, gsr-ui-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, disko, dotfiles, rodecaster-volume-bridge, streamcontroller-tidal, tidaluna, nixcord, catppuccin, gsr-ui-nix, ... }:
   let
     # Upstream bug (still present on nixpkgs master as of 2026-07-21): the
     # package calls wrapGAppsHook manually inside a symlinkJoin where $output
@@ -63,7 +64,7 @@
     };
     mkHost = host: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit catppuccin gsr-ui-nix; };
+      specialArgs = { inherit tidaluna catppuccin streamcontroller-tidal gsr-ui-nix; };
       modules = [
         ./hosts/${host}
         disko.nixosModules.disko
@@ -71,20 +72,20 @@
         home-manager.nixosModules.home-manager
         hmDefaults
         {
-          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-volume-bridge nixcord spicetify-nix catppuccin; };
+          home-manager.extraSpecialArgs = { inherit dotfiles rodecaster-volume-bridge nixcord catppuccin; };
           home-manager.users.paul = import ./home/home-linux.nix;
-          nixpkgs.overlays = [ noriskOverlay ];
+          nixpkgs.overlays = [ tidaluna.overlays.default noriskOverlay ];
         }
       ];
     };
     mkDarwin = host: nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit catppuccin; };
+      specialArgs = { inherit catppuccin tidaluna; };
       modules = [
         ./hosts/${host}
         home-manager.darwinModules.home-manager
         hmDefaults
         {
-          home-manager.extraSpecialArgs = { inherit catppuccin spicetify-nix; };
+          home-manager.extraSpecialArgs = { inherit catppuccin; };
           home-manager.users.paulweber = import ./home/home-darwin.nix;
         }
       ];

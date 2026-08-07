@@ -2,7 +2,6 @@
 {
   imports = [
     ./home-shared.nix
-    ./program-configs/shared/spicetify.nix
     ./program-configs/linux/hyprland.nix
     ./program-configs/linux/quickshell.nix
     ./program-configs/linux/hyprlock.nix

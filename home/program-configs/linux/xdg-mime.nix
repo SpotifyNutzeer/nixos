@@ -11,7 +11,7 @@
       "x-scheme-handler/https" = "brave-browser.desktop";
       "x-scheme-handler/about" = "brave-browser.desktop";
       "x-scheme-handler/unknown" = "brave-browser.desktop";
-      "x-scheme-handler/spotify" = "spotify.desktop";
+      "x-scheme-handler/tidaLuna" = "tidal-hifi.desktop";
       "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
       "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
       "x-scheme-handler/tonsite" = "org.telegram.desktop.desktop";

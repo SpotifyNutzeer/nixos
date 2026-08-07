@@ -249,6 +249,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1778580735,
+        "narHash": "sha256-t+8AVV8ExvOmslz2sLIgw/hJBKlyl65rJvxjvvjHgpE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "48d91f2c0ce7b9e589f967d4f685153dd765dcdd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "rodecaster-volume-bridge": {
       "flake": false,
       "locked": {
@@ -276,27 +292,23 @@
         "nixcord": "nixcord",
         "nixpkgs": "nixpkgs_3",
         "rodecaster-volume-bridge": "rodecaster-volume-bridge",
-        "spicetify-nix": "spicetify-nix"
+        "streamcontroller-tidal": "streamcontroller-tidal",
+        "tidaluna": "tidaluna"
       }
     },
-    "spicetify-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "systems": "systems_2"
-      },
+    "streamcontroller-tidal": {
+      "flake": false,
       "locked": {
-        "lastModified": 1785652745,
-        "narHash": "sha256-pD0VE/XwjQ3tLyxTzXKdm6JuIEWr/Jaote6xpXGZrXk=",
-        "owner": "Gerg-L",
-        "repo": "spicetify-nix",
-        "rev": "802040514e09bb8539237f52f68cf053b987c65e",
+        "lastModified": 1785607240,
+        "narHash": "sha256-bB8/roz6ALDpXFOm22Zd9wasNg/+/lbS/YePUAZ5bQQ=",
+        "owner": "paul-wtf",
+        "repo": "streamcontroller-tidal",
+        "rev": "f5fa05927e1bb7c8c386e89476fe0d62c7145e26",
         "type": "github"
       },
       "original": {
-        "owner": "Gerg-L",
-        "repo": "spicetify-nix",
+        "owner": "paul-wtf",
+        "repo": "streamcontroller-tidal",
         "type": "github"
       }
     },
@@ -315,18 +327,21 @@
         "type": "github"
       }
     },
-    "systems_2": {
+    "tidaluna": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_4"
+      },
       "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "lastModified": 1784416690,
+        "narHash": "sha256-JbiVHiybp1jrC6YSmTZgNGQo+bp3AvUnXTGfrfUz/+c=",
+        "owner": "Inrixia",
+        "repo": "TidaLuna",
+        "rev": "c83fcf61325aa9cddb5f94cf22a69846310765a1",
         "type": "github"
       },
       "original": {
-        "owner": "nix-systems",
-        "repo": "default",
+        "owner": "Inrixia",
+        "repo": "TidaLuna",
         "type": "github"
       }
     },

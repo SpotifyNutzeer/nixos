@@ -77,20 +77,21 @@ in
             hl.exec_cmd("uwsm app -- quickshell")
             hl.exec_cmd("uwsm app -- discord")
 
-            -- Spotify (Chromium/CEF) prefers PulseAudio but falls back to ALSA
+            -- Tidal (Electron/Chromium) prefers PulseAudio but falls back to ALSA
             -- if it gets no connection to pipewire-pulse at startup.
             -- pipewire-pulse.service is socket-activated (Type=simple): the socket
             -- is there early, but the service only starts COLD on the first client
-            -- connect. At boot, Spotify's connect triggers this cold start, whose
+            -- connect. At boot, Tidal's connect triggers this cold start, whose
             -- latency runs into Chromium's Pulse handshake timeout -> ALSA
-            -- fallback. Depending on backend, the client registers with WirePlumber
-            -- under a different identity, which makes the target set in pavucontrol
-            -- / via the pulse.rules get lost after a restart.
-            -- Fix: explicitly warm-start pipewire-pulse BEFORE Spotify (systemctl
-            -- start blocks until active) so that Spotify deterministically goes via
+            -- fallback. Depending on backend, Tidal registers with WirePlumber
+            -- under a different identity (pulse=Chromium, alsa=PipeWire ALSA
+            -- [tidal-hifi]), which makes the target set in pavucontrol / via the
+            -- pulse.rules get lost after a restart.
+            -- Fix: explicitly warm-start pipewire-pulse BEFORE Tidal (systemctl
+            -- start blocks until active) so that Tidal deterministically goes via
             -- PulseAudio and the pulse.rules rule (see hosts/desktop/pipewire.nix)
             -- takes effect.
-            hl.exec_cmd("systemctl --user start pipewire-pulse.service; uwsm app -- spotify")
+            hl.exec_cmd("systemctl --user start pipewire-pulse.service; uwsm app -- tidal-hifi")
 
             hl.exec_cmd("uwsm app -- awww-daemon")
             hl.exec_cmd("sleep 1; awww img ${dotfiles}/wallpapers/firewatchcatpuccinmochagreen.png")
@@ -191,7 +192,7 @@ in
         { name = "fix-xwayland-drags"; match = { class = "^$"; title = "^$"; xwayland = true; float = true; fullscreen = false; pin = false; }; no_focus = true; }
         { name = "move-hyprland-run"; match = { class = "hyprland-run"; }; move = "20 monitor_h-120"; float = true; }
         { name = "discord-position"; match = { class = "^discord$"; }; workspace = "2"; }
-        { name = "spotify-position"; match = { class = "^spotify$"; }; workspace = "2"; }
+        { name = "tidal-position"; match = { class = "^tidal-hifi$"; }; workspace = "2"; }
         { name = "steam-bigpicture"; match = { class = "^steam$"; title = "^Steam Big Picture Mode$"; }; monitor = "HDMI-A-1"; fullscreen = true; }
         { name = "bitwarden-extension"; match = { class = "^brave-nngceckbapebfimnlniiiahkandclblb-Default$"; }; float = true; }
         { name = "thunar-file-operation-float"; match = { class = "^thunar$"; title = "^File Operation Progress$"; }; float = true; size = "600 300"; center = true; }

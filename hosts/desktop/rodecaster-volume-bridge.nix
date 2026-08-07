@@ -24,8 +24,10 @@ in
   systemd.user.services.rodecaster-volume-bridge = {
     Unit = {
       Description = "RodeCaster MIDI Volume Bridge";
-      # Needs the session bus to talk MPRIS to Spotify, and pipewire-pulse for
-      # the MIDI stack.
+      # Which player is driven lives in the runtime config TOML, not here:
+      # target = "tidal" (websocket to the TidaLuna plugin, needs a [tidal]
+      # ws_url) or target = "spotify" (MPRIS on the session bus). Both the
+      # session bus and pipewire-pulse (MIDI stack) have to be up either way.
       After = [ "pipewire-pulse.service" "dbus.socket" ];
     };
     Service = {

@@ -13,17 +13,17 @@
   services.displayManager.defaultSession = "hyprland-uwsm";
 
   # gnome-keyring as secret service (org.freedesktop.secrets), unlocked
-  # automatically with the login password at login. Electron/Chromium apps
-  # (Brave, seadrive-gui) store their credentials there via libsecret; without
-  # an unlocked keyring they fall back to plaintext or re-prompt every start.
+  # automatically with the login password at login. tidal-hifi
+  # (--password-store=gnome-libsecret) needs this, otherwise TidaLuna asks
+  # for plugin permissions again on every start.
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
 
   # gnome-keyring by default also enables gcr-ssh-agent. Under Hyprland,
   # however, it has no working passphrase prompt (no gnome-shell/gcr-prompter),
   # so every SSH signature hangs (git clone/push blocks at "Cloning into...").
-  # The secret service (org.freedesktop.secrets) stays active - only the SSH
-  # part is disabled. The SSH agent is handled by home-manager
+  # The secret service (org.freedesktop.secrets) for tidal stays active - only
+  # the SSH part is disabled. The SSH agent is handled by home-manager
   # (services.ssh-agent) in home/program-configs/linux/ssh.nix.
   services.gnome.gcr-ssh-agent.enable = false;
 

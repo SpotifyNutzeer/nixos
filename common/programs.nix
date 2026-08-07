@@ -1,15 +1,29 @@
-{ pkgs, gsr-ui-nix, ... }:
+{ pkgs, tidaluna, gsr-ui-nix, ... }:
+let
+  # tidal-hifi (TidaLuna) wrapped to pin Electron's safeStorage to
+  # gnome-libsecret. Otherwise 'auto' picks a backend inconsistently under
+  # Hyprland, luna-trust-store.enc cannot be decrypted and TidaLuna asks for
+  # plugin permissions again on EVERY start. Requires an unlocked
+  # gnome-keyring (see common/sddm.nix).
+  tidal-hifi = pkgs.symlinkJoin {
+    name = "tidal-hifi-gnome-libsecret";
+    paths = [ tidaluna.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/tidal-hifi --add-flags "--password-store=gnome-libsecret"
+    '';
+  };
+in
 {
   nixpkgs.config.allowUnfree = true;
   # CLI tools that have a home-manager module enabled in home/program-configs/
   # (tmux, kitty, alacritty, fastfetch, hyfetch, ripgrep, eza, bat) live there
   # as the single source, not here. vim stays system-wide on purpose:
   # environment.variables.EDITOR = "vim" and root sessions need it too.
-  # Spotify is NOT listed here: the spicetify module installs its own patched
-  # build into home.packages (home/program-configs/shared/spicetify.nix).
   environment.systemPackages = with pkgs; [
     vim
     htop
+    tidal-hifi
     pavucontrol
     grimblast
     usbutils
@@ -41,7 +55,6 @@
     gnumake
     gcc
     python3
-    python313Packages.spotipyfree
     kdePackages.ark
     noriskclient-launcher
     obsidian
